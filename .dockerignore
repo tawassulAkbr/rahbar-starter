@@ -1,0 +1,16 @@
+.git
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+corpus/raw/
+docs/
+eval/fixtures/
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
