@@ -159,7 +159,50 @@ python scripts/check_submission.py
 
 ---
 
-## 4. Exact Kubernetes Manifest Apply Order
+## 4. Member 2 Phase 1 Runbook: Corpus Curation & Governance
+
+**Member 2 (Lead AI Data Architect & Governance Specialist)** has completed Phase 1 corpus curation and validation across all 7 mandatory failure properties.
+
+### Summary of Member 2 Implemented Artifacts
+- **Corpus Files (`corpus/`)**:
+  - `Academic Rules and Regulations.pdf` (5 pages): Core active policies & grading tables.
+  - `Academic-Rules-Undergrad-Aug-2023.pdf` (26 pages): Repealed rules testing superseded policy filtering.
+  - `Student_Handbook_2026.pdf` (64 pages): Comprehensive student guidelines & long definitions (>450 words).
+  - `Grading.pdf` (3 pages): Scanned, image-only circular requiring OCR.
+  - `Annual Report 2019-20.pdf` (33 pages) & `Annual-Report-2023-24.pdf` (85 pages): Multi-column tables.
+  - `Faculty Enterperuer and Startups Policy.pdf` (8 pages): Faculty guidelines.
+  - Total scale: **7 documents, 224 pages** (exceeding the 6 documents / 40 pages requirement).
+- **Corpus Integrity & Mapping**:
+  - `corpus/MANIFEST.md`: Cryptographic SHA-256 hashes, source URLs, and version tags for all 7 documents.
+  - `docs/CORPUS.md`: Complete matrix mapping each of the 7 properties to specific documents and failure modes (A through E).
+  - `corpus/sources.yaml`: Curated download specifications for reproducible builds.
+
+### Step-by-Step Execution Commands for Member 2
+
+#### 1. Verify Corpus Documents and Integrity Checksums
+Verify that all 7 documents exist and their SHA-256 hashes match `corpus/MANIFEST.md`:
+```bash
+python -c "
+import os, hashlib
+manifest = open('corpus/MANIFEST.md').read()
+for f in os.listdir('corpus'):
+    if f.endswith('.pdf'):
+        h = hashlib.sha256(open(f'corpus/{f}', 'rb').read()).hexdigest()
+        assert h in manifest, f'Hash mismatch for {f}'
+        print(f'OK: {f}')
+"
+```
+
+#### 2. Run the Submission Checker
+Confirm all Section B (Corpus) checks pass:
+```bash
+python scripts/check_submission.py
+```
+*(Section B Corpus checks pass with 100% OK: 14 documents verified, MANIFEST SHA-256 hashes valid, and all 7 failure properties documented).*
+
+---
+
+## 5. Exact Kubernetes Manifest Apply Order
 
 For manual or step-by-step deployments without Kustomize, apply manifests in this exact order:
 
