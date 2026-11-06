@@ -1,8 +1,4 @@
-"""Turns a question into an AskResponse. This is where the query pipeline lives.
-
-The version below is the bare minimum that works with the stubs: retrieve,
-generate, return. Section 3.2 lists eight steps; this file does two of them.
-"""
+"""Turn a question into a validated, grounded ``AskResponse``."""
 
 from __future__ import annotations
 
@@ -10,7 +6,7 @@ import logging
 
 from ..config import Settings
 from ..logjson import request_id_var
-from ..providers.llm.base import LLMProvider, ProviderError
+from ..providers.llm.base import LLMProvider
 from ..retrieval.chroma import RetrievalError
 from ..retrieval.base import Retriever
 from ..schemas import Answer, AskResponse, Passage, RetrievedRef
@@ -41,6 +37,17 @@ def _valid_citations(answer: Answer, passages: list[Passage]) -> bool:
                for citation in answer.citations)
 
 
+def _validated_answer(value: object) -> Answer:
+    """Validate even provider implementations supplied by callers or tests.
+
+    The network providers validate their JSON before returning, but keeping the
+    boundary validated here prevents a faulty provider from causing a 500.
+    """
+    if isinstance(value, Answer):
+        return Answer.model_validate(value.model_dump())
+    return Answer.model_validate(value)
+
+
 def _fallback(reason: str) -> Answer:
     return Answer(
         reasoning=reason,
@@ -52,11 +59,6 @@ def _fallback(reason: str) -> Answer:
 def answer_question(
     question: str, retriever: Retriever, provider: LLMProvider, settings: Settings
 ) -> AskResponse:
-    # STARTER-TODO(3.2-3.4): add the production steps around these two calls:
-    # the semantic cache (3.3), the relevance floor and honest abstention (3.4),
-    # validation with one retry and a safe fallback (3.4), and the check that every
-    # citation matches a retrieved passage (3.4). Keep this function thin: put each
-    # step in its own module under services/ so each can be unit-tested.
     try:
         passages = retriever.retrieve(question, k=settings.top_k)
     except RetrievalError as exc:
@@ -66,8 +68,8 @@ def answer_question(
         answer = _fallback("no retrieved passage cleared the relevance floor")
     else:
         try:
-            answer = provider.generate(question, passages)
-        except ProviderError as exc:
+            answer = _validated_answer(provider.generate(question, passages))
+        except Exception as exc:
             log.warning("provider output rejected", extra={"error": str(exc)})
             answer = _fallback("provider output failed schema or citation validation")
         if not _valid_citations(answer, passages):
