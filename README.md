@@ -234,7 +234,70 @@ Content-Type: application/json
 
 ---
 
-## 7. Automated Verification & Testing
+## 7. Implementation Progress (Member 2)
+
+The work is implemented incrementally on the `dev` branch. The following
+steps record the completed system behavior so the repository history and the
+runtime contract stay aligned.
+
+### Phase 1 — Corpus and architecture foundations
+
+1. Added corpus source metadata, fetch/verification tooling, manifest support,
+   and corpus documentation for official university policy documents.
+2. Added ADR-0001 defining the indexer as a one-shot Kubernetes Job rather
+   than an API-startup task.
+3. Pinned configuration contracts for source version, SHA-256 integrity,
+   embedding model, and embedding dimension.
+
+### Phase 2 — Indexing, retrieval, and generation
+
+1. Implemented PDF/Markdown/text/HTML extraction with OCR fallback, cleaning,
+   structure-aware chunking, overlap validation, embedding validation, and
+   Chroma persistence.
+2. Added Chroma retrieval with query embeddings, top-k results, superseded
+   document filtering, explicit historical-version filtering, and similarity
+   scores.
+3. Added Ollama, hosted, and deterministic stub providers with schema-
+   constrained `Answer` validation and a grounded prompt that treats document
+   text as untrusted evidence.
+4. Added citation-aware `AskResponse` data, request IDs, and tests for
+   retrieval metadata, provider validation, and fabricated-citation rejection.
+
+### Phase 3 — Reliability, grounding, and observability
+
+1. Added the embedding pin guardrail to `/readyz`: Chroma heartbeat,
+   non-empty collection, `embed_model`, and vector dimension are checked. A
+   mismatch returns HTTP `503` and logs the collection and API model names.
+2. Added honest abstention at `RELEVANCE_FLOOR`; unsupported questions return
+   `answered_from_context: false`, low confidence, no citations, and the
+   explicit policy-coverage message.
+3. Added citation integrity verification against the exact retrieved
+   `(source, section, page)` tuples. Invalid provider citations become a safe
+   fallback rather than being returned to the caller.
+4. Added JSON-only stdout logging. Each entry carries the incoming or generated
+   `request_id`; answer logs include `top_k`, `chunk_ids`, scores, grounding
+   state, and request timing.
+5. Added Prometheus counters and histograms for request status/latency,
+   retrieval, generation, cache hits/misses, abstentions, fallbacks, and
+   estimated input/output token counts.
+6. Added Redis semantic-cache safeguards: follow-up questions bypass cache,
+   index-generation changes invalidate old entries, and abstentions/fallbacks
+   are never cached.
+7. Added unit coverage for embedding mismatch readiness, citation validation,
+   relevance-floor abstention, cache invalidation, request IDs, JSON metrics,
+   and the existing retrieval/provider contracts.
+
+Run the API verification suite with:
+
+```bash
+python -m pytest api/tests -vv
+ruff check api
+python -m compileall -q api/app api/tests
+```
+
+---
+
+## 8. Automated Verification & Testing
 
 Verify that your repository passes all mechanical rubric checks before submitting:
 ```bash
