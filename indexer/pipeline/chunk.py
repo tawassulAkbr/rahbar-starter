@@ -62,9 +62,12 @@ def _windows(
         tokens = _count(text)
         if current and current_tokens + tokens > size:
             pieces.append((" ".join(current), current_page, current_section))
-            overlap_words = " ".join(current).split()[-overlap:] if overlap else []
+            overlap_words = (" ".join(current).split()[-overlap:]
+                             if overlap else [])
             overlap_words = overlap_words[-max(0, size - tokens):]
-            current = overlap_words
+            # Keep the rolling buffer as a list.  Assigning the joined string
+            # here makes the next `extend()` append characters instead of words.
+            current = list(overlap_words)
             current_tokens = len(current)
             current_page, current_section = page, section or current_section
             if current_tokens + tokens > size:
