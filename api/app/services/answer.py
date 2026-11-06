@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import logging
+import time
 
 from ..config import Settings
 from ..logjson import request_id_var
+from ..routes import metrics
 from ..providers.llm.base import LLMProvider
 from ..retrieval.chroma import RetrievalError
 from ..retrieval.base import Retriever
@@ -49,9 +51,10 @@ def _validated_answer(value: object) -> Answer:
 
 
 def _fallback(reason: str) -> Answer:
+    metrics.FALLBACKS.inc()
     return Answer(
         reasoning=reason,
-        answer="The available corpus does not contain enough reliable information to answer this question.",
+        answer="The provided university policy documents do not cover this topic.",
         citations=[], answered_from_context=False, confidence="low",
     )
 
@@ -59,22 +62,30 @@ def _fallback(reason: str) -> Answer:
 def answer_question(
     question: str, retriever: Retriever, provider: LLMProvider, settings: Settings
 ) -> AskResponse:
+    retrieval_start = time.perf_counter()
     try:
         passages = retriever.retrieve(question, k=settings.top_k)
     except RetrievalError as exc:
         log.warning("retrieval failed", extra={"error": str(exc)})
         passages = []
+    metrics.RETRIEVAL_LATENCY.observe(time.perf_counter() - retrieval_start)
     if not passages or max(passage.score for passage in passages) < settings.relevance_floor:
+        metrics.ABSTENTIONS.inc()
         answer = _fallback("no retrieved passage cleared the relevance floor")
     else:
+        generation_start = time.perf_counter()
         try:
             answer = _validated_answer(provider.generate(question, passages))
         except Exception as exc:
             log.warning("provider output rejected", extra={"error": str(exc)})
             answer = _fallback("provider output failed schema or citation validation")
+        metrics.GENERATION_LATENCY.observe(time.perf_counter() - generation_start)
         if not _valid_citations(answer, passages):
             log.warning("provider returned a citation outside retrieved evidence")
             answer = _fallback("provider returned a citation outside retrieved evidence")
+
+    metrics.TOKENS_IN.inc(len(question.split()) + sum(len(p.text.split()) for p in passages))
+    metrics.TOKENS_OUT.inc(len(answer.answer.split()))
 
     log.info(
         "answered",
