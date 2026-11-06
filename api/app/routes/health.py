@@ -27,21 +27,24 @@ def readyz(request: Request, response: Response) -> dict[str, object]:
             settings=ChromaSettings(anonymized_telemetry=False),
         )
         heartbeat = getattr(client, "heartbeat", None)
-        if callable(heartbeat):
-            heartbeat()
+        if not callable(heartbeat):
+            raise RuntimeError("Chroma client does not expose heartbeat")
+        heartbeat()
         collection = client.get_collection(name=settings.collection)
         metadata = collection.metadata or {}
+        count = int(collection.count())
         checks["chroma"] = {
-            "count": int(collection.count()),
+            "heartbeat": "ok",
+            "count": count,
             "embed_model": metadata.get("embed_model"),
             "dimension": metadata.get("dimension"),
         }
-        if checks["chroma"]["count"] == 0:
-            raise RuntimeError("collection is empty")
+        if count == 0:
+            checks["chroma"]["error"] = "collection is empty"
         if metadata.get("embed_model") != settings.embed_model:
-            raise RuntimeError("embedding model does not match configured EMBED_MODEL")
+            checks["chroma"]["error"] = "embedding model does not match configured EMBED_MODEL"
         if int(metadata.get("dimension", -1)) != settings.embed_dimension:
-            raise RuntimeError("embedding dimension does not match EMBED_DIMENSION")
+            checks["chroma"]["error"] = "embedding dimension does not match EMBED_DIMENSION"
     except Exception as exc:
         checks["chroma"] = {"error": str(exc)}
 

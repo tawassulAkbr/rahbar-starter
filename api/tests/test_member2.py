@@ -138,6 +138,7 @@ def test_readiness_checks_pinned_nonempty_collection(monkeypatch: pytest.MonkeyP
     )
     chromadb_module = SimpleNamespace(
         HttpClient=lambda **kwargs: SimpleNamespace(
+            heartbeat=lambda: True,
             get_collection=lambda name: collection
         )
     )
@@ -149,3 +150,52 @@ def test_readiness_checks_pinned_nonempty_collection(monkeypatch: pytest.MonkeyP
     result = readyz(request, response)
     assert response.status_code == 200
     assert result["status"] == "ready"
+
+
+@pytest.mark.parametrize("failure", ["heartbeat", "empty", "redis"])
+def test_readiness_returns_503_with_dependency_failure(
+    monkeypatch: pytest.MonkeyPatch, failure: str,
+) -> None:
+    import sys
+
+    from app.routes.health import readyz
+
+    settings = _settings(monkeypatch)
+    if failure == "redis":
+        monkeypatch.setenv("REDIS_URL", "redis://redis:6379/0")
+        settings = _settings(monkeypatch)
+        class BrokenRedis:
+            @classmethod
+            def from_url(cls, *args, **kwargs):
+                return cls()
+
+            def ping(self):
+                raise RuntimeError("redis unavailable")
+        monkeypatch.setitem(sys.modules, "redis", BrokenRedis)
+
+    collection = SimpleNamespace(
+        metadata={"embed_model": settings.embed_model, "dimension": settings.embed_dimension},
+        count=lambda: 0 if failure == "empty" else 1,
+    )
+
+    def heartbeat() -> None:
+        if failure == "heartbeat":
+            raise RuntimeError("chroma unavailable")
+
+    chromadb_module = SimpleNamespace(
+        HttpClient=lambda **kwargs: SimpleNamespace(
+            heartbeat=heartbeat,
+            get_collection=lambda name: collection,
+        )
+    )
+    chromadb_config = SimpleNamespace(Settings=lambda **kwargs: object())
+    monkeypatch.setitem(sys.modules, "chromadb", chromadb_module)
+    monkeypatch.setitem(sys.modules, "chromadb.config", chromadb_config)
+    request = SimpleNamespace(app=SimpleNamespace(state=SimpleNamespace(settings=settings)))
+    response = Response()
+
+    result = readyz(request, response)
+
+    assert response.status_code == 503
+    assert result["status"] == "not_ready"
+    assert result["failed"]

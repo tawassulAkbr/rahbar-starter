@@ -16,6 +16,10 @@ class FakeRedis:
     def setex(self, key, ttl, value):
         self.data[key] = value
 
+    def delete(self, *keys):
+        for key in keys:
+            self.data.pop(key, None)
+
 
 def _response(answered=True, confidence="high"):
     return AskResponse(request_id="r", answer="answer", citations=[],
@@ -36,3 +40,33 @@ def test_never_cache_rules_cover_abstention_fallback_and_follow_up():
     assert never_cache(_response(answered=False))
     assert never_cache(_response(confidence="low"))
     assert never_cache(_response(), follow_up=True)
+
+
+def test_follow_up_skips_existing_cache_entry():
+    settings = get_settings()
+    vectors = {"first": [1.0, 0.0]}
+    cache = SemanticCache(settings, FakeRedis(), lambda q: vectors[q])
+    cache.set("first", _response())
+
+    assert cache.get("first", follow_up=True) is None
+
+
+def test_generation_change_makes_old_entry_invisible():
+    settings = get_settings()
+    redis = FakeRedis()
+    vectors = {"first": [1.0, 0.0]}
+    cache = SemanticCache(settings, redis, lambda q: vectors[q])
+    cache.set("first", _response())
+    redis.data[settings.redis_generation_key] = "1"
+
+    assert cache.get("first") is None
+
+
+def test_abstentions_and_fallbacks_are_not_written():
+    settings = get_settings()
+    redis = FakeRedis()
+    cache = SemanticCache(settings, redis, lambda q: [1.0, 0.0])
+    cache.set("abstain", _response(answered=False))
+    cache.set("fallback", _response(confidence="low"))
+
+    assert list(redis.scan_iter(match="rahbar:cache:*")) == []
