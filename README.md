@@ -134,6 +134,42 @@ kubectl create job --from=cronjob/reindex manual-reindex-1 -n rahbar
 kubectl logs -f job/manual-reindex-1 -n rahbar
 ```
 
+### Phase 2 verification
+
+The Phase 2 Member 1 indexing pipeline is implemented on
+`feature/phase2-indexing-pipeline`. It includes PDF/Markdown/text/HTML extraction
+with OCR fallback, structure-aware cleaning and chunking, validated Ollama
+embeddings, ChromaDB embedding pinning, and Redis invalidation signaling.
+
+Run the local verification suite from the repository root:
+
+```bash
+source .venv/bin/activate
+python -m pytest api/tests/test_starter.py -vv
+python -m pytest indexer/tests -vv
+python -m pytest -v
+ruff check api indexer
+python -m compileall -q api/app indexer/pipeline indexer/tests
+python -m pip check
+```
+
+The current verified result is 7 API tests, 15 indexer tests, and 22 total tests
+passing. Unit tests use stubs and mocks, so they do not require live Ollama,
+ChromaDB, Redis, or Kubernetes services. Those integrations must be verified in a
+running deployment before claiming an end-to-end production index.
+
+For local fixture indexing, run the pipeline from `indexer/`:
+
+```bash
+cd indexer
+CORPUS_DIR=../eval/fixtures ../.venv/bin/python -m pipeline.run
+../.venv/bin/python -m pipeline.run --dummy
+```
+
+The real command requires reachable Ollama and ChromaDB services. See
+`docs/PIPELINE.md` for environment variables, embedding migration safeguards,
+OCR requirements, and troubleshooting.
+
 ---
 
 ## 6. API Endpoint Contract
