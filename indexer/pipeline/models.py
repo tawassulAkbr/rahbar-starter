@@ -32,6 +32,13 @@ class Chunk:
     page: int
     doc_version: str
     superseded: bool
+    original_tokens: int = 0
+    stored_tokens: int = 0
+
+    @property
+    def chunk_id(self) -> str:
+        """Compatibility name used by vector-store integrations."""
+        return self.id
 
     def metadata(self) -> dict[str, str | int | bool]:
         """Chroma metadata values must be str, int, float or bool."""

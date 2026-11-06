@@ -16,6 +16,17 @@ class IndexerSettings:
     chunk_size: int
     chunk_overlap: int
     ollama_url: str
+    expected_dimension: int = 768
+    embed_batch_size: int = 32
+    embed_retries: int = 3
+    embed_timeout: float = 60.0
+    redis_url: str = ""
+    redis_channel: str = "rahbar:index-updated"
+
+    @property
+    def chroma_collection(self) -> str:
+        """Name used by the Phase 2 specification, retained alongside collection."""
+        return self.collection
 
 
 def get_settings() -> IndexerSettings:
@@ -28,4 +39,11 @@ def get_settings() -> IndexerSettings:
         chunk_size=int(os.environ.get("CHUNK_SIZE", 400)),
         chunk_overlap=int(os.environ.get("CHUNK_OVERLAP", 50)),
         ollama_url=os.environ.get("OLLAMA_URL", "http://host.minikube.internal:11434"),
+        expected_dimension=int(os.environ.get("EMBED_DIMENSION",
+                                             os.environ.get("EMBED_DIM", 768))),
+        embed_batch_size=int(os.environ.get("EMBED_BATCH_SIZE", 32)),
+        embed_retries=int(os.environ.get("EMBED_RETRIES", 3)),
+        embed_timeout=float(os.environ.get("EMBED_TIMEOUT", 60.0)),
+        redis_url=os.environ.get("REDIS_URL", ""),
+        redis_channel=os.environ.get("REDIS_INVALIDATION_CHANNEL", "rahbar:index-updated"),
     )

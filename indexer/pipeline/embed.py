@@ -2,9 +2,14 @@
 
 from __future__ import annotations
 
-import httpx
+import time
+import math
+
 from .config import IndexerSettings
-from .dummy import dummy_embedding
+
+
+class EmbeddingError(RuntimeError):
+    """The configured embedding service returned an unusable result."""
 
 
 def embed(texts: list[str], settings: IndexerSettings) -> list[list[float]]:
@@ -15,28 +20,53 @@ def embed(texts: list[str], settings: IndexerSettings) -> list[list[float]]:
     """
     if not texts:
         return []
-
-    # If configured with dummy or stub embedding mode (for offline tests/CI)
-    if "dummy" in settings.embed_model.lower() or "stub" in settings.embed_model.lower():
-        return [dummy_embedding(text) for text in texts]
-
-    # Live embedding via Ollama API with batching
-    batch_size = 32
-    all_embeddings: list[list[float]] = []
-
-    for i in range(0, len(texts), batch_size):
-        batch = texts[i : i + batch_size]
-        try:
-            url = f"{settings.ollama_url.rstrip('/')}/api/embed"
-            payload = {"model": settings.embed_model, "input": batch}
-            with httpx.Client(timeout=60.0) as client:
-                res = client.post(url, json=payload)
-                res.raise_for_status()
-                data = res.json()
-                embeddings = data.get("embeddings") or []
-                all_embeddings.extend(embeddings)
-        except Exception:
-            # Fallback to deterministic dummy embedding if Ollama service is unreachable
-            all_embeddings.extend([dummy_embedding(t) for t in batch])
-
-    return all_embeddings
+    if not settings.embed_model:
+        raise EmbeddingError("EMBED_MODEL must be configured")
+    try:
+        import httpx
+    except ImportError as exc:
+        raise EmbeddingError("embedding requires the httpx dependency") from exc
+    vectors: list[list[float]] = []
+    url = settings.ollama_url.rstrip("/") + "/api/embed"
+    if settings.embed_batch_size <= 0:
+        raise EmbeddingError("EMBED_BATCH_SIZE must be greater than zero")
+    if settings.embed_retries < 0:
+        raise EmbeddingError("EMBED_RETRIES cannot be negative")
+    with httpx.Client(timeout=settings.embed_timeout) as client:
+        for start in range(0, len(texts), settings.embed_batch_size):
+            batch = texts[start:start + settings.embed_batch_size]
+            last_error: Exception | None = None
+            for attempt in range(settings.embed_retries + 1):
+                try:
+                    response = client.post(
+                        url, json={"model": settings.embed_model, "input": batch}
+                    )
+                    response.raise_for_status()
+                    payload = response.json()
+                    batch_vectors = payload.get("embeddings")
+                    if not isinstance(batch_vectors, list) or len(batch_vectors) != len(batch):
+                        raise EmbeddingError("Ollama returned a different number of embeddings")
+                    for vector in batch_vectors:
+                        if (not isinstance(vector, list) or not vector
+                                or not all(isinstance(value, (int, float)) and not isinstance(value, bool)
+                                           and math.isfinite(value) for value in vector)):
+                            raise EmbeddingError("Ollama returned an invalid embedding vector")
+                        if len(vector) != settings.expected_dimension:
+                            raise EmbeddingError(
+                                f"embedding dimension {len(vector)} does not match configured "
+                                f"EMBED_DIMENSION={settings.expected_dimension}"
+                            )
+                    vectors.extend([[float(value) for value in vector] for vector in batch_vectors])
+                    break
+                except (httpx.HTTPError, ValueError, EmbeddingError) as exc:
+                    last_error = exc
+                    if isinstance(exc, EmbeddingError) and "dimension" in str(exc):
+                        raise
+                    if attempt < settings.embed_retries:
+                        time.sleep(min(8.0, 0.5 * (2 ** attempt)))
+            else:
+                raise EmbeddingError(
+                    f"embedding service failed after {settings.embed_retries + 1} attempts: "
+                    f"{last_error}"
+                ) from last_error
+    return vectors

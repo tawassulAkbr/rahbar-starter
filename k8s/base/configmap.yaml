@@ -4,22 +4,20 @@ metadata:
   name: rahbar-config
   namespace: rahbar
 data:
-  RETRIEVER: "stub"
-  LLM_PROVIDER: "stub"
-  EMBED_MODEL: "dummy-768"
-  CHROMA_HOST: "chroma"
-  CHROMA_PORT: "8000"
-  CHROMA_COLLECTION: "rahbar"
+  EMBED_MODEL: dummy-768
+  EMBED_DIMENSION: "768"
   TOP_K: "5"
-  TEMPERATURE: "0.2"
-  LLM_MODEL: "llama3.2:3b"
-  OLLAMA_URL: "http://host.minikube.internal:11434"
-  HOSTED_BASE_URL: ""
-  LOG_LEVEL: "INFO"
-  CORPUS_DIR: "/corpus"
   CHUNK_SIZE: "400"
   CHUNK_OVERLAP: "50"
-  RELEVANCE_FLOOR: "0.60"
+  RETRIEVER: stub
+  LLM_PROVIDER: stub
+  CHROMA_HOST: chroma
+  CHROMA_PORT: "8000"
+  CHROMA_COLLECTION: rahbar
+  TEMPERATURE: "0.2"
+  RELEVANCE_FLOOR: "0.6"
   CACHE_THRESHOLD: "0.92"
-  REDIS_HOST: "redis"
-  REDIS_PORT: "6379"
+  OLLAMA_URL: http://host.minikube.internal:11434
+  REDIS_URL: redis://redis:6379/0
+  REDIS_INVALIDATION_CHANNEL: rahbar:index-updated
+  CORPUS_DIR: /corpus

@@ -1,6 +1,12 @@
 .git
-__pycache__
+node_modules/
+__pycache__/
 *.pyc
-env/
-venv/
 .venv/
+venv/
+corpus/raw/
+docs/
+eval/fixtures/
+.env*
+*.log
+.pytest_cache/
