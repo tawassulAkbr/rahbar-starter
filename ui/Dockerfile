@@ -1,14 +1,11 @@
-# Stage 1: Build & Asset preparation
-FROM alpine:3.20 AS builder
-WORKDIR /app
-COPY index.html nginx.conf ./
+FROM node:22.14.0-alpine AS builder
+WORKDIR /src
+COPY index.html .
+RUN mkdir /out && cp index.html /out/index.html
 
-# Stage 2: Unprivileged Nginx runtime
 FROM nginxinc/nginx-unprivileged:1.27-alpine
-COPY --from=builder /app/nginx.conf /etc/nginx/nginx.conf
-COPY --from=builder /app/index.html /usr/share/nginx/html/index.html
-
+COPY --from=builder /out/ /usr/share/nginx/html/
+COPY nginx.conf /etc/nginx/nginx.conf
+USER 101:101
 EXPOSE 8080
-USER 101
-
 CMD ["nginx", "-g", "daemon off;"]

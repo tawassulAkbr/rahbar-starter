@@ -2,23 +2,60 @@
 
 from __future__ import annotations
 
-import os
+import re
 from pathlib import Path
-import pypdf
 
-try:
-    import pdfplumber
-except ImportError:
-    pdfplumber = None
+from .models import Document
+from .models import Page
 
-try:
-    import pytesseract
-    from pdf2image import convert_from_path
-except ImportError:
-    pytesseract = None
-    convert_from_path = None
 
-from .models import Document, Page
+_MIN_TEXT = 20
+
+
+def _without_front_matter(text: str) -> str:
+    lines = text.splitlines()
+    if lines and lines[0].strip() == "---":
+        for number, line in enumerate(lines[1:], 1):
+            if line.strip() == "---":
+                return "\n".join(lines[number + 1:])
+    return text
+
+
+def _remove_repeated_edges(pages: list[Page]) -> None:
+    """Remove an edge line only when it repeats on at least two pages."""
+    if len(pages) < 2:
+        return
+    edge_counts: dict[str, int] = {}
+    for page in pages:
+        lines = [line.strip() for line in page.text.splitlines() if line.strip()]
+        for line in {*(lines[:1]), *(lines[-1:])}:
+            if len(line) > 2:
+                edge_counts[line] = edge_counts.get(line, 0) + 1
+    repeated = {line for line, count in edge_counts.items() if count >= 2}
+    for page in pages:
+        lines = page.text.splitlines()
+        while lines and lines[0].strip() in repeated:
+            lines.pop(0)
+        while lines and lines[-1].strip() in repeated:
+            lines.pop()
+        page.text = "\n".join(lines)
+
+
+def _ocr_page(pdf_page: object) -> str:
+    try:
+        import pytesseract
+        from PIL import Image  # noqa: F401
+    except ImportError as exc:
+        raise RuntimeError(
+            "OCR is required for a scanned PDF, but pytesseract and Pillow are not installed"
+        ) from exc
+    try:
+        image = pdf_page.to_image(resolution=200).original
+        return str(pytesseract.image_to_string(image))
+    except Exception as exc:
+        raise RuntimeError(
+            "OCR failed; install the Tesseract executable and ensure it is on PATH"
+        ) from exc
 
 
 def extract(path: str, doc_version: str, superseded: bool) -> Document:
@@ -28,53 +65,35 @@ def extract(path: str, doc_version: str, superseded: bool) -> Document:
     The OCR libraries need system packages in your Dockerfile (tesseract-ocr,
     poppler-utils), not only pip packages.
     """
-    file_path = Path(path)
-    source_name = file_path.name
-    doc = Document(source=source_name, doc_version=doc_version, superseded=superseded)
-
-    if file_path.suffix.lower() == ".pdf":
-        _extract_pdf(file_path, doc)
-    elif file_path.suffix.lower() in {".txt", ".md", ".html"}:
-        _extract_text(file_path, doc)
-    else:
-        # Fallback reading
-        content = file_path.read_text(encoding="utf-8", errors="ignore")
-        doc.pages.append(Page(source=source_name, page=1, text=content, ocr=False))
-
-    return doc
-
-
-def _extract_pdf(file_path: Path, doc: Document) -> None:
-    source_name = file_path.name
-    reader = pypdf.PdfReader(str(file_path))
-
-    for idx, page in enumerate(reader.pages):
-        page_num = idx + 1
-        raw_text = page.extract_text() or ""
-        
-        # If the page has virtually no digital text layer, attempt OCR
-        if len(raw_text.strip()) < 30:
-            ocr_text = _run_ocr_page(file_path, page_num)
-            if ocr_text and len(ocr_text.strip()) >= 30:
-                doc.pages.append(Page(source=source_name, page=page_num, text=ocr_text, ocr=True))
-                continue
-
-        doc.pages.append(Page(source=source_name, page=page_num, text=raw_text, ocr=False))
-
-
-def _run_ocr_page(file_path: Path, page_num: int) -> str:
-    """Attempt OCR on a specific PDF page using pdf2image and pytesseract."""
-    if not pytesseract or not convert_from_path:
-        return ""
+    source = Path(path).name
+    suffix = Path(path).suffix.lower()
+    if suffix in {".md", ".txt", ".html", ".htm"}:
+        try:
+            text = Path(path).read_text(encoding="utf-8")
+        except (OSError, UnicodeError) as exc:
+            raise RuntimeError(f"could not read document {path}: {exc}") from exc
+        if suffix in {".html", ".htm"}:
+            text = re.sub(r"<[^>]+>", " ", text)
+        return Document(source, doc_version, superseded,
+                        [Page(source, 1, _without_front_matter(text))])
+    if suffix != ".pdf":
+        raise ValueError(f"unsupported document type: {path}")
     try:
-        images = convert_from_path(str(file_path), first_page=page_num, last_page=page_num)
-        if images:
-            return pytesseract.image_to_string(images[0])
-    except Exception:
-        pass
-    return ""
-
-
-def _extract_text(file_path: Path, doc: Document) -> None:
-    text = file_path.read_text(encoding="utf-8", errors="ignore")
-    doc.pages.append(Page(source=file_path.name, page=1, text=text, ocr=False))
+        import pdfplumber
+    except ImportError as exc:
+        raise RuntimeError("PDF extraction requires the pdfplumber dependency") from exc
+    pages: list[Page] = []
+    try:
+        with pdfplumber.open(path) as pdf:
+            for number, pdf_page in enumerate(pdf.pages, 1):
+                text = (pdf_page.extract_text() or "").strip()
+                ocr = len(re.sub(r"\s+", "", text)) < _MIN_TEXT
+                if ocr:
+                    text = _ocr_page(pdf_page).strip()
+                pages.append(Page(source, number, text, ocr))
+    except RuntimeError:
+        raise
+    except Exception as exc:
+        raise RuntimeError(f"could not read PDF {path}: {exc}") from exc
+    _remove_repeated_edges(pages)
+    return Document(source, doc_version, superseded, pages)
