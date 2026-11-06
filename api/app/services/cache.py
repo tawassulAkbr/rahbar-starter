@@ -39,9 +39,13 @@ class SemanticCache:
         except Exception:
             return cls(settings)
 
-    def get(self, question: str) -> AskResponse | None:
-        """Return only entries from the current generation (re-index invalidation)."""
-        if not self.enabled:
+    def get(self, question: str, *, follow_up: bool = False) -> AskResponse | None:
+        """Return a current-generation entry unless this is a follow-up.
+
+        Follow-ups depend on conversation context that is not part of the cache
+        key, so they must always go through retrieval and generation.
+        """
+        if not self.enabled or follow_up:
             return None
         try:
             vector = self._embedder(question)

@@ -33,12 +33,14 @@ spec:
         - podSelector:
             matchLabels:
               app: chroma
+      ports:
+        - protocol: TCP
+          port: 8000
+    - to:
         - podSelector:
             matchLabels:
               app: redis
       ports:
-        - protocol: TCP
-          port: 8000
         - protocol: TCP
           port: 6379
     # Ollama may run outside the cluster; restrict this dependency to its port.
@@ -123,12 +125,14 @@ spec:
         - podSelector:
             matchLabels:
               app: chroma
+      ports:
+        - protocol: TCP
+          port: 8000
+    - to:
         - podSelector:
             matchLabels:
               app: redis
       ports:
-        - protocol: TCP
-          port: 8000
         - protocol: TCP
           port: 6379
     - to:

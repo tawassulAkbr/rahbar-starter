@@ -14,7 +14,7 @@ router = APIRouter(prefix="/api")
 @router.post("/ask", response_model=AskResponse)
 def ask(body: AskRequest, request: Request, response: Response) -> AskResponse:
     state = request.app.state
-    cached = state.cache.get(body.question)
+    cached = state.cache.get(body.question, follow_up=body.follow_up)
     if cached is not None:
         response.headers["X-Cache"] = "HIT"
         return cached.model_copy(update={"request_id": request_id_var.get()})
