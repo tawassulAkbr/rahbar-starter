@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
+import logging
+
 from fastapi import APIRouter, Request, Response
 
 router = APIRouter()
+log = logging.getLogger("rahbar.health")
 
 
 @router.get("/healthz")
@@ -42,7 +45,11 @@ def readyz(request: Request, response: Response) -> dict[str, object]:
         if count == 0:
             checks["chroma"]["error"] = "collection is empty"
         if metadata.get("embed_model") != settings.embed_model:
-            checks["chroma"]["error"] = "embedding model does not match configured EMBED_MODEL"
+            coll_model = metadata.get("embed_model")
+            api_model = settings.embed_model
+            message = f"Embedding model mismatch! Collection built with {coll_model}, but API configured with {api_model}"
+            log.error(message, extra={"collection_embed_model": coll_model, "api_embed_model": api_model})
+            checks["chroma"]["error"] = message
         if int(metadata.get("dimension", -1)) != settings.embed_dimension:
             checks["chroma"]["error"] = "embedding dimension does not match EMBED_DIMENSION"
     except Exception as exc:

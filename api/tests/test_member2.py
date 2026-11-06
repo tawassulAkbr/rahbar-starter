@@ -152,6 +152,60 @@ def test_readiness_checks_pinned_nonempty_collection(monkeypatch: pytest.MonkeyP
     assert result["status"] == "ready"
 
 
+def test_readiness_logs_embedding_pin_mismatch(
+    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture,
+) -> None:
+    import sys
+
+    from app.routes.health import readyz
+
+    settings = _settings(monkeypatch)
+    collection = SimpleNamespace(
+        metadata={"embed_model": "wrong-model", "dimension": settings.embed_dimension},
+        count=lambda: 1,
+    )
+    chromadb_module = SimpleNamespace(
+        HttpClient=lambda **kwargs: SimpleNamespace(
+            heartbeat=lambda: True, get_collection=lambda name: collection,
+        )
+    )
+    chromadb_config = SimpleNamespace(Settings=lambda **kwargs: object())
+    monkeypatch.setitem(sys.modules, "chromadb", chromadb_module)
+    monkeypatch.setitem(sys.modules, "chromadb.config", chromadb_config)
+    request = SimpleNamespace(app=SimpleNamespace(state=SimpleNamespace(settings=settings)))
+    response = Response()
+
+    with caplog.at_level("ERROR", logger="rahbar.health"):
+        result = readyz(request, response)
+
+    assert response.status_code == 503
+    assert "Embedding model mismatch! Collection built with wrong-model" in caplog.text
+    assert result["checks"]["chroma"]["error"].startswith("Embedding model mismatch!")
+
+
+def test_relevance_floor_abstains_without_calling_provider(monkeypatch: pytest.MonkeyPatch) -> None:
+    settings = _settings(monkeypatch)
+    passage = Passage(chunk_id="weak", text="unrelated", source="rules.pdf", section="1", page=1, score=0.2)
+
+    class FakeRetriever:
+        name = "fake"
+
+        def retrieve(self, question: str, k: int) -> list[Passage]:
+            return [passage]
+
+    class ExplodingProvider:
+        name = "should-not-run"
+
+        def generate(self, question: str, passages: list[Passage]) -> Answer:
+            raise AssertionError("provider must not run below the relevance floor")
+
+    result = answer_question("unrelated question", FakeRetriever(), ExplodingProvider(), settings)
+    assert result.answered_from_context is False
+    assert result.confidence == "low"
+    assert result.citations == []
+    assert result.answer == "The provided university policy documents do not cover this topic."
+
+
 @pytest.mark.parametrize("failure", ["heartbeat", "empty", "redis"])
 def test_readiness_returns_503_with_dependency_failure(
     monkeypatch: pytest.MonkeyPatch, failure: str,

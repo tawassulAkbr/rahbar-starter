@@ -62,8 +62,11 @@ async def request_context(request: Request, call_next):  # type: ignore[no-untyp
         route = request.scope.get("route")
         path = getattr(route, "path", "unmatched")   # route template, not the raw URL
         elapsed = time.perf_counter() - start
-        metrics.REQUESTS.labels(path=path, status=str(status)).inc()
+        status_text = str(status)
+        metrics.REQUESTS.labels(path=path, status=status_text).inc()
         metrics.LATENCY.labels(path=path).observe(elapsed)
+        metrics.REQUEST_COUNT.labels(route=path, status=status_text).inc()
+        metrics.REQUEST_LATENCY.labels(route=path).observe(elapsed)
         if path not in ("/healthz", "/readyz", "/metrics"):
             log.info("request", extra={"path": path, "status": status,
                                        "ms": round(elapsed * 1000, 1)})
