@@ -87,8 +87,11 @@ def _invalidate_cache(settings: IndexerSettings) -> None:
         return
     try:
         import redis
-        redis.Redis.from_url(settings.redis_url, decode_responses=True).publish(
-            settings.redis_channel, "index-updated")
+        client = redis.Redis.from_url(settings.redis_url, decode_responses=True)
+        # A monotonically increasing generation makes invalidation reliable even
+        # when the API was temporarily disconnected from the pub/sub channel.
+        generation = client.incr(settings.redis_generation_key)
+        client.publish(settings.redis_channel, f"index-updated:{generation}")
         logger.info("Redis cache invalidation published channel=%s", settings.redis_channel)
     except ImportError:
         logger.warning("Redis invalidation unavailable: install the redis package")

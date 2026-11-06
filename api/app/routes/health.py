@@ -26,6 +26,9 @@ def readyz(request: Request, response: Response) -> dict[str, object]:
             port=settings.chroma_port,
             settings=ChromaSettings(anonymized_telemetry=False),
         )
+        heartbeat = getattr(client, "heartbeat", None)
+        if callable(heartbeat):
+            heartbeat()
         collection = client.get_collection(name=settings.collection)
         metadata = collection.metadata or {}
         checks["chroma"] = {
