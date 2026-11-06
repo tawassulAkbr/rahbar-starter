@@ -120,6 +120,26 @@ Alternatively, apply using Kustomize overlays:
 kubectl apply -k k8s/overlays/dev
 ```
 
+Phase 1 infrastructure is now represented by the pinned Dockerfiles in `api/`,
+`indexer/`, and `ui/`, plus the Kustomize base and dev/prod overlays under
+`k8s/`. The checked-in manifests use safe development defaults and do not
+contain real credentials. Create `rahbar-secret` from an external secret before
+deploying; do not apply `secret.placeholder.yaml` as a production secret.
+
+The repository does not include downloaded corpus files. To create and verify a
+local corpus, copy `corpus/sources.example.yaml` to `corpus/sources.yaml`, review
+the URLs and version metadata, then run:
+
+```bash
+python corpus/fetch.py
+python corpus/fetch.py --verify
+```
+
+Until those commands complete successfully, corpus integrity and the live
+Docker/Kubernetes deployment remain unverified. Docker, Minikube, kubectl, and
+Kustomize must be installed locally before their build/deploy commands can be
+validated.
+
 ---
 
 ## 5. Running the Indexer
@@ -153,8 +173,8 @@ python -m compileall -q api/app indexer/pipeline indexer/tests
 python -m pip check
 ```
 
-The current verified result is 7 API tests, 15 indexer tests, and 22 total tests
-passing. Unit tests use stubs and mocks, so they do not require live Ollama,
+The Phase 2 baseline is 13 API tests, 15 indexer tests, and 28 total tests.
+Unit tests use stubs and mocks, so they do not require live Ollama,
 ChromaDB, Redis, or Kubernetes services. Those integrations must be verified in a
 running deployment before claiming an end-to-end production index.
 
