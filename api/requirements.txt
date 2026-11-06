@@ -1,5 +1,7 @@
 # Pinned: an unpinned dependency is the drift problem from Lecture 04.
 fastapi==0.115.12
+# Starlette's TestClient requires AnyIO 4 on Python 3.12 in the pinned API stack.
+anyio==4.9.0
 uvicorn==0.34.2
 pydantic==2.11.4
 httpx==0.28.1

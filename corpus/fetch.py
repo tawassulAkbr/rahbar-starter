@@ -64,6 +64,19 @@ def guess_extension(url: str, content_type: str) -> str:
     return suffix if suffix in {".pdf", ".html", ".htm", ".docx", ".txt", ".md"} else ".bin"
 
 
+def page_count(path: Path) -> int | None:
+    """Return a verified PDF page count when the optional PDF reader is available."""
+    if path.suffix.lower() != ".pdf":
+        return 1
+    try:
+        from pypdf import PdfReader
+
+        return len(PdfReader(str(path)).pages)
+    except Exception as exc:
+        print(f"          page count unavailable for {path.name}: {exc}")
+        return None
+
+
 def get(client: httpx.Client, url: str, attempts: int = 3) -> httpx.Response:
     for attempt in range(1, attempts + 1):
         try:
@@ -118,15 +131,20 @@ def fetch(force: bool) -> int:
                 if "drive.google.com" in url and "html" in content_type:
                     raise RuntimeError("Google Drive returned a web page, not the file "
                                        "(too large for direct download, or not shared publicly)")
+                if not response.content:
+                    raise RuntimeError("downloaded response was empty")
                 file = slug(name) + guess_extension(url, content_type)
-                (RAW / file).write_bytes(response.content)
+                path = RAW / file
+                path.write_bytes(response.content)
                 entries.append({
                     "name": name, "url": url, "file": file, "bytes": len(response.content),
                     "sha256": hashlib.sha256(response.content).hexdigest(),
                     "content_type": content_type.split(";")[0],
+                    "page_count": page_count(path),
                     "fetched_at": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
                     "doc_version": doc.get("doc_version", "unknown"),
                     "superseded": bool(doc.get("superseded", False)),
+                    "properties": doc.get("properties", []),
                 })
                 print(f"          {file}, {len(response.content):,} bytes")
             except Exception as exc:  # report every failure, keep going
@@ -153,24 +171,34 @@ def write_manifest(entries: list[dict]) -> None:
         "which is gitignored; run the script to download them, then `--verify` to check "
         "you have the same bytes.",
         "",
-        "| Document | Version | Superseded | File | Bytes | SHA-256 | URL |",
-        "| --- | --- | --- | --- | ---: | --- | --- |",
+        "| Document | Version | Superseded | File | Type | Pages | Bytes | SHA-256 | Properties | URL |",
+        "| --- | --- | --- | --- | --- | ---: | ---: | --- | --- | --- |",
     ]
     for e in entries:
+        pages = e.get("page_count") if e.get("page_count") is not None else "unknown"
+        properties = ", ".join(e.get("properties", [])) or "unclassified"
         lines.append(f"| {e['name']} | {e['doc_version']} | {'yes' if e['superseded'] else 'no'} "
-                     f"| `{e['file']}` | {e['bytes']:,} | `{e['sha256']}` | <{e['url']}> |")
+                     f"| `{e['file']}` | {e.get('content_type') or 'unknown'} | {pages} | "
+                     f"{e['bytes']:,} | `{e['sha256']}` | {properties} | <{e['url']}> |")
     MANIFEST.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def verify() -> int:
     if not MANIFEST.exists():
         sys.exit("no corpus/MANIFEST.md yet; run fetch first")
-    rows = re.findall(r"\| `([^`]+)` \| [\d,]+ \| `([0-9a-f]{64})` \|", MANIFEST.read_text())
+    rows = re.findall(r"\| `([^`]+)` \| [^|]+ \| (?:\d+|unknown) \| [\d,]+ \| `([0-9a-f]{64})` \|",
+                      MANIFEST.read_text())
+    if not rows:
+        print("manifest contains no downloaded documents; corpus verification is incomplete")
+        return 1
     bad = 0
     for file, expected in rows:
         path = RAW / file
         if not path.exists():
             print(f"  missing   {file}")
+            bad += 1
+        elif path.stat().st_size == 0:
+            print(f"  empty     {file}")
             bad += 1
         elif hashlib.sha256(path.read_bytes()).hexdigest() != expected:
             print(f"  changed   {file}  (the website may have published a new version)")

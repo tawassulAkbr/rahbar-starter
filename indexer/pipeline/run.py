@@ -75,12 +75,19 @@ def run_pipeline(settings: IndexerSettings) -> int:
         raise SystemExit(f"no documents found in {settings.corpus_dir}")
     all_chunks: list[Chunk] = []
     for path, doc_version, superseded in documents:
+        log("extracting", source=path.name, doc_version=doc_version, superseded=superseded)
         doc = clean(extract(str(path), doc_version, superseded))
         pieces = chunk(doc, settings.chunk_size, settings.chunk_overlap)
         log("chunked", source=path.name, chunks=len(pieces))
         all_chunks.extend(pieces)
+    if not all_chunks:
+        raise RuntimeError("documents were discovered but produced no non-empty chunks")
+    log("embedding", chunks=len(all_chunks), batch_size=settings.embed_batch_size)
     vectors = embed([c.text for c in all_chunks], settings)
-    return store(all_chunks, vectors, settings)
+    log("storing", chunks=len(all_chunks), dimension=len(vectors[0]) if vectors else 0)
+    count = store(all_chunks, vectors, settings)
+    log("stored", collection=settings.collection, records=count)
+    return count
 
 
 def main() -> int:
@@ -103,6 +110,9 @@ def main() -> int:
     except NotImplementedError as exc:
         log("indexer stage not implemented yet", error=str(exc))
         return 2
+    except Exception as exc:
+        log("indexer failed", error=str(exc), error_type=type(exc).__name__)
+        return 1
     log("indexer finished", chunks=count, seconds=round(time.perf_counter() - started, 1))
     return 0
 
