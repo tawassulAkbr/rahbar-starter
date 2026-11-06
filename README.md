@@ -120,6 +120,26 @@ Alternatively, apply using Kustomize overlays:
 kubectl apply -k k8s/overlays/dev
 ```
 
+Phase 1 infrastructure is now represented by the pinned Dockerfiles in `api/`,
+`indexer/`, and `ui/`, plus the Kustomize base and dev/prod overlays under
+`k8s/`. The checked-in manifests use safe development defaults and do not
+contain real credentials. Create `rahbar-secret` from an external secret before
+deploying; do not apply `secret.placeholder.yaml` as a production secret.
+
+The repository does not include downloaded corpus files. To create and verify a
+local corpus, copy `corpus/sources.example.yaml` to `corpus/sources.yaml`, review
+the URLs and version metadata, then run:
+
+```bash
+python corpus/fetch.py
+python corpus/fetch.py --verify
+```
+
+Until those commands complete successfully, corpus integrity and the live
+Docker/Kubernetes deployment remain unverified. Docker, Minikube, kubectl, and
+Kustomize must be installed locally before their build/deploy commands can be
+validated.
+
 ---
 
 ## 5. Running the Indexer
@@ -133,6 +153,42 @@ kubectl create job --from=cronjob/reindex manual-reindex-1 -n rahbar
 # Monitor indexer logs
 kubectl logs -f job/manual-reindex-1 -n rahbar
 ```
+
+### Phase 2 verification
+
+The Phase 2 Member 1 indexing pipeline is implemented on
+`feature/phase2-indexing-pipeline`. It includes PDF/Markdown/text/HTML extraction
+with OCR fallback, structure-aware cleaning and chunking, validated Ollama
+embeddings, ChromaDB embedding pinning, and Redis invalidation signaling.
+
+Run the local verification suite from the repository root:
+
+```bash
+source .venv/bin/activate
+python -m pytest api/tests/test_starter.py -vv
+python -m pytest indexer/tests -vv
+python -m pytest -v
+ruff check api indexer
+python -m compileall -q api/app indexer/pipeline indexer/tests
+python -m pip check
+```
+
+The Phase 2 baseline is 13 API tests, 15 indexer tests, and 28 total tests.
+Unit tests use stubs and mocks, so they do not require live Ollama,
+ChromaDB, Redis, or Kubernetes services. Those integrations must be verified in a
+running deployment before claiming an end-to-end production index.
+
+For local fixture indexing, run the pipeline from `indexer/`:
+
+```bash
+cd indexer
+CORPUS_DIR=../eval/fixtures ../.venv/bin/python -m pipeline.run
+../.venv/bin/python -m pipeline.run --dummy
+```
+
+The real command requires reachable Ollama and ChromaDB services. See
+`docs/PIPELINE.md` for environment variables, embedding migration safeguards,
+OCR requirements, and troubleshooting.
 
 ---
 

@@ -1,0 +1,11 @@
+FROM node:22.14.0-alpine AS builder
+WORKDIR /src
+COPY index.html .
+RUN mkdir /out && cp index.html /out/index.html
+
+FROM nginxinc/nginx-unprivileged:1.27-alpine
+COPY --from=builder /out/ /usr/share/nginx/html/
+COPY nginx.conf /etc/nginx/nginx.conf
+USER 101:101
+EXPOSE 8080
+CMD ["nginx", "-g", "daemon off;"]
