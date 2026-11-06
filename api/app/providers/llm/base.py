@@ -7,6 +7,10 @@ from typing import Protocol
 from ...schemas import Answer, Passage
 
 
+class ProviderError(RuntimeError):
+    """A provider could not return a valid structured answer."""
+
+
 class LLMProvider(Protocol):
     name: str
 
