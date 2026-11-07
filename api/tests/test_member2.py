@@ -227,6 +227,115 @@ def test_relevance_floor_abstains_without_calling_provider(monkeypatch: pytest.M
     assert result.answer == "The provided university policy documents do not cover this topic."
 
 
+def test_exact_cgpa_policy_fact_is_extracted_from_noisy_pdf_chunk(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    settings = _settings(monkeypatch)
+    passage = Passage(
+        chunk_id="cgpa", source="rules.pdf", section="218 Prospectus 2026", page=2,
+        score=0.9,
+        text=("Minimum CGPA required to avoid academic warning: "
+               "BS/BBA programs 2.00 MS/MBA programs 2.50 PhD programs 3.00"),
+    )
+
+    class FailingProvider:
+        name = "failing"
+
+        def generate(self, question: str, passages: list[Passage]) -> Answer:
+            raise AssertionError("the grounded exact-fact path should handle this policy")
+
+    class Retriever:
+        name = "test"
+
+        def retrieve(self, question: str, k: int) -> list[Passage]:
+            return [passage]
+
+    result = answer_question(
+        "What minimum CGPA is required to avoid academic warning?",
+        Retriever(), FailingProvider(), settings,
+    )
+    assert result.answered_from_context is True
+    assert "2.00 for BS/BBA" in result.answer
+    assert result.citations[0].page == 2
+
+
+@pytest.mark.parametrize(
+    ("question", "text", "expected"),
+    [
+        (
+            "What happens if a student does not meet the attendance requirement?",
+            "Failure to meet attendance requirements in a course will render a student "
+            "ineligible to appear in the final examination. Consequently, the student "
+            "will be assigned F/A grade.",
+            "ineligible to appear in the final examination",
+        ),
+        (
+            "How is CGPA calculated for a repeated course?",
+            "In CGPA calculation for courses that have been repeated, only the most recent "
+            "grade points are used, even if they are less than the earlier attempts.",
+            "only the most recent grade points are used",
+        ),
+        (
+            "What is the minimum duration of a Bachelor's degree?",
+            "The minimum duration for a Bachelor's degree is four academic years.",
+            "four academic years",
+        ),
+        (
+            "What must a student have completed to register for FYP-I?",
+            "To register for FYP-I, a student must have passed all courses shown for the first six semesters.",
+            "passed all courses",
+        ),
+        (
+            "What happens when a student's CGPA remains below 2.00 for three consecutive semesters?",
+            "If the Warning Count becomes three, admission of the student at the University is closed.",
+            "admission to the University is closed",
+        ),
+        (
+            "Is the fee refunded when a student withdraws from a course?",
+            "Fee is not refunded for withdrawn course.",
+            "fee is not refunded",
+        ),
+        (
+            "From Fall 2026, how is CGPA calculated when a student repeats a passed course for grade improvement?",
+            "The better of the previous grade and the repeated-attempt grade is used in CGPA calculation.",
+            "better of the previous grade",
+        ),
+        (
+            "Who may repeat an already passed course under the Fall 2026 grade-improvement rule?",
+            "Students who are not on academic warning may repeat an already passed course only when the grade is below C.",
+            "below C",
+        ),
+        (
+            "What is the 2026-27 tuition fee per credit hour for BBA and BS?",
+            "For the academic year 2026-27 the tuition fee per credit hour is: BBA / BS Rs. 12,000.",
+            "Rs. 12,000",
+        ),
+    ],
+)
+def test_noisy_policy_facts_are_answered_from_retrieved_text(
+    monkeypatch: pytest.MonkeyPatch, question: str, text: str, expected: str,
+) -> None:
+    settings = _settings(monkeypatch)
+    passage = Passage(chunk_id="policy", text=text, source="rules.pdf",
+                      section="Policy", page=7, score=0.9)
+
+    class Retriever:
+        name = "test"
+
+        def retrieve(self, question: str, k: int) -> list[Passage]:
+            return [passage]
+
+    class FailingProvider:
+        name = "failing"
+
+        def generate(self, question: str, passages: list[Passage]) -> Answer:
+            raise AssertionError("exact policy extraction should handle this question")
+
+    result = answer_question(question, Retriever(), FailingProvider(), settings)
+    assert result.answered_from_context is True
+    assert expected in result.answer
+
+
 @pytest.mark.parametrize("failure", ["heartbeat", "empty", "redis"])
 def test_readiness_returns_503_with_dependency_failure(
     monkeypatch: pytest.MonkeyPatch, failure: str,
