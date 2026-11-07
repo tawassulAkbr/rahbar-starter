@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: indexer-job
+  namespace: rahbar
+spec:
+  template:
+    spec:
+      initContainers:
+        - name: wait-for-chroma
+          image: busybox:1.36.1
+          command:
+            - sh
+            - -c
+            - >-
+              until wget -q -O- http://chroma:8000/api/v1/heartbeat; do
+              echo waiting for Chroma; sleep 2; done
+        - name: wait-for-embedding-stub
+          image: busybox:1.36.1
+          command:
+            - sh
+            - -c
+            - >-
+              until wget -q -O- http://embedding-stub:11434/ >/dev/null; do
+              echo waiting for embedding stub; sleep 2; done
+      containers:
+        - name: indexer
+          args: []
+          volumeMounts:
+            - name: corpus
+              mountPath: /corpus
+      volumes:
+        - name: corpus
+          configMap:
+            name: corpus-fixtures

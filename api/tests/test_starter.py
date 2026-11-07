@@ -6,12 +6,14 @@ network. Keep them passing, and add your own next to them (section 6).
 
 from __future__ import annotations
 
+from collections.abc import Generator
+
 import pytest
 from fastapi.testclient import TestClient
 
 
 @pytest.fixture()
-def client(monkeypatch: pytest.MonkeyPatch) -> TestClient:
+def client(monkeypatch: pytest.MonkeyPatch) -> Generator[TestClient, None, None]:
     monkeypatch.setenv("RETRIEVER", "stub")
     monkeypatch.setenv("LLM_PROVIDER", "stub")
     from app.main import app
@@ -61,3 +63,12 @@ def test_metrics_count_requests_by_route(client: TestClient) -> None:
     client.post("/api/ask", json={"question": "Count this request"})
     text = client.get("/metrics").text
     assert 'rahbar_requests_total{path="/api/ask",status="200"}' in text
+    assert 'request_count_total{route="/api/ask",status="200"}' in text
+    assert "request_latency_seconds_bucket" in text
+    assert "retrieval_latency_seconds_count" in text
+    assert "generation_latency_seconds_count" in text
+    assert "cache_misses_total" in text
+    assert "abstention_count_total" in text
+    assert "fallback_count_total" in text
+    assert "tokens_in_total" in text
+    assert "tokens_out_total" in text

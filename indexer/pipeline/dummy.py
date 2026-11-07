@@ -58,4 +58,9 @@ def write_dummy_index(settings: IndexerSettings, client: Any) -> int:
         embeddings=[fake_vector(c.text) for c in DUMMY_CHUNKS],
         metadatas=[c.metadata() for c in DUMMY_CHUNKS],
     )
+    # Keep the development indexer subject to the same cache invalidation
+    # contract as the production pipeline.
+    from .store import _invalidate_cache
+
+    _invalidate_cache(settings)
     return int(collection.count())

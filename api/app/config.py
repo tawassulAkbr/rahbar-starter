@@ -35,6 +35,9 @@ class Settings:
     chroma_port: int = 8000
     collection: str = "rahbar"
     redis_url: str = ""
+    cache_threshold: float = 0.92
+    cache_ttl: int = 3600
+    redis_generation_key: str = "rahbar:index_generation"
 
     # Retrieval and generation
     top_k: int = 5
@@ -59,6 +62,9 @@ def get_settings() -> Settings:
         chroma_port=_int("CHROMA_PORT", 8000),
         collection=os.environ.get("CHROMA_COLLECTION", "rahbar"),
         redis_url=os.environ.get("REDIS_URL", ""),
+        cache_threshold=_float("CACHE_THRESHOLD", 0.92),
+        cache_ttl=_int("CACHE_TTL", 3600),
+        redis_generation_key=os.environ.get("REDIS_GENERATION_KEY", "rahbar:index_generation"),
         top_k=_int("TOP_K", 5),
         relevance_floor=_float("RELEVANCE_FLOOR", 0.6),
         temperature=_float("TEMPERATURE", 0.2),

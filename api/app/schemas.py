@@ -15,6 +15,7 @@ from pydantic import BaseModel, Field
 
 class AskRequest(BaseModel):
     question: str = Field(min_length=3, max_length=500)
+    follow_up: bool = False
 
 
 class Passage(BaseModel):
@@ -62,3 +63,4 @@ class AskResponse(BaseModel):
     confidence: Literal["high", "medium", "low"]
     retrieved: list[RetrievedRef]
     provider: str
+    cached: bool = False

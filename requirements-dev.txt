@@ -1,0 +1,6 @@
+# Reproducible local and GitHub Actions quality gates.
+pytest==8.3.5
+pytest-cov==6.0.0
+coverage==7.6.4
+ruff==0.11.8
+mypy==1.15.0

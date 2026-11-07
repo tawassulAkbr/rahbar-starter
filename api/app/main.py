@@ -21,6 +21,7 @@ from .logjson import configure_logging, request_id_var
 from .providers.llm import get_provider
 from .retrieval import get_retriever
 from .routes import ask, health, metrics
+from .services.cache import SemanticCache
 
 log = logging.getLogger("rahbar.api")
 
@@ -32,9 +33,9 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     app.state.settings = settings
     app.state.retriever = get_retriever(settings)
     app.state.provider = get_provider(settings)
-    # STARTER-TODO(4.4): compare the collection's embedding-model metadata with
-    # settings.embed_model here, and make /readyz fail on a mismatch.
-    # This process only reads the index. The indexer Job writes it.
+    app.state.cache = SemanticCache.from_settings(settings)
+    # Readiness performs the dependency and embedding-pin checks. This process
+    # only reads the index; the indexer Job is the sole writer.
     log.info(
         "api started",
         extra={"retriever": settings.retriever, "llm_provider": settings.llm_provider,
@@ -61,8 +62,11 @@ async def request_context(request: Request, call_next):  # type: ignore[no-untyp
         route = request.scope.get("route")
         path = getattr(route, "path", "unmatched")   # route template, not the raw URL
         elapsed = time.perf_counter() - start
-        metrics.REQUESTS.labels(path=path, status=str(status)).inc()
+        status_text = str(status)
+        metrics.REQUESTS.labels(path=path, status=status_text).inc()
         metrics.LATENCY.labels(path=path).observe(elapsed)
+        metrics.REQUEST_COUNT.labels(route=path, status=status_text).inc()
+        metrics.REQUEST_LATENCY.labels(route=path).observe(elapsed)
         if path not in ("/healthz", "/readyz", "/metrics"):
             log.info("request", extra={"path": path, "status": status,
                                        "ms": round(elapsed * 1000, 1)})

@@ -29,9 +29,16 @@ spec:
         app: chroma
     spec:
       automountServiceAccountToken: false
+      enableServiceLinks: false
       containers:
         - name: chroma
           image: chromadb/chroma:1.0.12
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL
           ports:
             - name: http
               containerPort: 8000
@@ -42,13 +49,13 @@ spec:
               value: "FALSE"
           readinessProbe:
             httpGet:
-              path: /api/v1/heartbeat
+              path: /api/v2/heartbeat
               port: http
             initialDelaySeconds: 10
             periodSeconds: 10
           livenessProbe:
             httpGet:
-              path: /api/v1/heartbeat
+              path: /api/v2/heartbeat
               port: http
             initialDelaySeconds: 30
             periodSeconds: 20

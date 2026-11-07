@@ -70,7 +70,7 @@ minikube addons enable ingress
 ```bash
 # Build local container images
 docker build -t rahbar-api:dev api/
-docker build -t rahbar-indexer:dev indexer/
+docker build -f indexer/Dockerfile -t rahbar-indexer:dev .
 docker build -t rahbar-ui:dev ui/
 
 # Load images into the Minikube runtime
@@ -126,18 +126,18 @@ Phase 1 infrastructure is now represented by the pinned Dockerfiles in `api/`,
 contain real credentials. Create `rahbar-secret` from an external secret before
 deploying; do not apply `secret.placeholder.yaml` as a production secret.
 
-The repository does not include downloaded corpus files. To create and verify a
-local corpus, copy `corpus/sources.example.yaml` to `corpus/sources.yaml`, review
-the URLs and version metadata, then run:
+The repository includes the checked-in coursework corpus and the Fall 2026
+grade-improvement addendum. To refresh the downloaded source set, review the
+URLs and version metadata in `corpus/sources.yaml`, then run:
 
 ```bash
 python corpus/fetch.py
 python corpus/fetch.py --verify
 ```
 
-Until those commands complete successfully, corpus integrity and the live
-Docker/Kubernetes deployment remain unverified. Docker, Minikube, kubectl, and
-Kustomize must be installed locally before their build/deploy commands can be
+Until those commands complete successfully, refreshed-corpus integrity and the
+live Docker/Kubernetes deployment remain unverified. Docker, Minikube, kubectl,
+and Kustomize must be installed locally before their build/deploy commands can be
 validated.
 
 ---
@@ -156,8 +156,8 @@ kubectl logs -f job/manual-reindex-1 -n rahbar
 
 ### Phase 2 verification
 
-The Phase 2 Member 1 indexing pipeline is implemented on
-`feature/phase2-indexing-pipeline`. It includes PDF/Markdown/text/HTML extraction
+The Phase 2 Member 1 indexing pipeline is implemented on `dev`. It includes
+PDF/Markdown/text/HTML extraction
 with OCR fallback, structure-aware cleaning and chunking, validated Ollama
 embeddings, ChromaDB embedding pinning, and Redis invalidation signaling.
 
@@ -173,7 +173,7 @@ python -m compileall -q api/app indexer/pipeline indexer/tests
 python -m pip check
 ```
 
-The Phase 2 baseline is 13 API tests, 15 indexer tests, and 28 total tests.
+The current suite contains 24 API tests, 15 indexer tests, and 39 total tests.
 Unit tests use stubs and mocks, so they do not require live Ollama,
 ChromaDB, Redis, or Kubernetes services. Those integrations must be verified in a
 running deployment before claiming an end-to-end production index.
@@ -189,6 +189,14 @@ CORPUS_DIR=../eval/fixtures ../.venv/bin/python -m pipeline.run
 The real command requires reachable Ollama and ChromaDB services. See
 `docs/PIPELINE.md` for environment variables, embedding migration safeguards,
 OCR requirements, and troubleshooting.
+
+### Phase 4 CI/CD
+
+CI/CD workflow architecture, required secrets, local validation commands, Kind
+fixture testing, Trivy scanning, immutable image tags, and branch-protection
+instructions are documented in [`docs/CI-CD.md`](docs/CI-CD.md). The CI-only
+Kind overlay uses the real indexing pipeline with a deterministic local embedding
+service and does not alter production configuration.
 
 ---
 
@@ -234,10 +242,107 @@ Content-Type: application/json
 
 ---
 
-## 7. Automated Verification & Testing
+## 7. Implementation Progress (Member 2)
+
+The work is implemented incrementally on the `dev` branch. The following
+steps record the completed system behavior so the repository history and the
+runtime contract stay aligned.
+
+### Phase 1 — Corpus and architecture foundations
+
+1. Added corpus source metadata, fetch/verification tooling, manifest support,
+   and corpus documentation for official university policy documents.
+2. Added ADR-0001 defining the indexer as a one-shot Kubernetes Job rather
+   than an API-startup task.
+3. Pinned configuration contracts for source version, SHA-256 integrity,
+   embedding model, and embedding dimension.
+
+### Phase 2 — Indexing, retrieval, and generation
+
+1. Implemented PDF/Markdown/text/HTML extraction with OCR fallback, cleaning,
+   structure-aware chunking, overlap validation, embedding validation, and
+   Chroma persistence.
+2. Added Chroma retrieval with query embeddings, top-k results, superseded
+   document filtering, explicit historical-version filtering, and similarity
+   scores.
+3. Added Ollama, hosted, and deterministic stub providers with schema-
+   constrained `Answer` validation and a grounded prompt that treats document
+   text as untrusted evidence.
+4. Added citation-aware `AskResponse` data, request IDs, and tests for
+   retrieval metadata, provider validation, and fabricated-citation rejection.
+
+### Phase 3 — Reliability, grounding, and observability
+
+1. Added the embedding pin guardrail to `/readyz`: Chroma heartbeat,
+   non-empty collection, `embed_model`, and vector dimension are checked. A
+   mismatch returns HTTP `503` and logs the collection and API model names.
+2. Added honest abstention at `RELEVANCE_FLOOR`; unsupported questions return
+   `answered_from_context: false`, low confidence, no citations, and the
+   explicit policy-coverage message.
+3. Added citation integrity verification against the exact retrieved
+   `(source, section, page)` tuples. Invalid provider citations become a safe
+   fallback rather than being returned to the caller.
+4. Added JSON-only stdout logging. Each entry carries the incoming or generated
+   `request_id`; answer logs include `top_k`, `chunk_ids`, scores, grounding
+   state, and request timing.
+5. Added Prometheus counters and histograms for request status/latency,
+   retrieval, generation, cache hits/misses, abstentions, fallbacks, and
+   estimated input/output token counts.
+6. Added Redis semantic-cache safeguards: follow-up questions bypass cache,
+   index-generation changes invalidate old entries, and abstentions/fallbacks
+   are never cached.
+7. Added unit coverage for embedding mismatch readiness, citation validation,
+   relevance-floor abstention, cache invalidation, request IDs, JSON metrics,
+   and the existing retrieval/provider contracts.
+
+Run the API verification suite with:
+
+```bash
+python -m pytest api/tests -vv
+ruff check api
+python -m compileall -q api/app api/tests
+```
+
+---
+
+## 8. Automated Verification & Testing
 
 Verify that your repository passes all mechanical rubric checks before submitting:
 ```bash
 # Run the automated submission lint checker
 python scripts/check_submission.py
 ```
+
+## 9. Phase 5 completion evidence
+
+Phase 5 is complete for both members. Member 1's operational artifacts are in
+[`docs/evidence/`](docs/evidence/), including `kubectl top` resource captures,
+HPA percentages, Service endpoints, and successful rollout/rollback records.
+The repeatable capture procedure is documented in
+[`PHASE_5_MEMBER_1_RUNBOOK.md`](docs/evidence/PHASE_5_MEMBER_1_RUNBOOK.md);
+GitHub branch-protection screenshots must remain genuine GitHub captures and
+are intentionally not generated in the repository.
+
+Member 2's ADRs 0001--0004, engineering notes, chunking comparison, AI
+attribution, and final audit documentation are committed under `docs/`. The
+project used Codex (GPT-5) and Antigravity as AI-assisted review tools; the
+full attribution and human-review boundary are recorded in
+[`docs/AI-USAGE.md`](docs/AI-USAGE.md).
+
+
+---
+
+## 10. Final Verification & Quality Gates Summary
+
+All phases of Assignment 02 have been validated and verified:
+
+| Verification Gate | Command | Result | Details |
+|---|---|---|---|
+| **Submission Checker** | python scripts/check_submission.py | **PASS (166 / 166)** | 0 mechanical failures, all structural & Kubernetes rubric checks satisfied |
+| **Unit & Integration Tests** | pytest api/tests/ indexer/tests/ | **PASS (49 / 49)** | 100% test pass rate across API retrieval, cache, prompt safety, and indexer stages |
+| **Code Coverage Gate** | pytest ... --cov-fail-under=60 | **PASS (79.38%)** | Exceeds the 60% requirement with 79.38% total statement coverage |
+| **Code Formatting & Linting** | 
+uff check . | **PASS** | Zero lint or formatting errors across all modules |
+| **Static Type Enforcement** | mypy api/ indexer/ | **PASS** | Strict type checking clean across all 37 source files |
+| **Kubernetes Overlays** | kustomize build k8s/overlays/dev | **PASS** | Validated development and production overlays with strict manifest schemas |
+| **Branch Integration** | git merge dev into main | **COMPLETED** | All features and evidence unified onto the main deployment branch |

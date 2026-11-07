@@ -2,9 +2,13 @@
 
 from __future__ import annotations
 
+import logging
+from typing import Any
+
 from fastapi import APIRouter, Request, Response
 
 router = APIRouter()
+log = logging.getLogger("rahbar.health")
 
 
 @router.get("/healthz")
@@ -14,9 +18,9 @@ def healthz() -> dict[str, str]:
 
 
 @router.get("/readyz")
-def readyz(request: Request, response: Response) -> dict[str, object]:
+def readyz(request: Request, response: Response) -> dict[str, Any]:
     settings = request.app.state.settings
-    checks: dict[str, object] = {}
+    checks: dict[str, Any] = {}
     try:
         import chromadb
         from chromadb.config import Settings as ChromaSettings
@@ -26,19 +30,29 @@ def readyz(request: Request, response: Response) -> dict[str, object]:
             port=settings.chroma_port,
             settings=ChromaSettings(anonymized_telemetry=False),
         )
+        heartbeat = getattr(client, "heartbeat", None)
+        if not callable(heartbeat):
+            raise RuntimeError("Chroma client does not expose heartbeat")
+        heartbeat()
         collection = client.get_collection(name=settings.collection)
         metadata = collection.metadata or {}
+        count = int(collection.count())
         checks["chroma"] = {
-            "count": int(collection.count()),
+            "heartbeat": "ok",
+            "count": count,
             "embed_model": metadata.get("embed_model"),
             "dimension": metadata.get("dimension"),
         }
-        if checks["chroma"]["count"] == 0:
-            raise RuntimeError("collection is empty")
+        if count == 0:
+            checks["chroma"]["error"] = "collection is empty"
         if metadata.get("embed_model") != settings.embed_model:
-            raise RuntimeError("embedding model does not match configured EMBED_MODEL")
+            coll_model = metadata.get("embed_model")
+            api_model = settings.embed_model
+            message = f"Embedding model mismatch! Collection built with {coll_model}, but API configured with {api_model}"
+            log.error(message, extra={"collection_embed_model": coll_model, "api_embed_model": api_model})
+            checks["chroma"]["error"] = message
         if int(metadata.get("dimension", -1)) != settings.embed_dimension:
-            raise RuntimeError("embedding dimension does not match EMBED_DIMENSION")
+            checks["chroma"]["error"] = "embedding dimension does not match EMBED_DIMENSION"
     except Exception as exc:
         checks["chroma"] = {"error": str(exc)}
 

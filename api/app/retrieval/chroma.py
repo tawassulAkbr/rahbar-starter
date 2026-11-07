@@ -43,6 +43,13 @@ def _requests_older_version(question: str) -> bool:
 
 
 def _requested_version(question: str) -> str | None:
+    season = re.search(
+        r"\b(Fall|Spring|Summer|Winter)\s+((?:19|20)\d{2})\b",
+        question,
+        flags=re.IGNORECASE,
+    )
+    if season:
+        return f"{season.group(2)}-{season.group(1).title()}"
     match = re.search(r"\b((?:19|20)\d{2}(?:[-/]\d{1,2})?)\b", question)
     return match.group(1).replace("/", "-") if match else None
 
@@ -69,24 +76,31 @@ class ChromaRetriever:
                 return []
             embedding = _query_embedding(question, self.settings)
             requested_version = _requested_version(question)
-            query: dict[str, object] = {"query_embeddings": [embedding], "n_results": k}
+            # Keep a wider candidate set so exact terms (attendance, clause numbers,
+            # course codes) can be recovered by the lexical reranker below.
+            query: dict[str, object] = {"query_embeddings": [embedding], "n_results": max(k, 20)}
             if requested_version:
                 query["where"] = {"doc_version": requested_version}
             else:
                 query["where"] = {"superseded": False}
-            result = collection.query(**query)
+            result = collection.query(**query)  # type: ignore[arg-type]
         except RetrievalError:
             raise
         except Exception as exc:
             raise RetrievalError(f"Chroma retrieval failed: {exc}") from exc
         if not isinstance(result, dict):
             raise RetrievalError("Chroma returned a non-object query result")
-        ids = (result.get("ids") or [[]])[0]
-        documents = (result.get("documents") or [[]])[0]
-        metadatas = (result.get("metadatas") or [[]])[0]
-        distances = (result.get("distances") or [[]])[0]
-        if not all(isinstance(value, list) for value in (ids, documents, metadatas, distances)):
+        raw_ids = result.get("ids") or [[]]
+        raw_documents = result.get("documents") or [[]]
+        raw_metadatas = result.get("metadatas") or [[]]
+        raw_distances = result.get("distances") or [[]]
+        if not all(isinstance(value, list)
+                   for value in (raw_ids, raw_documents, raw_metadatas, raw_distances)):
             raise RetrievalError("Chroma returned malformed query result lists")
+        ids = raw_ids[0]
+        documents = raw_documents[0]
+        metadatas = raw_metadatas[0]
+        distances = raw_distances[0]
         passages: list[Passage] = []
         for position, chunk_id in enumerate(ids):
             if not isinstance(chunk_id, str) or position >= len(documents):
@@ -110,4 +124,13 @@ class ChromaRetriever:
                 section=str(metadata.get("section", "Unsectioned")),
                 page=page, score=score,
             ))
-        return passages
+        stopwords = {"what", "is", "the", "a", "an", "to", "of", "for", "does", "if", "how"}
+        terms = set(re.findall(r"[a-z0-9]+", question.lower())) - stopwords
+        passages.sort(
+            key=lambda passage: (
+                len(terms & set(re.findall(r"[a-z0-9]+", passage.text.lower()))),
+                passage.score,
+            ),
+            reverse=True,
+        )
+        return passages[:k]

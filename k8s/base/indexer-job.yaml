@@ -21,14 +21,15 @@ spec:
         - name: indexer
           image: rahbar-indexer:dev
           imagePullPolicy: IfNotPresent
-          args: ["--dummy"]
+          command: ["python", "-m", "pipeline.run"]
           envFrom:
             - configMapRef:
                 name: rahbar-config
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
-              drop: [ALL]
+              drop:
+                - ALL
           resources:
             requests:
               cpu: 100m
@@ -36,9 +37,3 @@ spec:
             limits:
               cpu: 1
               memory: 1Gi
-          volumeMounts:
-            - name: corpus
-              mountPath: /corpus
-      volumes:
-        - name: corpus
-          emptyDir: {}

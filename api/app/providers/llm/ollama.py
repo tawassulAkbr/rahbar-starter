@@ -21,8 +21,10 @@ class OllamaProvider:
         from ...services.answer import build_grounded_prompt
 
         last_error: Exception | None = None
-        for _attempt in range(2):
-            correction = str(last_error) if last_error else ""
+        # One retry gives the model a chance to repair malformed JSON without
+        # allowing an unbounded request loop.
+        for retry in range(2):
+            correction = str(last_error) if retry and last_error else ""
             try:
                 response = httpx.post(
                     self.settings.ollama_url.rstrip("/") + "/api/chat",
