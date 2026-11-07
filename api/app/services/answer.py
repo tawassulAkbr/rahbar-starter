@@ -237,8 +237,10 @@ def answer_question(
     else:
         generation_start = time.perf_counter()
         try:
-            answer = _exact_policy_answer(question, passages)
-            if answer is None:
+            exact_answer = _exact_policy_answer(question, passages)
+            if exact_answer is not None:
+                answer = exact_answer
+            else:
                 answer = _validated_answer(provider.generate(question, passages))
         except Exception as exc:
             log.warning("provider output rejected", extra={"error": str(exc)})
