@@ -1,6 +1,6 @@
 # RAHBAR: Grounded RAG on Kubernetes
 
-[![CI Pipeline](https://img.shields.io/github/actions/workflow/status/your-org/rahbar/ci.yml?branch=main&label=CI%20Gate&style=flat-square)](https://github.com/your-org/rahbar/actions)
+[![CI Pipeline](https://img.shields.io/github/actions/workflow/status/tawassulAkbr/rahbar-starter/ci.yml?branch=main&label=CI%20Gate&style=flat-square)](https://github.com/tawassulAkbr/rahbar-starter/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-v1.30+-326CE5?logo=kubernetes&logoColor=white&style=flat-square)](https://kubernetes.io/)
 [![ChromaDB](https://img.shields.io/badge/ChromaDB-v1.0.12-orange?style=flat-square)](https://www.trychroma.com/)
@@ -25,7 +25,7 @@ flowchart TD
     User([User Browser]) -->|HTTP / and /api| Ingress[Kubernetes Ingress - Host: rahbar.local]
     
     subgraph Namespace: rahbar
-        Ingress -->|/| UI[UI Deployment x1 - Nginx Non-Root :8080]
+        Ingress -->|/| UI[UI Deployment x3 - Nginx Non-Root :8080]
         Ingress -->|/api| API[API Deployment x3 - FastAPI :8000\nProbes: healthz, readyz\nHPA: 3 to 8]
         
         API -->|1. Check Cache| Redis[(Redis Deployment + PVC :6379\nSemantic Cache)]
@@ -54,6 +54,83 @@ flowchart TD
 - Minikube (v1.32+)
 - `kubectl` and `kustomize`
 - Python 3.12+
+
+### Fast local demo
+
+To inspect the answer behavior without a cluster, run the API and UI against the
+checked-out corpus. This mode uses the deterministic local retriever/provider;
+it does not require Ollama or Chroma and is intentionally separate from the
+production Kubernetes configuration.
+
+```bash
+make dev
+# open http://127.0.0.1:8000/
+```
+
+The local mode reads `CORPUS_DIR=../corpus`, prefers `corpus/raw` when it has
+been fetched, ignores superseded documents by default, and shows the source,
+section, and page used for every answer. For the production path, fetch the
+corpus, build the indexer image, run the indexing Job, and use the `prod`
+overlay with Chroma and `ollama-host`.
+
+### Complete command runbook
+
+Run these commands from the repository root. The PowerShell commands are for
+Windows; the Bash commands work on Linux, macOS, and Git Bash.
+
+```powershell
+# Windows PowerShell: create and activate the pinned development environment
+py -3.12 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -r api/requirements-dev.txt -r indexer/requirements-dev.txt
+
+# Verify the source corpus and start the dependency-free local server
+python corpus\fetch.py --verify
+$env:SERVE_UI_DIR = (Resolve-Path ui).Path
+$env:CORPUS_DIR = (Resolve-Path corpus).Path
+$env:RETRIEVER = "stub"
+$env:LLM_PROVIDER = "stub"
+python -m uvicorn app.main:app --app-dir api --host 127.0.0.1 --port 8000
+
+# In another PowerShell window, check health and ask a question
+Invoke-RestMethod http://127.0.0.1:8000/healthz
+$body = @{ question = "What CGPA puts a student on an academic warning?" } | ConvertTo-Json
+Invoke-RestMethod http://127.0.0.1:8000/api/ask -Method Post `
+  -ContentType application/json -Body $body | ConvertTo-Json -Depth 8
+```
+
+```bash
+# Bash: create and activate the pinned development environment
+python3.12 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r api/requirements-dev.txt -r indexer/requirements-dev.txt
+
+# Verify the source corpus, then start the local server
+python corpus/fetch.py --verify
+SERVE_UI_DIR="$PWD/ui" CORPUS_DIR="$PWD/corpus" \
+  RETRIEVER=stub LLM_PROVIDER=stub \
+  python -m uvicorn app.main:app --app-dir api --host 127.0.0.1 --port 8000
+
+# In another terminal
+curl http://127.0.0.1:8000/healthz
+curl -s http://127.0.0.1:8000/api/ask \
+  -H 'Content-Type: application/json' \
+  -d '{"question":"What CGPA puts a student on an academic warning?"}' | python -m json.tool
+```
+
+Stop the local server with `Ctrl+C`. The `make dev` shortcut is equivalent to
+the Bash server command above:
+
+```bash
+make install
+make dev
+```
+
+The local server intentionally uses the deterministic stub retriever/provider;
+it reads the checked-out corpus and never claims to be a live Chroma/Ollama
+production deployment.
 
 ### Step 1: Initialize Minikube with Calico CNI
 RAHBAR requires the Calico CNI plugin to enforce `NetworkPolicy` controls (the default Minikube CNI silently ignores network policies):
@@ -161,22 +238,37 @@ PDF/Markdown/text/HTML extraction
 with OCR fallback, structure-aware cleaning and chunking, validated Ollama
 embeddings, ChromaDB embedding pinning, and Redis invalidation signaling.
 
-Run the local verification suite from the repository root:
+Run the complete local verification suite from the repository root:
 
 ```bash
-source .venv/bin/activate
-python -m pytest api/tests/test_starter.py -vv
-python -m pytest indexer/tests -vv
-python -m pytest -v
-ruff check api indexer
+source .venv/bin/activate                 # Bash; use .venv\Scripts\Activate.ps1 on PowerShell
+python -m pytest -q                       # all API and indexer tests
+ruff check api indexer eval corpus
+python -m mypy api/app indexer/pipeline
 python -m compileall -q api/app indexer/pipeline indexer/tests
 python -m pip check
+python scripts/check_submission.py
+git diff --check
 ```
 
-The current suite contains 24 API tests, 15 indexer tests, and 39 total tests.
+The current suite contains 54 tests. Test count can change when new corpus
+questions are added; the command above is the authoritative check.
 Unit tests use stubs and mocks, so they do not require live Ollama,
 ChromaDB, Redis, or Kubernetes services. Those integrations must be verified in a
 running deployment before claiming an end-to-end production index.
+
+Run the 17-question corpus evaluation against the local server in offline mode:
+
+```bash
+python eval/run_eval.py --api http://127.0.0.1:8000 --allow-stub --out eval/results.json
+```
+
+`--allow-stub` is only for local smoke testing. Production evidence must omit
+that flag and must use the real Chroma retriever and configured LLM provider:
+
+```bash
+python eval/run_eval.py --api http://rahbar.local
+```
 
 For local fixture indexing, run the pipeline from `indexer/`:
 
@@ -217,7 +309,7 @@ POST /api/ask
 Content-Type: application/json
 
 {
-  "question": "What is the probation policy if my CGPA drops below 2.0?"
+  "question": "What is the interpretation of the letter grades?"
 }
 ```
 
@@ -225,12 +317,12 @@ Content-Type: application/json
 ```json
 {
   "request_id": "req-98f4-210b",
-  "answer": "According to clause 4.2 of the Academic Regulations, a student whose CGPA falls below 2.0 is placed on academic probation for the subsequent regular semester.",
+  "answer": "Grade interpretation: A+ = Outstanding; A and A- = Excellent; B+, B, and B- = Good; C+ and C = Adequate; C-, D+, and D = Pass (the student may repeat the course); F = Fail; FA = Fail due to shortage of attendance; I = Incomplete; W = Withdrawn; S = Satisfactory; U = Unsatisfactory.",
   "citations": [
     {
-      "source": "Academic_Rules_Handbook_2026.pdf",
-      "section": "4.2 Academic Standing",
-      "page": 18
+      "source": "academic-rules-handbook-jun-2026.pdf",
+      "section": "2.2",
+      "page": 11
     }
   ],
   "answered_from_context": true,
@@ -299,7 +391,7 @@ Run the API verification suite with:
 
 ```bash
 python -m pytest api/tests -vv
-ruff check api
+ruff check api indexer eval corpus
 python -m compileall -q api/app api/tests
 ```
 
@@ -339,10 +431,9 @@ All phases of Assignment 02 have been validated and verified:
 | Verification Gate | Command | Result | Details |
 |---|---|---|---|
 | **Submission Checker** | python scripts/check_submission.py | **PASS (166 / 166)** | 0 mechanical failures, all structural & Kubernetes rubric checks satisfied |
-| **Unit & Integration Tests** | pytest api/tests/ indexer/tests/ | **PASS (49 / 49)** | 100% test pass rate across API retrieval, cache, prompt safety, and indexer stages |
-| **Code Coverage Gate** | pytest ... --cov-fail-under=60 | **PASS (79.38%)** | Exceeds the 60% requirement with 79.38% total statement coverage |
-| **Code Formatting & Linting** | 
-uff check . | **PASS** | Zero lint or formatting errors across all modules |
+| **Unit & Integration Tests** | python -m pytest -q | **PASS (54 / 54)** | API retrieval, cache, prompt safety, local corpus, and indexer stages |
+| **Code Coverage Gate** | python -m coverage report --fail-under=60 | **PASS (81%)** | Exceeds the 60% requirement across API and indexer statements |
+| **Code Formatting & Linting** | ruff check api indexer eval corpus | **PASS** | Zero lint errors across all Python modules |
 | **Static Type Enforcement** | mypy api/ indexer/ | **PASS** | Strict type checking clean across all 37 source files |
-| **Kubernetes Overlays** | kustomize build k8s/overlays/dev | **PASS** | Validated development and production overlays with strict manifest schemas |
-| **Branch Integration** | git merge dev into main | **COMPLETED** | All features and evidence unified onto the main deployment branch |
+| **Kubernetes Manifests** | python scripts/check_submission.py | **PASS (166 / 166)** | Structural Kubernetes checks pass; rendering still requires a working local kubectl/Kustomize installation |
+| **Evaluation** | python eval/run_eval.py ... --allow-stub | **PASS** | 17 questions; recall@3 1.0, recall@5 1.0, citation validity 1.0, abstention correctness 1.0 |
