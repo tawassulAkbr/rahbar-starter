@@ -4,7 +4,9 @@ __pycache__/
 .venv/
 venv/
 node_modules/
-corpus/raw/
+# `corpus/raw/` is gitignored but is intentionally included when the indexer
+# image is built after `make fetch`; the indexer prefers its `_index.json` and
+# preserves the downloaded source names used by the golden set.
 docs/
 eval/fixtures/
 .env*

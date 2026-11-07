@@ -28,6 +28,7 @@ spec:
       labels:
         app: chroma
     spec:
+      serviceAccountName: rahbar-chroma
       automountServiceAccountToken: false
       enableServiceLinks: false
       containers:

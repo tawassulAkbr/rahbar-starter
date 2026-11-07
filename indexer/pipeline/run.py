@@ -46,11 +46,35 @@ def discover(corpus_dir: str) -> list[tuple[Path, str, bool]]:
     present. Otherwise read Markdown front matter (the CI fixtures work this way).
     """
     root = Path(corpus_dir)
-    index = root / "_index.json"
+    # `corpus/fetch.py` stores downloaded material under `corpus/raw/`, while
+    # fixture and committed-corpus runs may place files directly in the root.
+    # Prefer the fetched index when it exists; otherwise use the root index.
+    index = root / "raw" / "_index.json"
+    if not index.exists():
+        index = root / "_index.json"
     if index.exists():
         entries = json.loads(index.read_text(encoding="utf-8"))
-        return [(root / e["file"], str(e.get("doc_version", "unknown")),
-                 bool(e.get("superseded", False))) for e in entries]
+        document_root = index.parent
+        known = {str(e.get("file")) for e in entries}
+        # Keep committed Markdown addenda with front matter when a fetched raw
+        # index is present. These are owned policy updates, not downloaded
+        # files, so they are intentionally outside corpus/raw/_index.json.
+        for path in sorted(root.glob("*.md")):
+            if path.name.lower().startswith("readme") or path.name in known:
+                continue
+            metadata = _front_matter(path)
+            if metadata:
+                entries.append({
+                    "file": path.name,
+                    "doc_version": metadata.get("doc_version", "unknown"),
+                    "superseded": metadata.get("superseded", "false").lower() == "true",
+                    "_root_file": True,
+                })
+        return [
+            ((root if e.get("_root_file") else document_root) / e["file"],
+             str(e.get("doc_version", "unknown")), bool(e.get("superseded", False)))
+            for e in entries
+        ]
     found = []
     for path in sorted(root.glob("*")):
         if path.suffix.lower() not in {".pdf", ".md", ".html", ".txt"}:

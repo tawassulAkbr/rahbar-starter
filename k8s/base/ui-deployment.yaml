@@ -27,6 +27,7 @@ spec:
       labels:
         app: ui
     spec:
+      serviceAccountName: rahbar-ui
       automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
