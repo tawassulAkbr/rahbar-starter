@@ -28,12 +28,13 @@ def readyz(request: Request, response: Response) -> dict[str, object]:
         )
         collection = client.get_collection(name=settings.collection)
         metadata = collection.metadata or {}
+        chroma_count = int(collection.count())
         checks["chroma"] = {
-            "count": int(collection.count()),
+            "count": chroma_count,
             "embed_model": metadata.get("embed_model"),
             "dimension": metadata.get("dimension"),
         }
-        if checks["chroma"]["count"] == 0:
+        if chroma_count == 0:
             raise RuntimeError("collection is empty")
         if metadata.get("embed_model") != settings.embed_model:
             raise RuntimeError("embedding model does not match configured EMBED_MODEL")

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from types import SimpleNamespace
+from typing import Any, cast
 
 import httpx
 import pytest
@@ -43,7 +44,7 @@ def test_chroma_filters_superseded_documents_and_maps_scores(monkeypatch: pytest
     )
     retriever = object.__new__(ChromaRetriever)
     retriever.settings = settings
-    retriever.client = SimpleNamespace(get_collection=lambda name: collection)
+    cast(Any, retriever).client = SimpleNamespace(get_collection=lambda name: collection)
     monkeypatch.setattr(httpx, "post", lambda *args, **kwargs: FakeResponse(
         {"embeddings": [[0.0] * settings.embed_dimension]}
     ))
@@ -63,7 +64,7 @@ def test_chroma_allows_explicit_older_version(monkeypatch: pytest.MonkeyPatch) -
     collection = SimpleNamespace(count=lambda: 1, query=query)
     retriever = object.__new__(ChromaRetriever)
     retriever.settings = settings
-    retriever.client = SimpleNamespace(get_collection=lambda name: collection)
+    cast(Any, retriever).client = SimpleNamespace(get_collection=lambda name: collection)
     monkeypatch.setattr(httpx, "post", lambda *args, **kwargs: FakeResponse(
         {"embeddings": [[0.0] * settings.embed_dimension]}
     ))
@@ -146,6 +147,6 @@ def test_readiness_checks_pinned_nonempty_collection(monkeypatch: pytest.MonkeyP
     monkeypatch.setitem(sys.modules, "chromadb.config", chromadb_config)
     request = SimpleNamespace(app=SimpleNamespace(state=SimpleNamespace(settings=settings)))
     response = Response()
-    result = readyz(request, response)
+    result = readyz(cast(Any, request), response)
     assert response.status_code == 200
     assert result["status"] == "ready"
