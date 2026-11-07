@@ -173,7 +173,7 @@ python -m compileall -q api/app indexer/pipeline indexer/tests
 python -m pip check
 ```
 
-The current suite contains 21 API tests, 15 indexer tests, and 39 total tests.
+The current suite contains 24 API tests, 15 indexer tests, and 39 total tests.
 Unit tests use stubs and mocks, so they do not require live Ollama,
 ChromaDB, Redis, or Kubernetes services. Those integrations must be verified in a
 running deployment before claiming an end-to-end production index.
