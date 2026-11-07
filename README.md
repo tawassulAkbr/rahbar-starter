@@ -70,7 +70,7 @@ minikube addons enable ingress
 ```bash
 # Build local container images
 docker build -t rahbar-api:dev api/
-docker build -t rahbar-indexer:dev indexer/
+docker build -f indexer/Dockerfile -t rahbar-indexer:dev .
 docker build -t rahbar-ui:dev ui/
 
 # Load images into the Minikube runtime
@@ -126,18 +126,18 @@ Phase 1 infrastructure is now represented by the pinned Dockerfiles in `api/`,
 contain real credentials. Create `rahbar-secret` from an external secret before
 deploying; do not apply `secret.placeholder.yaml` as a production secret.
 
-The repository does not include downloaded corpus files. To create and verify a
-local corpus, copy `corpus/sources.example.yaml` to `corpus/sources.yaml`, review
-the URLs and version metadata, then run:
+The repository includes the checked-in coursework corpus and the Fall 2026
+grade-improvement addendum. To refresh the downloaded source set, review the
+URLs and version metadata in `corpus/sources.yaml`, then run:
 
 ```bash
 python corpus/fetch.py
 python corpus/fetch.py --verify
 ```
 
-Until those commands complete successfully, corpus integrity and the live
-Docker/Kubernetes deployment remain unverified. Docker, Minikube, kubectl, and
-Kustomize must be installed locally before their build/deploy commands can be
+Until those commands complete successfully, refreshed-corpus integrity and the
+live Docker/Kubernetes deployment remain unverified. Docker, Minikube, kubectl,
+and Kustomize must be installed locally before their build/deploy commands can be
 validated.
 
 ---
@@ -156,8 +156,8 @@ kubectl logs -f job/manual-reindex-1 -n rahbar
 
 ### Phase 2 verification
 
-The Phase 2 Member 1 indexing pipeline is implemented on
-`feature/phase2-indexing-pipeline`. It includes PDF/Markdown/text/HTML extraction
+The Phase 2 Member 1 indexing pipeline is implemented on `dev`. It includes
+PDF/Markdown/text/HTML extraction
 with OCR fallback, structure-aware cleaning and chunking, validated Ollama
 embeddings, ChromaDB embedding pinning, and Redis invalidation signaling.
 
@@ -173,7 +173,7 @@ python -m compileall -q api/app indexer/pipeline indexer/tests
 python -m pip check
 ```
 
-The Phase 2 baseline is 13 API tests, 15 indexer tests, and 28 total tests.
+The current suite contains 21 API tests, 15 indexer tests, and 39 total tests.
 Unit tests use stubs and mocks, so they do not require live Ollama,
 ChromaDB, Redis, or Kubernetes services. Those integrations must be verified in a
 running deployment before claiming an end-to-end production index.

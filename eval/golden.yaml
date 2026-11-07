@@ -107,3 +107,19 @@ questions:
     relevant:
       - {source: academic-rules-handbook-jun-2026.pdf, section: "1.21"}
     expect: "100%"
+
+  - id: q16
+    type: version
+    question: From Fall 2026, how is CGPA calculated when a student repeats a passed course for grade improvement?
+    relevant:
+      - {source: academic-rules-fall-2026-grade-improvement.md, section: "1. Improvement of grades"}
+    expect: "better"
+    expected_doc_version: "2026-Fall"
+
+  - id: q17
+    type: version
+    question: Who may repeat an already passed course under the Fall 2026 grade-improvement rule?
+    relevant:
+      - {source: academic-rules-fall-2026-grade-improvement.md, section: "2. Eligibility for repeating a passed course"}
+    expect: "below C"
+    expected_doc_version: "2026-Fall"
