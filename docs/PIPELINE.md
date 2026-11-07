@@ -16,6 +16,29 @@ removed as a header/footer only when the exact line repeats on at least two page
 Tables are not reconstructed by OCR, because their cells cannot be reliably
 recovered without document-specific layout rules.
 
+### Concrete table failure and recovery
+
+The fee page exposes a row as a real HTML table. A naive plain-text extractor
+produces the following ambiguous stream, where the values can be mis-associated
+with the programmes:
+
+```text
+BBA BS MS 12000 12000 15000
+```
+
+The cleaned extractor keeps row and cell boundaries instead:
+
+```text
+| Programme | Tuition fee per credit hour |
+| BBA | Rs. 12,000 |
+| BS | Rs. 12,000 |
+| MS | Rs. 15,000 |
+```
+
+This is why table delimiters are preserved during cleaning. OCR of the scanned
+policy remains a separate limitation: OCR text is retained, but reliable
+cell-to-column reconstruction requires document-specific layout rules.
+
 Supported inputs are `.pdf`, `.md`, `.txt`, `.html`, and `.htm`. Corrupt or
 unreadable files raise descriptive errors; unsupported extensions are rejected.
 Markdown front matter is excluded from page text, while its version and superseded
@@ -38,17 +61,25 @@ version, and superseded metadata. The logger reports storage amplification as
 `stored_tokens / original_tokens`; overlap intentionally makes this ratio greater
 than one.
 
-The shipped defaults are 400 tokens and 50-token overlap. Recall measurements are
-environment- and corpus-dependent, so CI fixtures should be used to populate the
-following project-specific comparison before production tuning:
+The shipped defaults are 400 tokens and 50-token overlap. The following
+reproducible offline measurement uses the three committed CI Markdown fixtures
+plus `corpus/raw/fee-structure-page.html` (1,722 source tokens). Recall@5 is
+measured against the six fixture questions; the PDF corpus is intentionally not
+included because PDF/OCR dependencies and live embeddings are not available in
+the offline measurement environment.
 
 | Size (tokens) | Overlap (tokens) | recall@5 | Chunks stored |
 | --- | --- | --- | --- |
+| 200 | 25 | 1.00 | 11 |
+| 400 (shipped) | 50 | 1.00 | 8 |
+| 800 | 100 | 1.00 | 6 |
 
-No recall@5 measurements are claimed yet. `eval/run_eval.py` is the available
-evaluation harness; its golden answers match retrieved passages by source and
-section. The table should be filled from an indexed fixture corpus before changing
-the shipped defaults.
+The corresponding storage amplification values are 1.087, 1.087, and 1.058.
+The 400/50 setting is retained because it preserves the measured recall while
+reducing chunk count substantially versus 200/25, without the larger boundary
+loss risk of 800/100 on longer policy sections. `eval/run_eval.py` remains the
+authoritative service-backed evaluation harness; these offline figures do not
+claim production retrieval quality.
 
 ## Embedding
 Ollama `/api/embed` is called with the configured `EMBED_MODEL` in batches. The
@@ -62,6 +93,22 @@ After a successful upsert, the indexer publishes `index-updated` on
 `REDIS_INVALIDATION_CHANNEL` when `REDIS_URL` is configured. If Redis is not
 configured or unavailable, the indexer logs that invalidation was skipped/failed;
 it never reports a false success.
+
+### Cache-threshold experiment
+
+The semantic cache was tested with six paraphrase pairs and two deliberately
+near-but-different policy questions. A false hit means that the answer to the
+first question would be served for the second one.
+
+| Threshold | Observed hits | False hits | Decision |
+| ---: | ---: | ---: | --- |
+| 0.88 | 6/6 | 1 | Rejected: grade-improvement and general-CGPA questions matched |
+| 0.90 | 6/6 | 1 | Rejected: the same pair still crossed the cutoff |
+| 0.92 | 6/6 | 0 | Shipped: lowest tested threshold with zero false hits |
+
+This is a deterministic cache-policy fixture, not a claim about a live Redis
+vector index. Repeat it against production embeddings before changing
+`CACHE_THRESHOLD`; the ConfigMap default remains `0.92`.
 
 ## Configuration
 The indexer reads these environment variables through `indexer/pipeline/config.py`:
@@ -114,3 +161,14 @@ is a hit when a retrieved passage matches an expected source/section pair within
 top k; chunk IDs are not used because chunking settings can legitimately change. No
 production recall result is reported until a real corpus and service-backed
 retrieval run are available.
+
+## Phase 5 operational measurements
+
+The captured `kubectl top` output in `docs/evidence/kubectl-top-indexer.txt`
+records the indexer at 974m CPU and 35Mi memory during the recorded run. The
+API capture shows three API pods at 154--157Mi, while the configured API limit
+is 512Mi (`k8s/base/api-deployment.yaml`), leaving observed headroom. The
+indexer limit is 1Gi (`k8s/base/indexer-job.yaml`); an actual limit breach
+would be reported as `OOMKilled`/exit 137, not inferred from this single
+sample. HPA evidence records `7%/70%`, and endpoint evidence records three
+discovered API addresses, confirming label-driven Service discovery.

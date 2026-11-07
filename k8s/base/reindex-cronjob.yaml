@@ -32,7 +32,8 @@ spec:
               securityContext:
                 allowPrivilegeEscalation: false
                 capabilities:
-                  drop: [ALL]
+                  drop:
+                    - ALL
               resources:
                 requests:
                   cpu: 100m
@@ -40,9 +41,3 @@ spec:
                 limits:
                   cpu: 1
                   memory: 1Gi
-              volumeMounts:
-                - name: corpus
-                  mountPath: /corpus
-          volumes:
-            - name: corpus
-              emptyDir: {}

@@ -33,12 +33,14 @@ spec:
         - podSelector:
             matchLabels:
               app: chroma
+      ports:
+        - protocol: TCP
+          port: 8000
+    - to:
         - podSelector:
             matchLabels:
               app: redis
       ports:
-        - protocol: TCP
-          port: 8000
         - protocol: TCP
           port: 6379
     # Ollama may run outside the cluster; restrict this dependency to its port.
@@ -85,7 +87,7 @@ spec:
   podSelector:
     matchLabels:
       app: ui
-  policyTypes: [Ingress]
+  policyTypes: [Ingress, Egress]
   ingress:
     - from:
         - namespaceSelector:
@@ -94,6 +96,19 @@ spec:
       ports:
         - protocol: TCP
           port: 8080
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: api
+      ports:
+        - protocol: TCP
+          port: 8000
+    - ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -110,12 +125,14 @@ spec:
         - podSelector:
             matchLabels:
               app: chroma
+      ports:
+        - protocol: TCP
+          port: 8000
+    - to:
         - podSelector:
             matchLabels:
               app: redis
       ports:
-        - protocol: TCP
-          port: 8000
         - protocol: TCP
           port: 6379
     - to:

@@ -178,6 +178,7 @@ def test_store_pins_configuration_and_invalidates_after_upsert(
 
     class FakeCollection:
         metadata = {"embed_model": settings.embed_model, "dimension": 3}
+        rows: dict[str, object] = {}
 
         def upsert(self, **kwargs: object) -> None:
             self.rows = kwargs
@@ -192,7 +193,10 @@ def test_store_pins_configuration_and_invalidates_after_upsert(
     monkeypatch.setattr("pipeline.store._invalidate_cache", lambda value: invalidations.append(True))
     assert store([chunk_item], [[1.0, 2.0, 3.0]], settings) == 1
     assert invalidations == [True]
-    assert collection.rows["metadatas"][0]["source"] == "source.md"
+    metadatas = collection.rows["metadatas"]
+    assert isinstance(metadatas, list)
+    assert isinstance(metadatas[0], dict)
+    assert metadatas[0]["source"] == "source.md"
 
 
 def test_store_rejects_embedding_pin_mismatch(monkeypatch: pytest.MonkeyPatch) -> None:

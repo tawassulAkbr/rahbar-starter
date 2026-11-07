@@ -22,6 +22,7 @@ class IndexerSettings:
     embed_timeout: float = 60.0
     redis_url: str = ""
     redis_channel: str = "rahbar:index-updated"
+    redis_generation_key: str = "rahbar:index_generation"
 
     @property
     def chroma_collection(self) -> str:
@@ -46,4 +47,5 @@ def get_settings() -> IndexerSettings:
         embed_timeout=float(os.environ.get("EMBED_TIMEOUT", 60.0)),
         redis_url=os.environ.get("REDIS_URL", ""),
         redis_channel=os.environ.get("REDIS_INVALIDATION_CHANNEL", "rahbar:index-updated"),
+        redis_generation_key=os.environ.get("REDIS_GENERATION_KEY", "rahbar:index_generation"),
     )

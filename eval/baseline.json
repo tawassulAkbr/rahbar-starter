@@ -1,0 +1,25 @@
+{
+  "recall_at_3": 1.0,
+  "recall_at_5": 1.0,
+  "citation_validity": 1.0,
+  "abstention_rate": 1.0,
+  "abstention_correct": 1,
+  "abstention_incorrect": 0,
+  "abstention_total": 1,
+  "recall_at_5_by_type": {
+    "abstain": null,
+    "exact": 1.0,
+    "injection": 1.0,
+    "ordinary": 1.0,
+    "version": 1.0
+  },
+  "golden": "eval/fixtures/golden.fixture.yaml",
+  "questions": 6,
+  "configuration": {
+    "embed_model": "nomic-embed-text",
+    "embed_dimension": 768,
+    "collection": "rahbar",
+    "top_k": 5
+  },
+  "provenance": "Fixture baseline contract for the deterministic CI corpus; refresh with eval/run_eval.py --fixtures --update-baseline after a live Kind run."
+}
