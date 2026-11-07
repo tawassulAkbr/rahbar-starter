@@ -47,7 +47,7 @@ Must answer all seven specific questions with explicit file names and line numbe
   ```
 - Ensure:
   - 0 Failures across all 15 audit suites.
-  - Zero `STARTER-TODO` markers left in the entire repository.
+  - Zero starter placeholder markers left in the entire repository.
   - No secrets or keys in git history.
   - Balanced git commit distribution between Member 1 and Member 2.
 
