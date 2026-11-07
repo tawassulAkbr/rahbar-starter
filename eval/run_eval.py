@@ -82,8 +82,14 @@ def validate_production_response(response: dict, question_id: str) -> None:
 def recall_at_k(relevant: list[dict], retrieved: list[dict], k: int) -> float | None:
     """Fraction of the relevant (source, section) pairs found in the top k retrieved.
     Return None when the question has no relevant passages (must-abstain questions)."""
+    # Golden files may identify a passage by chunk_id or by its stable source /
+    # section metadata. Use the same identity scheme for both sides. The old
+    # implementation always preferred a returned chunk_id, which made a valid
+    # source/section golden entry score zero whenever chunking was enabled.
+    by_chunk = bool(relevant) and all(item.get("chunk_id") is not None for item in relevant)
+
     def key(item: dict) -> tuple[object, ...]:
-        if item.get("chunk_id") is not None:
+        if by_chunk:
             return (item.get("chunk_id"),)
         return (item.get("source"), item.get("section"))
 
@@ -206,6 +212,10 @@ def main() -> int:
     parser.add_argument("--api", required=True, help="base URL, e.g. http://192.168.49.2")
     parser.add_argument("--host", help="Host header, when your Ingress rule names a host")
     parser.add_argument("--fixtures", action="store_true", help="use the CI fixture golden set")
+    parser.add_argument(
+        "--allow-stub", action="store_true",
+        help="allow a deterministic local stub for offline smoke evaluation; never use for production evidence",
+    )
     parser.add_argument("--golden", type=Path, help="path to a golden question set")
     parser.add_argument("--baseline", type=Path, help="path to measured baseline metrics")
     parser.add_argument("--out", type=Path, default=HERE / "results.json")
@@ -231,7 +241,7 @@ def main() -> int:
             for q in questions:
                 started = time.perf_counter()
                 response = ask(client, args.api, q["question"])
-                if not args.fixtures:
+                if not args.fixtures and not args.allow_stub:
                     validate_production_response(response, q["id"])
                 rows.append({
                     "id": q["id"], "type": q.get("type", "ordinary"),
@@ -265,6 +275,8 @@ def main() -> int:
         "collection": os.environ.get("CHROMA_COLLECTION", "rahbar"),
         "top_k": int(os.environ.get("TOP_K", "5")),
     }
+    if args.allow_stub:
+        results["evaluation_mode"] = "offline-stub-smoke"
     results["rows"] = rows
     args.out.write_text(json.dumps(results, indent=2), encoding="utf-8")
     print(f"\nresults written to {args.out}")
