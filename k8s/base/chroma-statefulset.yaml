@@ -29,6 +29,7 @@ spec:
         app: chroma
     spec:
       automountServiceAccountToken: false
+      enableServiceLinks: false
       containers:
         - name: chroma
           image: chromadb/chroma:1.0.12

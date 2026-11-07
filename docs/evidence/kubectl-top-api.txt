@@ -1,0 +1,10 @@
+﻿NAME                     CPU(cores)   MEMORY(bytes)   
+api-696c476585-cmcfz     8m           157Mi           
+api-696c476585-f4fpd     7m           154Mi           
+api-696c476585-l4pp6     7m           156Mi           
+chroma-0                 7m           308Mi           
+indexer-job-rgvf9        974m         35Mi            
+redis-5967475747-hhvzj   7m           13Mi            
+ui-79f68dd658-8kf24      1m           2Mi             
+ui-79f68dd658-9kg92      1m           2Mi             
+ui-79f68dd658-lh56s      1m           2Mi             
