@@ -19,6 +19,14 @@ venv/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+.coverage
+
+# Local server/test scratch
+server.out
+server.err
+tmp/
+tmp_cache/
+tmp_pytest/
 
 # Local scratch
 *.log
