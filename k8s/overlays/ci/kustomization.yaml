@@ -4,15 +4,6 @@ namespace: rahbar
 resources:
   - ../../base
   - embedding-stub.yaml
-configMapGenerator:
-  - name: corpus-fixtures
-    files:
-      - academic-rules-2023.md=../../../eval/fixtures/academic-rules-2023.md
-      - academic-rules-2026.md=../../../eval/fixtures/academic-rules-2026.md
-      - fees-2026.md=../../../eval/fixtures/fees-2026.md
-  - name: embedding-stub-code
-    files:
-      - ci_embedding_stub.py=../../../scripts/ci_embedding_stub.py
 patches:
   - path: config-patch.yaml
   - path: indexer-job-patch.yaml
