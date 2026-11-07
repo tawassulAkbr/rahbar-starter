@@ -21,6 +21,7 @@ spec:
         - name: indexer
           image: rahbar-indexer:dev
           imagePullPolicy: IfNotPresent
+          command: ["python", "-m", "pipeline.run"]
           args: ["--dummy"]
           envFrom:
             - configMapRef:
