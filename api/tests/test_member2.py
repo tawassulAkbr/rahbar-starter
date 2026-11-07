@@ -146,7 +146,7 @@ def test_readiness_checks_pinned_nonempty_collection(monkeypatch: pytest.MonkeyP
     chromadb_config = SimpleNamespace(Settings=lambda **kwargs: object())
     monkeypatch.setitem(sys.modules, "chromadb", chromadb_module)
     monkeypatch.setitem(sys.modules, "chromadb.config", chromadb_config)
-    request = SimpleNamespace(app=SimpleNamespace(state=SimpleNamespace(settings=settings)))
+    request = cast(Any, SimpleNamespace(app=SimpleNamespace(state=SimpleNamespace(settings=settings))))
     response = Response()
     result = readyz(cast(Any, request), response)
     assert response.status_code == 200
@@ -173,7 +173,7 @@ def test_readiness_logs_embedding_pin_mismatch(
     chromadb_config = SimpleNamespace(Settings=lambda **kwargs: object())
     monkeypatch.setitem(sys.modules, "chromadb", chromadb_module)
     monkeypatch.setitem(sys.modules, "chromadb.config", chromadb_config)
-    request = SimpleNamespace(app=SimpleNamespace(state=SimpleNamespace(settings=settings)))
+    request = cast(Any, SimpleNamespace(app=SimpleNamespace(state=SimpleNamespace(settings=settings))))
     response = Response()
 
     with caplog.at_level("ERROR", logger="rahbar.health"):
@@ -246,7 +246,7 @@ def test_readiness_returns_503_with_dependency_failure(
     chromadb_config = SimpleNamespace(Settings=lambda **kwargs: object())
     monkeypatch.setitem(sys.modules, "chromadb", chromadb_module)
     monkeypatch.setitem(sys.modules, "chromadb.config", chromadb_config)
-    request = SimpleNamespace(app=SimpleNamespace(state=SimpleNamespace(settings=settings)))
+    request = cast(Any, SimpleNamespace(app=SimpleNamespace(state=SimpleNamespace(settings=settings))))
     response = Response()
 
     result = readyz(request, response)

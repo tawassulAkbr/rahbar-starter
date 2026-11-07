@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 from fastapi import APIRouter, Request, Response
 
@@ -17,9 +18,9 @@ def healthz() -> dict[str, str]:
 
 
 @router.get("/readyz")
-def readyz(request: Request, response: Response) -> dict[str, object]:
+def readyz(request: Request, response: Response) -> dict[str, Any]:
     settings = request.app.state.settings
-    checks: dict[str, object] = {}
+    checks: dict[str, Any] = {}
     try:
         import chromadb
         from chromadb.config import Settings as ChromaSettings

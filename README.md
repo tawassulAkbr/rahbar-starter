@@ -312,3 +312,19 @@ Verify that your repository passes all mechanical rubric checks before submittin
 # Run the automated submission lint checker
 python scripts/check_submission.py
 ```
+
+## 9. Phase 5 completion evidence
+
+Phase 5 is complete for both members. Member 1's operational artifacts are in
+[`docs/evidence/`](docs/evidence/), including `kubectl top` resource captures,
+HPA percentages, Service endpoints, and successful rollout/rollback records.
+The repeatable capture procedure is documented in
+[`PHASE_5_MEMBER_1_RUNBOOK.md`](docs/evidence/PHASE_5_MEMBER_1_RUNBOOK.md);
+GitHub branch-protection screenshots must remain genuine GitHub captures and
+are intentionally not generated in the repository.
+
+Member 2's ADRs 0001--0004, engineering notes, chunking comparison, AI
+attribution, and final audit documentation are committed under `docs/`. The
+project used Codex (GPT-5) and Antigravity as AI-assisted review tools; the
+full attribution and human-review boundary are recorded in
+[`docs/AI-USAGE.md`](docs/AI-USAGE.md).

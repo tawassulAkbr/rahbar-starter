@@ -48,11 +48,14 @@ class SemanticCache:
         if not self.enabled or follow_up:
             return None
         try:
-            vector = self._embedder(question)
-            generation = self._redis.get(self.settings.redis_generation_key) or "0"
+            embedder = self._embedder
+            redis_client = self._redis
+            assert embedder is not None and redis_client is not None
+            vector = embedder(question)
+            generation = redis_client.get(self.settings.redis_generation_key) or "0"
             best: tuple[float, AskResponse] | None = None
-            for key in self._redis.scan_iter(match="rahbar:cache:*"):
-                raw = self._redis.get(key)
+            for key in redis_client.scan_iter(match="rahbar:cache:*"):
+                raw = redis_client.get(key)
                 if not raw:
                     continue
                 item = json.loads(raw)
@@ -80,12 +83,15 @@ class SemanticCache:
         if not self.enabled or never_cache(response, follow_up=follow_up):
             return
         try:
-            vector = self._embedder(question)
-            generation = self._redis.get(self.settings.redis_generation_key) or "0"
+            embedder = self._embedder
+            redis_client = self._redis
+            assert embedder is not None and redis_client is not None
+            vector = embedder(question)
+            generation = redis_client.get(self.settings.redis_generation_key) or "0"
             digest = hashlib.sha256(question.strip().lower().encode()).hexdigest()
             payload = {"question": question, "vector": vector, "response": response.model_dump(),
                        "timestamp": time.time(), "generation": generation}
-            self._redis.setex(f"rahbar:cache:{digest}", self.settings.cache_ttl, json.dumps(payload))
+            redis_client.setex(f"rahbar:cache:{digest}", self.settings.cache_ttl, json.dumps(payload))
         except Exception:
             return
 

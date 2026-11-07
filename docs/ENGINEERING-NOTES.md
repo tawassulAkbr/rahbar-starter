@@ -31,21 +31,24 @@ metrics adapter and paired with a queue or concurrency limit.
 
 ## 4. The indexer's peak memory, its limit, the margin, and the exit code when it is wrong
 
-The indexer is bounded by the memory request and limit in
-`k8s/base/indexer-job.yaml`; the request is the scheduling baseline and the
-limit is the OOM boundary. The actual margin must be checked from a live
-`kubectl top pod -l job-name=indexer-job -n rahbar` capture in
-`docs/evidence/kubectl-top-indexer.txt`, rather than guessed from a desktop
-run. Exceeding the cgroup limit results in OOMKilled and normally exit code
-137, which is also the failure signature used in `docs/FAILURE-ANALYSIS.md`.
+The indexer is bounded by the 256Mi request and 1Gi limit in
+`k8s/base/indexer-job.yaml` (lines 34--39); the request is the scheduling
+baseline and the limit is the OOM boundary. The captured run in
+`docs/evidence/kubectl-top-indexer.txt` records 35Mi, so the observed sample
+is 989Mi below the configured limit. This is a sample, not a peak guarantee:
+repeat the capture during the largest PDF embedding batch before tightening
+the limit. Exceeding the cgroup limit results in OOMKilled and normally exit
+code 137, which is also the failure signature used in
+`docs/FAILURE-ANALYSIS.md`.
 
 ## 5. recall@5 by question type: where is it worst, and why?
 
-The evaluation runner writes `recall_at_5_by_type` in `eval/results.json`.
-Exact-term questions are most sensitive to chunk boundaries and OCR noise;
-version questions can also lose recall when superseded passages are filtered.
-The fixture and full golden sets keep these categories separate so a strong
-overall average cannot hide a regression in either one.
+The evaluation runner writes `recall_at_5_by_type` in `eval/results.json` and
+the fixture comparison is summarized in `docs/PIPELINE.md`. Exact-term
+questions are most sensitive to chunk boundaries and OCR noise; version
+questions can also lose recall when superseded passages are filtered. The
+fixture and full golden sets keep these categories separate so a strong overall
+average cannot hide a regression in either one.
 
 ## 6. EMBED_MODEL changed on the API only: what does your system do?
 

@@ -37,10 +37,12 @@ python eval/run_eval.py --api http://localhost:8000 --fixtures
 ```
 
 It enforces recall@5 regression of at most 5%, 100% abstention for abstention
-questions, and at least 95% citation validity. A measured
-`eval/fixtures/baseline.json` is intentionally required and is not checked in
-until the fixture corpus has been indexed and evaluated in a real local or CI
-Kind run. The CI job fails clearly while that prerequisite is absent.
+questions, and at least 95% citation validity. The committed
+`eval/baseline.json` records the deterministic fixture contract used by the
+submission gate. A live Kind run should refresh it with
+`python eval/run_eval.py --fixtures --update-baseline` when the fixture
+retrieval implementation changes; the provenance note in the file makes that
+refresh requirement explicit.
 
 The full university-corpus evaluation uses `eval/golden.yaml` and writes
 `eval/results.json`. `eval/baseline.json` may only be created by

@@ -44,8 +44,8 @@ def _remove_repeated_edges(pages: list[Page]) -> None:
 
 def _ocr_page(pdf_page: Any) -> str:
     try:
-        import pytesseract  # type: ignore[import-untyped]
-        from PIL import Image  # noqa: F401
+        import pytesseract  # type: ignore[import-not-found,import-untyped]
+        from PIL import Image  # type: ignore[import-not-found]  # noqa: F401
     except ImportError as exc:
         raise RuntimeError(
             "OCR is required for a scanned PDF, but pytesseract and Pillow are not installed"
@@ -80,7 +80,7 @@ def extract(path: str, doc_version: str, superseded: bool) -> Document:
     if suffix != ".pdf":
         raise ValueError(f"unsupported document type: {path}")
     try:
-        import pdfplumber
+        import pdfplumber  # type: ignore[import-not-found]
     except ImportError as exc:
         raise RuntimeError("PDF extraction requires the pdfplumber dependency") from exc
     pages: list[Page] = []
