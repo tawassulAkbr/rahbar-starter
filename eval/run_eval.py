@@ -15,9 +15,12 @@ code. Yours: the four functions marked STARTER-TODO. They are the evaluation.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import os
 import sys
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 
 import httpx
@@ -36,6 +39,20 @@ def load_golden(path: Path) -> list[dict]:
     questions = data.get("questions") or []
     if not questions:
         sys.exit(f"no questions in {path}")
+    required_types = {"ordinary": 8, "version": 2, "exact": 2, "abstain": 2, "injection": 1}
+    counts = {kind: sum(q.get("type") == kind for q in questions) for kind in required_types}
+    missing = [f"{kind}>={minimum}" for kind, minimum in required_types.items()
+               if counts[kind] < minimum]
+    if len(questions) < 15 or missing:
+        sys.exit(f"golden set must contain at least 15 questions with {missing}")
+    ids = [q.get("id") for q in questions]
+    if any(not question_id for question_id in ids) or len(set(ids)) != len(ids):
+        sys.exit("golden question ids must be present and unique")
+    for question in questions:
+        if not isinstance(question.get("question"), str) or not question["question"].strip():
+            sys.exit(f"question {question.get('id')} has no question text")
+        if question.get("must_abstain", False) and question.get("relevant"):
+            sys.exit(f"abstention question {question['id']} cannot have relevant passages")
     return questions
 
 
@@ -49,11 +66,16 @@ def ask(client: httpx.Client, api: str, question: str) -> dict:
 def recall_at_k(relevant: list[dict], retrieved: list[dict], k: int) -> float | None:
     """Fraction of the relevant (source, section) pairs found in the top k retrieved.
     Return None when the question has no relevant passages (must-abstain questions)."""
-    expected = {(item.get("source"), item.get("section")) for item in relevant}
+    def key(item: dict) -> tuple[object, ...]:
+        if item.get("chunk_id") is not None:
+            return (item.get("chunk_id"),)
+        return (item.get("source"), item.get("section"))
+
+    expected = {key(item) for item in relevant}
     expected.discard((None, None))
     if not expected:
         return None
-    actual = {(item.get("source"), item.get("section")) for item in retrieved[:k]}
+    actual = {key(item) for item in retrieved[:k]}
     return len(expected & actual) / len(expected)
 
 
@@ -75,6 +97,33 @@ def citation_validity(response: dict) -> float | None:
     return valid / len(citations)
 
 
+def abstention_correctness(
+    results: list[dict], golden_data: list[dict] | None = None
+) -> dict[str, int | float]:
+    """Measure false `answered_from_context` for every golden abstention question."""
+    if golden_data is None:
+        rows = results
+    else:
+        golden_by_id = {row["id"]: row for row in golden_data}
+        rows = [
+            {
+                "must_abstain": bool(golden_by_id.get(row.get("id"), {}).get("must_abstain")),
+                "response": row.get("response", row),
+            }
+            for row in results
+        ]
+    abstentions = [row for row in rows if row["must_abstain"]]
+    correct = sum(not row["response"].get("answered_from_context", True)
+                  for row in abstentions)
+    total = len(abstentions)
+    return {
+        "correct": correct,
+        "incorrect": total - correct,
+        "total": total,
+        "rate": correct / total if total else 1.0,
+    }
+
+
 def summarise(rows: list[dict]) -> dict:
     """Overall recall@3, recall@5, citation validity and abstention correctness, plus
     recall@5 broken down by question type. This dict becomes results.json."""
@@ -83,10 +132,7 @@ def summarise(rows: list[dict]) -> dict:
     recall5 = [recall_at_k(row["relevant"], row["response"].get("retrieved", []), 5)
                for row in rows]
     citation = [citation_validity(row["response"]) for row in rows]
-    abstention_rows = [row for row in rows if row["must_abstain"]]
-    abstention_correct = sum(
-        not row["response"].get("answered_from_context", True) for row in abstention_rows
-    )
+    abstention = abstention_correctness(rows)
 
     def average(values: list[float | None]) -> float | None:
         usable = [value for value in values if value is not None]
@@ -102,9 +148,10 @@ def summarise(rows: list[dict]) -> dict:
         "recall_at_3": average(recall3),
         "recall_at_5": average(recall5),
         "citation_validity": average(citation),
-        "abstention_rate": (
-            abstention_correct / len(abstention_rows) if abstention_rows else 1.0
-        ),
+        "abstention_rate": abstention["rate"],
+        "abstention_correct": abstention["correct"],
+        "abstention_incorrect": abstention["incorrect"],
+        "abstention_total": abstention["total"],
         "recall_at_5_by_type": by_type,
     }
 
@@ -112,6 +159,11 @@ def summarise(rows: list[dict]) -> dict:
 def gate(results: dict, baseline: dict | None) -> list[str]:
     """Return one message per failed gate (section 5.4); an empty list means pass."""
     failures: list[str] = []
+    required = ("recall_at_3", "recall_at_5", "citation_validity", "abstention_rate")
+    for metric in required:
+        value = results.get(metric)
+        if value is None or not isinstance(value, (int, float)):
+            failures.append(f"required metric is missing or invalid: {metric}")
     current_recall = results.get("recall_at_5")
     if baseline is None or baseline.get("recall_at_5") is None:
         failures.append("baseline recall_at_5 is required before the regression gate can run")
@@ -127,6 +179,10 @@ def gate(results: dict, baseline: dict | None) -> list[str]:
     if abstention != REQUIRED_ABSTENTION:
         failures.append(f"abstention rate must be 100%: {abstention}")
     return failures
+
+
+def _dataset_sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def main() -> int:
@@ -154,31 +210,51 @@ def main() -> int:
     questions = load_golden(args.golden)
     rows = []
     headers = {"Host": args.host} if args.host else {}
-    with httpx.Client(timeout=120.0, headers=headers) as client:
-        for q in questions:
-            started = time.perf_counter()
-            response = ask(client, args.api, q["question"])
-            rows.append({
-                "id": q["id"], "type": q.get("type", "ordinary"),
-                "must_abstain": bool(q.get("must_abstain", False)),
-                "relevant": q.get("relevant") or [],
-                "expect": q.get("expect"),
-                "response": response,
-                "seconds": round(time.perf_counter() - started, 2),
-            })
-            print(f"  {q['id']:<5} {rows[-1]['seconds']:>6.2f}s  {q['question'][:60]}")
+    try:
+        with httpx.Client(timeout=120.0, headers=headers) as client:
+            for q in questions:
+                started = time.perf_counter()
+                response = ask(client, args.api, q["question"])
+                rows.append({
+                    "id": q["id"], "type": q.get("type", "ordinary"),
+                    "must_abstain": bool(q.get("must_abstain", False)),
+                    "relevant": q.get("relevant") or [],
+                    "expect": q.get("expect"),
+                    "response": response,
+                    "seconds": round(time.perf_counter() - started, 2),
+                })
+                print(f"  {q['id']:<5} {rows[-1]['seconds']:>6.2f}s  {q['question'][:60]}")
+    except httpx.HTTPError as exc:
+        sys.exit(f"evaluation unavailable: could not reach API at {args.api}: {exc}")
 
     results = summarise(rows)
     baseline = json.loads(args.baseline.read_text()) if args.baseline.exists() else None
     failures = gate(results, baseline)
+    # A baseline update is how the first genuine baseline is established. It
+    # still enforces citation and abstention quality, but has no prior recall
+    # value to regress against on that first run.
+    if args.update_baseline and baseline is None:
+        failures = [failure for failure in failures
+                    if not failure.startswith("baseline recall_at_5 is required")]
 
+    results["generated_at"] = datetime.now(timezone.utc).isoformat()
+    results["dataset_sha256"] = _dataset_sha256(args.golden)
     results["golden"] = str(args.golden)
     results["questions"] = len(rows)
+    results["configuration"] = {
+        "embed_model": os.environ.get("EMBED_MODEL", "nomic-embed-text"),
+        "embed_dimension": int(os.environ.get("EMBED_DIMENSION", "768")),
+        "collection": os.environ.get("CHROMA_COLLECTION", "rahbar"),
+        "top_k": int(os.environ.get("TOP_K", "5")),
+    }
+    results["rows"] = rows
     args.out.write_text(json.dumps(results, indent=2), encoding="utf-8")
     print(f"\nresults written to {args.out}")
-    if args.update_baseline:
+    if args.update_baseline and not failures:
         args.baseline.write_text(json.dumps(results, indent=2), encoding="utf-8")
         print(f"baseline updated: {args.baseline}")
+    elif args.update_baseline and failures:
+        print("baseline not updated because the evaluation gate failed")
 
     if failures:
         print("\nGATE FAILED")
