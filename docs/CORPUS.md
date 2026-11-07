@@ -22,6 +22,19 @@ must be extracted in the production/indexer image where Tesseract is installed.
 The host-side OCR check is therefore environment-dependent and must not be
 reported as a successful OCR run without that executable.
 
+### Fall 2026 policy update
+
+The user-supplied university notice about repetition of passed courses is
+stored as the committed Markdown source
+`corpus/academic-rules-fall-2026-grade-improvement.md`. It is effective from
+Fall 2026 and is deliberately marked `2026-Fall`, `superseded: false`, and
+separate from the June 2026 handbook. It says that the better of the two grades
+is used for CGPA, and limits repetition to students not on academic warning
+with a grade below C when the course was offered to the batch within the last
+academic year. This is a supplied addendum, not a claim that a new official PDF
+has already been downloaded; the source note identifies the replacement step
+when the university publishes one.
+
 ## Reverification
 
 ```bash

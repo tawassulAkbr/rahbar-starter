@@ -100,12 +100,12 @@ jobs:
         run: |
           mkdir -p artifacts
           docker buildx build --platform linux/amd64,linux/arm64 --output type=oci,dest=artifacts/rahbar-api.oci api/
-          docker buildx build --platform linux/amd64,linux/arm64 --output type=oci,dest=artifacts/rahbar-indexer.oci indexer/
+          docker buildx build --platform linux/amd64,linux/arm64 -f indexer/Dockerfile --output type=oci,dest=artifacts/rahbar-indexer.oci .
           docker buildx build --platform linux/amd64,linux/arm64 --output type=oci,dest=artifacts/rahbar-ui.oci ui/
       - name: Build amd64 images for Kind and local scanning
         run: |
           docker buildx build --platform linux/amd64 -t rahbar-api:ci --load api/
-          docker buildx build --platform linux/amd64 -t rahbar-indexer:ci --load indexer/
+          docker buildx build --platform linux/amd64 -f indexer/Dockerfile -t rahbar-indexer:ci --load .
           docker buildx build --platform linux/amd64 -t rahbar-ui:ci --load ui/
           docker save rahbar-api:ci -o artifacts/rahbar-api.tar
           docker save rahbar-indexer:ci -o artifacts/rahbar-indexer.tar

@@ -43,6 +43,13 @@ def _requests_older_version(question: str) -> bool:
 
 
 def _requested_version(question: str) -> str | None:
+    season = re.search(
+        r"\b(Fall|Spring|Summer|Winter)\s+((?:19|20)\d{2})\b",
+        question,
+        flags=re.IGNORECASE,
+    )
+    if season:
+        return f"{season.group(2)}-{season.group(1).title()}"
     match = re.search(r"\b((?:19|20)\d{2}(?:[-/]\d{1,2})?)\b", question)
     return match.group(1).replace("/", "-") if match else None
 
