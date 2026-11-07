@@ -2,6 +2,7 @@
 """Score a running RAHBAR against a golden set, and gate CI on the result (section 5).
 
     python eval/run_eval.py --api http://<ingress>                 # your corpus
+    python eval/run_eval.py --api ... --fixtures                    # CI fixtures
     python eval/run_eval.py --api ... --golden eval/fixtures/golden.fixture.yaml
     python eval/run_eval.py --api ... --update-baseline            # after a deliberate improvement
 
@@ -48,40 +49,107 @@ def ask(client: httpx.Client, api: str, question: str) -> dict:
 def recall_at_k(relevant: list[dict], retrieved: list[dict], k: int) -> float | None:
     """Fraction of the relevant (source, section) pairs found in the top k retrieved.
     Return None when the question has no relevant passages (must-abstain questions)."""
-    # STARTER-TODO(5.2): implement. Decide how you match sections and say so in PIPELINE.md.
-    raise NotImplementedError("recall_at_k: see STARTER-TODO(5.2)")
+    expected = {(item.get("source"), item.get("section")) for item in relevant}
+    expected.discard((None, None))
+    if not expected:
+        return None
+    actual = {(item.get("source"), item.get("section")) for item in retrieved[:k]}
+    return len(expected & actual) / len(expected)
 
 
 def citation_validity(response: dict) -> float | None:
     """Fraction of the response's citations that match a passage in response['retrieved'].
     Return None when there are no citations."""
-    # STARTER-TODO(5.3): implement.
-    raise NotImplementedError("citation_validity: see STARTER-TODO(5.3)")
+    citations = response.get("citations") or []
+    retrieved = response.get("retrieved") or []
+    if not citations:
+        return None
+    allowed = {
+        (item.get("source"), item.get("section"), item.get("page"))
+        for item in retrieved
+    }
+    valid = sum(
+        (item.get("source"), item.get("section"), item.get("page")) in allowed
+        for item in citations
+    )
+    return valid / len(citations)
 
 
 def summarise(rows: list[dict]) -> dict:
     """Overall recall@3, recall@5, citation validity and abstention correctness, plus
     recall@5 broken down by question type. This dict becomes results.json."""
-    # STARTER-TODO(5.2, 5.3): implement.
-    raise NotImplementedError("summarise: see STARTER-TODO(5.2, 5.3)")
+    recall3 = [recall_at_k(row["relevant"], row["response"].get("retrieved", []), 3)
+               for row in rows]
+    recall5 = [recall_at_k(row["relevant"], row["response"].get("retrieved", []), 5)
+               for row in rows]
+    citation = [citation_validity(row["response"]) for row in rows]
+    abstention_rows = [row for row in rows if row["must_abstain"]]
+    abstention_correct = sum(
+        not row["response"].get("answered_from_context", True) for row in abstention_rows
+    )
+
+    def average(values: list[float | None]) -> float | None:
+        usable = [value for value in values if value is not None]
+        return sum(usable) / len(usable) if usable else None
+
+    by_type: dict[str, float | None] = {}
+    for question_type in sorted({row["type"] for row in rows}):
+        by_type[question_type] = average([
+            recall_at_k(row["relevant"], row["response"].get("retrieved", []), 5)
+            for row in rows if row["type"] == question_type
+        ])
+    return {
+        "recall_at_3": average(recall3),
+        "recall_at_5": average(recall5),
+        "citation_validity": average(citation),
+        "abstention_rate": (
+            abstention_correct / len(abstention_rows) if abstention_rows else 1.0
+        ),
+        "recall_at_5_by_type": by_type,
+    }
 
 
 def gate(results: dict, baseline: dict | None) -> list[str]:
     """Return one message per failed gate (section 5.4); an empty list means pass."""
-    # STARTER-TODO(5.4): implement, using the three constants at the top of this file.
-    raise NotImplementedError("gate: see STARTER-TODO(5.4)")
+    failures: list[str] = []
+    current_recall = results.get("recall_at_5")
+    if baseline is None or baseline.get("recall_at_5") is None:
+        failures.append("baseline recall_at_5 is required before the regression gate can run")
+    elif current_recall is None or current_recall < baseline["recall_at_5"] - MAX_RECALL5_DROP:
+        failures.append(
+            f"recall@5 regressed beyond {MAX_RECALL5_DROP:.0%}: "
+            f"baseline={baseline['recall_at_5']}, current={current_recall}"
+        )
+    citation = results.get("citation_validity")
+    if citation is None or citation < MIN_CITATION_VALIDITY:
+        failures.append(f"citation validity is below {MIN_CITATION_VALIDITY:.0%}: {citation}")
+    abstention = results.get("abstention_rate")
+    if abstention != REQUIRED_ABSTENTION:
+        failures.append(f"abstention rate must be 100%: {abstention}")
+    return failures
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Evaluate RAHBAR against a golden set.")
     parser.add_argument("--api", required=True, help="base URL, e.g. http://192.168.49.2")
     parser.add_argument("--host", help="Host header, when your Ingress rule names a host")
-    parser.add_argument("--golden", type=Path, default=HERE / "golden.yaml")
-    parser.add_argument("--baseline", type=Path, default=HERE / "baseline.json")
+    parser.add_argument("--fixtures", action="store_true", help="use the CI fixture golden set")
+    parser.add_argument("--golden", type=Path, help="path to a golden question set")
+    parser.add_argument("--baseline", type=Path, help="path to measured baseline metrics")
     parser.add_argument("--out", type=Path, default=HERE / "results.json")
     parser.add_argument("--update-baseline", action="store_true",
                         help="write these results as the new baseline")
     args = parser.parse_args()
+    if args.fixtures and args.golden:
+        parser.error("--fixtures and --golden are mutually exclusive")
+    if args.fixtures:
+        args.golden = HERE / "fixtures" / "golden.fixture.yaml"
+        args.baseline = args.baseline or HERE / "fixtures" / "baseline.json"
+    else:
+        args.golden = args.golden or HERE / "golden.yaml"
+        args.baseline = args.baseline or HERE / "baseline.json"
+    assert args.golden is not None
+    assert args.baseline is not None
 
     questions = load_golden(args.golden)
     rows = []
@@ -100,13 +168,9 @@ def main() -> int:
             })
             print(f"  {q['id']:<5} {rows[-1]['seconds']:>6.2f}s  {q['question'][:60]}")
 
-    try:
-        results = summarise(rows)
-        baseline = json.loads(args.baseline.read_text()) if args.baseline.exists() else None
-        failures = gate(results, baseline)
-    except NotImplementedError as exc:
-        print(f"\nnot implemented yet: {exc}")
-        return 2
+    results = summarise(rows)
+    baseline = json.loads(args.baseline.read_text()) if args.baseline.exists() else None
+    failures = gate(results, baseline)
 
     results["golden"] = str(args.golden)
     results["questions"] = len(rows)
