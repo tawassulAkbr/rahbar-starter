@@ -66,3 +66,18 @@ def test_discover_reads_fixture_front_matter() -> None:
     found = {p.name: (version, old) for p, version, old in discover(str(fixtures))}
     assert found["academic-rules-2023.md"] == ("2023", True)
     assert found["academic-rules-2026.md"] == ("2026", False)
+
+
+def test_discover_prefers_downloaded_raw_index(tmp_path: Path) -> None:
+    raw = tmp_path / "raw"
+    raw.mkdir()
+    (raw / "downloaded.pdf").write_bytes(b"pdf")
+    (raw / "_index.json").write_text(
+        '[{"file":"downloaded.pdf","doc_version":"2026-06","superseded":false}]',
+        encoding="utf-8",
+    )
+    (tmp_path / "_index.json").write_text(
+        '[{"file":"wrong.pdf","doc_version":"unknown","superseded":false}]',
+        encoding="utf-8",
+    )
+    assert discover(str(tmp_path)) == [(raw / "downloaded.pdf", "2026-06", False)]

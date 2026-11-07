@@ -6,6 +6,12 @@ The indexer is a one-shot writer. From `indexer/` it runs
 The API never runs these stages. ChromaDB receives one record per chunk and Redis
 receives an invalidation event only after a successful upsert.
 
+Discovery prefers `CORPUS_DIR/raw/_index.json` when the corpus was fetched;
+otherwise it uses a committed root `_index.json` or scans the directory. This
+keeps downloaded source filenames and their version metadata aligned with the
+golden set while still allowing the CI fixture directory to work without a
+fetch step.
+
 ## Extraction
 PDFs are extracted one page at a time with `pdfplumber`. A page with fewer than 20
 non-whitespace characters is treated as scanned and sent to Tesseract through
@@ -158,9 +164,11 @@ failed invalidation is always logged.
 ## Evaluation method
 The evaluation fixtures identify expected passages by source and section. Recall@k
 is a hit when a retrieved passage matches an expected source/section pair within the
-top k; chunk IDs are not used because chunking settings can legitimately change. No
-production recall result is reported until a real corpus and service-backed
-retrieval run are available.
+top k; chunk IDs are not used because chunking settings can legitimately change.
+`eval/results.json` is currently marked `evaluation_mode: offline-stub-smoke`: it
+verifies the 17-question contract, grounding, citation membership, and abstentions
+without claiming a live Chroma/LLM result. Production evidence must be generated
+without `--allow-stub` after the indexer Job and real provider are running.
 
 ## Phase 5 operational measurements
 

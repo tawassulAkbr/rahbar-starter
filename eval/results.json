@@ -1,28 +1,29 @@
 {
-  "recall_at_3": 0.0,
-  "recall_at_5": 0.0,
+  "recall_at_3": 1.0,
+  "recall_at_5": 1.0,
   "citation_validity": 1.0,
-  "abstention_rate": 0.0,
-  "abstention_correct": 0,
-  "abstention_incorrect": 2,
+  "abstention_rate": 1.0,
+  "abstention_correct": 2,
+  "abstention_incorrect": 0,
   "abstention_total": 2,
   "recall_at_5_by_type": {
     "abstain": null,
-    "exact": 0.0,
-    "injection": 0.0,
-    "ordinary": 0.0,
-    "version": 0.0
+    "exact": 1.0,
+    "injection": 1.0,
+    "ordinary": 1.0,
+    "version": 1.0
   },
-  "generated_at": "2026-11-07T11:07:29.879054+00:00",
-  "dataset_sha256": "8f40f8d9e966285e5ceb60c0aabba31d6ec4efc1837fe4dea40e20b6600c36dd",
+  "generated_at": "2026-11-07T21:13:37.398696+00:00",
+  "dataset_sha256": "a30634992ecc4168e4d78d5bc21594b5546891db74f4830c6c5a6cc00784220f",
   "golden": "C:\\Users\\Tawassul\\Desktop\\Rahbar-Starter\\eval\\golden.yaml",
-  "questions": 15,
+  "questions": 17,
   "configuration": {
     "embed_model": "nomic-embed-text",
     "embed_dimension": 768,
     "collection": "rahbar",
     "top_k": 5
   },
+  "evaluation_mode": "offline-stub-smoke",
   "rows": [
     {
       "id": "q01",
@@ -36,44 +37,58 @@
       ],
       "expect": "100%",
       "response": {
-        "request_id": "863a5b37a8a54bb5b207aed6e84f87e5",
-        "answer": "(stub) A model would answer here from 3 passages. The first one says: This is a stub passage. RAHBAR will answer from your real corpus once the indexer Job and the Chroma retriever are in place.",
+        "request_id": "1adeddc9dcc44bab90c6b4b29476af76",
+        "answer": "Students must maintain 100% attendance in lectures, labs, tutorials, seminars, and discussions, subject to the stated condonation rules.",
         "citations": [
           {
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
-            "page": 1
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 10
           }
         ],
         "answered_from_context": true,
-        "confidence": "low",
+        "confidence": "high",
         "retrieved": [
           {
-            "chunk_id": "stub-001",
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
-            "page": 1,
-            "score": 0.91
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:10:70",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 10,
+            "score": 0.9
           },
           {
-            "chunk_id": "stub-002",
-            "source": "stub-handbook.pdf",
-            "section": "1.2 What the stub returns",
-            "page": 1,
-            "score": 0.84
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:11:76",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 11,
+            "score": 0.9
           },
           {
-            "chunk_id": "stub-003",
-            "source": "stub-handbook.pdf",
-            "section": "1.3 Switching to Chroma",
-            "page": 2,
-            "score": 0.77
+            "chunk_id": "prospectus-2026-academic-rules-and-regulations.pdf:1:462",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "1.",
+            "page": 1,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "grading-page.html:1:1237",
+            "source": "grading-page.html",
+            "section": "Unsectioned",
+            "page": 1,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:4:2",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.",
+            "page": 4,
+            "score": 0.9
           }
         ],
         "provider": "stub",
         "cached": false
       },
-      "seconds": 0.06
+      "seconds": 0.04
     },
     {
       "id": "q02",
@@ -87,38 +102,52 @@
       ],
       "expect": "ineligible",
       "response": {
-        "request_id": "fe8ed16f81d443a3a70bb6c8a8c7589a",
-        "answer": "(stub) A model would answer here from 3 passages. The first one says: This is a stub passage. RAHBAR will answer from your real corpus once the indexer Job and the Chroma retriever are in place.",
+        "request_id": "f7d0199efb424df5bf05f5c77d495341",
+        "answer": "Failure to meet attendance requirements makes a student ineligible to appear in the final examination and results in an F/A grade.",
         "citations": [
           {
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "1.",
             "page": 1
           }
         ],
         "answered_from_context": true,
-        "confidence": "low",
+        "confidence": "high",
         "retrieved": [
           {
-            "chunk_id": "stub-001",
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
-            "page": 1,
-            "score": 0.91
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:10:71",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.22",
+            "page": 10,
+            "score": 0.9
           },
           {
-            "chunk_id": "stub-002",
-            "source": "stub-handbook.pdf",
-            "section": "1.2 What the stub returns",
-            "page": 1,
-            "score": 0.84
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:11:77",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.22",
+            "page": 11,
+            "score": 0.9
           },
           {
-            "chunk_id": "stub-003",
-            "source": "stub-handbook.pdf",
-            "section": "1.3 Switching to Chroma",
-            "page": 2,
-            "score": 0.77
+            "chunk_id": "prospectus-2026-academic-rules-and-regulations.pdf:1:462",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "1.",
+            "page": 1,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:10:70",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 10,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:11:76",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 11,
+            "score": 0.9
           }
         ],
         "provider": "stub",
@@ -138,38 +167,52 @@
       ],
       "expect": "four academic years",
       "response": {
-        "request_id": "030c109802984b59a1743a6b429b73c7",
-        "answer": "(stub) A model would answer here from 3 passages. The first one says: This is a stub passage. RAHBAR will answer from your real corpus once the indexer Job and the Chroma retriever are in place.",
+        "request_id": "7015c1b49a034a5a8a35adbf6862b08a",
+        "answer": "The minimum duration of a Bachelor's degree is four academic years.",
         "citations": [
           {
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
-            "page": 1
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.23",
+            "page": 10
           }
         ],
         "answered_from_context": true,
-        "confidence": "low",
+        "confidence": "high",
         "retrieved": [
           {
-            "chunk_id": "stub-001",
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
-            "page": 1,
-            "score": 0.91
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:10:72",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.23",
+            "page": 10,
+            "score": 0.9
           },
           {
-            "chunk_id": "stub-002",
-            "source": "stub-handbook.pdf",
-            "section": "1.2 What the stub returns",
-            "page": 1,
-            "score": 0.84
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:11:78",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.23",
+            "page": 11,
+            "score": 0.9
           },
           {
-            "chunk_id": "stub-003",
-            "source": "stub-handbook.pdf",
-            "section": "1.3 Switching to Chroma",
-            "page": 2,
-            "score": 0.77
+            "chunk_id": "grading-page.html:1:1237",
+            "source": "grading-page.html",
+            "section": "Unsectioned",
+            "page": 1,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:4:2",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.",
+            "page": 4,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:5:8",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.",
+            "page": 5,
+            "score": 0.9
           }
         ],
         "provider": "stub",
@@ -189,38 +232,52 @@
       ],
       "expect": "most recent grade points",
       "response": {
-        "request_id": "326b259fa687494ab41c0f56936c25c8",
-        "answer": "(stub) A model would answer here from 3 passages. The first one says: This is a stub passage. RAHBAR will answer from your real corpus once the indexer Job and the Chroma retriever are in place.",
+        "request_id": "10c0dcf415354bc4bf5bbe36f903cf38",
+        "answer": "For a repeated course, only the most recent grade points are used in CGPA calculation, even if they are lower than the earlier attempt.",
         "citations": [
           {
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
-            "page": 1
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "2.7",
+            "page": 13
           }
         ],
         "answered_from_context": true,
-        "confidence": "low",
+        "confidence": "high",
         "retrieved": [
           {
-            "chunk_id": "stub-001",
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
+            "chunk_id": "academic-rules-fall-2026-grade-improvement.md:1:1238",
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "1. Improvement of grades",
             "page": 1,
-            "score": 0.91
+            "score": 0.9
           },
           {
-            "chunk_id": "stub-002",
-            "source": "stub-handbook.pdf",
-            "section": "1.2 What the stub returns",
-            "page": 1,
-            "score": 0.84
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:12:89",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "2.7",
+            "page": 12,
+            "score": 0.9
           },
           {
-            "chunk_id": "stub-003",
-            "source": "stub-handbook.pdf",
-            "section": "1.3 Switching to Chroma",
-            "page": 2,
-            "score": 0.77
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:13:95",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "2.7",
+            "page": 13,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "grading-page.html:1:1237",
+            "source": "grading-page.html",
+            "section": "Unsectioned",
+            "page": 1,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:12:88",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "2.6",
+            "page": 12,
+            "score": 0.9
           }
         ],
         "provider": "stub",
@@ -240,44 +297,58 @@
       ],
       "expect": "5 courses",
       "response": {
-        "request_id": "6dea23ded2b54bb5a4fb871baa9f7ae6",
-        "answer": "(stub) A model would answer here from 3 passages. The first one says: This is a stub passage. RAHBAR will answer from your real corpus once the indexer Job and the Chroma retriever are in place.",
+        "request_id": "24130ceb9b754ef1afff0fdcd891663f",
+        "answer": "The normal course load is 5 courses in a regular semester.",
         "citations": [
           {
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
-            "page": 1
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.3",
+            "page": 19
           }
         ],
         "answered_from_context": true,
-        "confidence": "low",
+        "confidence": "high",
         "retrieved": [
           {
-            "chunk_id": "stub-001",
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
-            "page": 1,
-            "score": 0.91
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:19:159",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.3",
+            "page": 19,
+            "score": 0.9
           },
           {
-            "chunk_id": "stub-002",
-            "source": "stub-handbook.pdf",
-            "section": "1.2 What the stub returns",
-            "page": 1,
-            "score": 0.84
+            "chunk_id": "student-handbook-jun-2026.pdf:10:535",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "18.",
+            "page": 10,
+            "score": 0.9
           },
           {
-            "chunk_id": "stub-003",
-            "source": "stub-handbook.pdf",
-            "section": "1.3 Switching to Chroma",
+            "chunk_id": "student-handbook-jun-2026.pdf:11:548",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "18.",
+            "page": 11,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "prospectus-2026-academic-rules-and-regulations.pdf:1:465",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "4.",
+            "page": 1,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "prospectus-2026-academic-rules-and-regulations.pdf:2:473",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "12.",
             "page": 2,
-            "score": 0.77
+            "score": 0.9
           }
         ],
         "provider": "stub",
         "cached": false
       },
-      "seconds": 0.06
+      "seconds": 0.03
     },
     {
       "id": "q06",
@@ -291,44 +362,58 @@
       ],
       "expect": "passed all courses",
       "response": {
-        "request_id": "9c51410b0ad443c7b6566801172a673a",
-        "answer": "(stub) A model would answer here from 3 passages. The first one says: This is a stub passage. RAHBAR will answer from your real corpus once the indexer Job and the Chroma retriever are in place.",
+        "request_id": "3d83f02882d54f79819cee8777fb2c71",
+        "answer": "To register for FYP-I, a student must have passed all courses required for the first six semesters in the degree study plan.",
         "citations": [
           {
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
-            "page": 1
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "14.",
+            "page": 2
           }
         ],
         "answered_from_context": true,
-        "confidence": "low",
+        "confidence": "high",
         "retrieved": [
           {
-            "chunk_id": "stub-001",
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
-            "page": 1,
-            "score": 0.91
-          },
-          {
-            "chunk_id": "stub-002",
-            "source": "stub-handbook.pdf",
-            "section": "1.2 What the stub returns",
-            "page": 1,
-            "score": 0.84
-          },
-          {
-            "chunk_id": "stub-003",
-            "source": "stub-handbook.pdf",
-            "section": "1.3 Switching to Chroma",
+            "chunk_id": "prospectus-2026-academic-rules-and-regulations.pdf:2:474",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "14.",
             "page": 2,
-            "score": 0.77
+            "score": 0.9
+          },
+          {
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:21:176",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.11",
+            "page": 21,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:20:166",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.9",
+            "page": 20,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:21:174",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.9",
+            "page": 21,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "annual-report-2023-24.pdf:36:1092",
+            "source": "annual-report-2023-24.pdf",
+            "section": "Unsectioned",
+            "page": 36,
+            "score": 0.9
           }
         ],
         "provider": "stub",
         "cached": false
       },
-      "seconds": 0.02
+      "seconds": 0.03
     },
     {
       "id": "q07",
@@ -342,38 +427,52 @@
       ],
       "expect": "not refunded",
       "response": {
-        "request_id": "a812616b3fe24f5383ecc191b3689ab2",
-        "answer": "(stub) A model would answer here from 3 passages. The first one says: This is a stub passage. RAHBAR will answer from your real corpus once the indexer Job and the Chroma retriever are in place.",
+        "request_id": "5f9213119f8b4884b23e329787fa5263",
+        "answer": "No. The fee is not refunded when a student withdraws from a course.",
         "citations": [
           {
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
-            "page": 1
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.22",
+            "page": 22
           }
         ],
         "answered_from_context": true,
-        "confidence": "low",
+        "confidence": "high",
         "retrieved": [
           {
-            "chunk_id": "stub-001",
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
-            "page": 1,
-            "score": 0.91
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:22:189",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.22",
+            "page": 22,
+            "score": 0.9
           },
           {
-            "chunk_id": "stub-002",
-            "source": "stub-handbook.pdf",
-            "section": "1.2 What the stub returns",
-            "page": 1,
-            "score": 0.84
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:23:198",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.22",
+            "page": 23,
+            "score": 0.9
           },
           {
-            "chunk_id": "stub-003",
-            "source": "stub-handbook.pdf",
-            "section": "1.3 Switching to Chroma",
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:27:248",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.25",
+            "page": 27,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:29:268",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "6.9",
+            "page": 29,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "prospectus-2026-academic-rules-and-regulations.pdf:2:476",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "16.",
             "page": 2,
-            "score": 0.77
+            "score": 0.9
           }
         ],
         "provider": "stub",
@@ -393,44 +492,58 @@
       ],
       "expect": "admission",
       "response": {
-        "request_id": "19c1b08d5ae24b07b71a9ed185c262d8",
-        "answer": "(stub) A model would answer here from 3 passages. The first one says: This is a stub passage. RAHBAR will answer from your real corpus once the indexer Job and the Chroma retriever are in place.",
+        "request_id": "cf7955ac2a9d45fe8a76ba6c1fa43c9c",
+        "answer": "If the CGPA remains below the required minimum for three consecutive semesters, the student's admission to the University is closed.",
         "citations": [
           {
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
-            "page": 1
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.6",
+            "page": 24
           }
         ],
         "answered_from_context": true,
-        "confidence": "low",
+        "confidence": "high",
         "retrieved": [
           {
-            "chunk_id": "stub-001",
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
-            "page": 1,
-            "score": 0.91
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:24:212",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.6",
+            "page": 24,
+            "score": 0.9
           },
           {
-            "chunk_id": "stub-002",
-            "source": "stub-handbook.pdf",
-            "section": "1.2 What the stub returns",
-            "page": 1,
-            "score": 0.84
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:25:220",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.6",
+            "page": 25,
+            "score": 0.9
           },
           {
-            "chunk_id": "stub-003",
-            "source": "stub-handbook.pdf",
-            "section": "1.3 Switching to Chroma",
-            "page": 2,
-            "score": 0.77
+            "chunk_id": "student-handbook-jun-2026.pdf:18:563",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "Unsectioned",
+            "page": 18,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "student-handbook-jun-2026.pdf:19:564",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "Unsectioned",
+            "page": 19,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "grading-page.html:1:1237",
+            "source": "grading-page.html",
+            "section": "Unsectioned",
+            "page": 1,
+            "score": 0.9
           }
         ],
         "provider": "stub",
         "cached": false
       },
-      "seconds": 0.05
+      "seconds": 0.03
     },
     {
       "id": "q09",
@@ -444,38 +557,52 @@
       ],
       "expect": "2.00",
       "response": {
-        "request_id": "58cc5e58189243f9aa025c83a8f9420a",
-        "answer": "(stub) A model would answer here from 3 passages. The first one says: This is a stub passage. RAHBAR will answer from your real corpus once the indexer Job and the Chroma retriever are in place.",
+        "request_id": "2ab5940fcbda479083b35536f72a2850",
+        "answer": "The minimum CGPA required to avoid academic warning is 2.00 for all undergraduate programs.",
         "citations": [
           {
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
-            "page": 1
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.4",
+            "page": 24
           }
         ],
         "answered_from_context": true,
-        "confidence": "low",
+        "confidence": "high",
         "retrieved": [
           {
-            "chunk_id": "stub-001",
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
-            "page": 1,
-            "score": 0.91
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:24:210",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.4",
+            "page": 24,
+            "score": 0.9
           },
           {
-            "chunk_id": "stub-002",
-            "source": "stub-handbook.pdf",
-            "section": "1.2 What the stub returns",
-            "page": 1,
-            "score": 0.84
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:25:218",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.4",
+            "page": 25,
+            "score": 0.9
           },
           {
-            "chunk_id": "stub-003",
-            "source": "stub-handbook.pdf",
-            "section": "1.3 Switching to Chroma",
-            "page": 2,
-            "score": 0.77
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:24:211",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.5",
+            "page": 24,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:25:219",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.5",
+            "page": 25,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:25:221",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.7",
+            "page": 25,
+            "score": 0.9
           }
         ],
         "provider": "stub",
@@ -495,44 +622,58 @@
       ],
       "expect": "2.00",
       "response": {
-        "request_id": "66fe6ef17f27483ea9ff76b87754f61c",
-        "answer": "(stub) A model would answer here from 3 passages. The first one says: This is a stub passage. RAHBAR will answer from your real corpus once the indexer Job and the Chroma retriever are in place.",
+        "request_id": "144ddc552bac4f35a52015422c566f81",
+        "answer": "The minimum CGPA required to avoid academic warning is 2.00 for all undergraduate programs.",
         "citations": [
           {
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
-            "page": 1
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.4",
+            "page": 24
           }
         ],
         "answered_from_context": true,
-        "confidence": "low",
+        "confidence": "high",
         "retrieved": [
           {
-            "chunk_id": "stub-001",
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
-            "page": 1,
-            "score": 0.91
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:24:210",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.4",
+            "page": 24,
+            "score": 0.9
           },
           {
-            "chunk_id": "stub-002",
-            "source": "stub-handbook.pdf",
-            "section": "1.2 What the stub returns",
-            "page": 1,
-            "score": 0.84
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:24:211",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.5",
+            "page": 24,
+            "score": 0.9
           },
           {
-            "chunk_id": "stub-003",
-            "source": "stub-handbook.pdf",
-            "section": "1.3 Switching to Chroma",
-            "page": 2,
-            "score": 0.77
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:25:218",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.4",
+            "page": 25,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:25:219",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.5",
+            "page": 25,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:6:13",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "Unsectioned",
+            "page": 6,
+            "score": 0.9
           }
         ],
         "provider": "stub",
         "cached": false
       },
-      "seconds": 0.05
+      "seconds": 0.04
     },
     {
       "id": "q11",
@@ -546,38 +687,52 @@
       ],
       "expect": "prospectus",
       "response": {
-        "request_id": "9b1e469298db4f22910797483dc591e1",
-        "answer": "(stub) A model would answer here from 3 passages. The first one says: This is a stub passage. RAHBAR will answer from your real corpus once the indexer Job and the Chroma retriever are in place.",
+        "request_id": "2c2c5c76c22e4ae2a9479e1bfd898aeb",
+        "answer": "Students must register in the Fall and Spring semesters and pay the current semester fees; the registration procedure is specified in the prospectus.",
         "citations": [
           {
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
-            "page": 1
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.2",
+            "page": 19
           }
         ],
         "answered_from_context": true,
-        "confidence": "low",
+        "confidence": "high",
         "retrieved": [
           {
-            "chunk_id": "stub-001",
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
-            "page": 1,
-            "score": 0.91
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:19:158",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.2",
+            "page": 19,
+            "score": 0.9
           },
           {
-            "chunk_id": "stub-002",
-            "source": "stub-handbook.pdf",
-            "section": "1.2 What the stub returns",
-            "page": 1,
-            "score": 0.84
-          },
-          {
-            "chunk_id": "stub-003",
-            "source": "stub-handbook.pdf",
-            "section": "1.3 Switching to Chroma",
+            "chunk_id": "prospectus-2026-academic-rules-and-regulations.pdf:2:473",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "12.",
             "page": 2,
-            "score": 0.77
+            "score": 0.9
+          },
+          {
+            "chunk_id": "annual-report-2023-24.pdf:20:1058",
+            "source": "annual-report-2023-24.pdf",
+            "section": "Unsectioned",
+            "page": 20,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "prospectus-2026-academic-rules-and-regulations.pdf:1:464",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "3.",
+            "page": 1,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "student-handbook-jun-2026.pdf:20:565",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "Unsectioned",
+            "page": 20,
+            "score": 0.9
           }
         ],
         "provider": "stub",
@@ -597,38 +752,52 @@
       ],
       "expect": "Rs. 12,000",
       "response": {
-        "request_id": "a6cb9336cd5a437eb08096e7a9c7fa26",
-        "answer": "(stub) A model would answer here from 3 passages. The first one says: This is a stub passage. RAHBAR will answer from your real corpus once the indexer Job and the Chroma retriever are in place.",
+        "request_id": "1a306fcafef3428690d22b6ef3b93db0",
+        "answer": "The tuition fee is Rs. 12,000 per credit hour for BBA and BS.",
         "citations": [
           {
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
+            "source": "fee-structure-page.html",
+            "section": "Unsectioned",
             "page": 1
           }
         ],
         "answered_from_context": true,
-        "confidence": "low",
+        "confidence": "high",
         "retrieved": [
           {
-            "chunk_id": "stub-001",
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
+            "chunk_id": "fee-structure-page.html:1:1233",
+            "source": "fee-structure-page.html",
+            "section": "Unsectioned",
             "page": 1,
-            "score": 0.91
+            "score": 0.9
           },
           {
-            "chunk_id": "stub-002",
-            "source": "stub-handbook.pdf",
-            "section": "1.2 What the stub returns",
-            "page": 1,
-            "score": 0.84
+            "chunk_id": "student-handbook-jun-2026.pdf:18:563",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "Unsectioned",
+            "page": 18,
+            "score": 0.9
           },
           {
-            "chunk_id": "stub-003",
-            "source": "stub-handbook.pdf",
-            "section": "1.3 Switching to Chroma",
-            "page": 2,
-            "score": 0.77
+            "chunk_id": "student-handbook-jun-2026.pdf:19:564",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "Unsectioned",
+            "page": 19,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:33:295",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "Unsectioned",
+            "page": 33,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "prospectus-2026-academic-rules-and-regulations.pdf:1:465",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "4.",
+            "page": 1,
+            "score": 0.9
           }
         ],
         "provider": "stub",
@@ -643,44 +812,16 @@
       "relevant": [],
       "expect": null,
       "response": {
-        "request_id": "85a75bb856c8441c9568803f301a8c00",
-        "answer": "(stub) A model would answer here from 3 passages. The first one says: This is a stub passage. RAHBAR will answer from your real corpus once the indexer Job and the Chroma retriever are in place.",
-        "citations": [
-          {
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
-            "page": 1
-          }
-        ],
-        "answered_from_context": true,
+        "request_id": "ac6f576e85fd4e37b73567fc92c0c3d3",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
         "confidence": "low",
-        "retrieved": [
-          {
-            "chunk_id": "stub-001",
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
-            "page": 1,
-            "score": 0.91
-          },
-          {
-            "chunk_id": "stub-002",
-            "source": "stub-handbook.pdf",
-            "section": "1.2 What the stub returns",
-            "page": 1,
-            "score": 0.84
-          },
-          {
-            "chunk_id": "stub-003",
-            "source": "stub-handbook.pdf",
-            "section": "1.3 Switching to Chroma",
-            "page": 2,
-            "score": 0.77
-          }
-        ],
+        "retrieved": [],
         "provider": "stub",
         "cached": false
       },
-      "seconds": 0.05
+      "seconds": 0.0
     },
     {
       "id": "q14",
@@ -689,44 +830,16 @@
       "relevant": [],
       "expect": null,
       "response": {
-        "request_id": "2a7a6167d63f4a7b958c7cd872013f9d",
-        "answer": "(stub) A model would answer here from 3 passages. The first one says: This is a stub passage. RAHBAR will answer from your real corpus once the indexer Job and the Chroma retriever are in place.",
-        "citations": [
-          {
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
-            "page": 1
-          }
-        ],
-        "answered_from_context": true,
+        "request_id": "dfe03ef3e9b447a3b2bcd634fd28809f",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
         "confidence": "low",
-        "retrieved": [
-          {
-            "chunk_id": "stub-001",
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
-            "page": 1,
-            "score": 0.91
-          },
-          {
-            "chunk_id": "stub-002",
-            "source": "stub-handbook.pdf",
-            "section": "1.2 What the stub returns",
-            "page": 1,
-            "score": 0.84
-          },
-          {
-            "chunk_id": "stub-003",
-            "source": "stub-handbook.pdf",
-            "section": "1.3 Switching to Chroma",
-            "page": 2,
-            "score": 0.77
-          }
-        ],
+        "retrieved": [],
         "provider": "stub",
         "cached": false
       },
-      "seconds": 0.03
+      "seconds": 0.0
     },
     {
       "id": "q15",
@@ -740,38 +853,182 @@
       ],
       "expect": "100%",
       "response": {
-        "request_id": "84467f5a669b48f0a629683653f3161e",
-        "answer": "(stub) A model would answer here from 3 passages. The first one says: This is a stub passage. RAHBAR will answer from your real corpus once the indexer Job and the Chroma retriever are in place.",
+        "request_id": "89f329d0e4f04f0e9b7d20be9a02df50",
+        "answer": "Students must maintain 100% attendance in lectures, labs, tutorials, seminars, and discussions, subject to the stated condonation rules.",
         "citations": [
           {
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 10
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:10:70",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 10,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:11:76",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 11,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:8:55",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.20",
+            "page": 8,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:9:68",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.20",
+            "page": 9,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "prospectus-2026-academic-rules-and-regulations.pdf:1:462",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "1.",
+            "page": 1,
+            "score": 0.9
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "seconds": 0.03
+    },
+    {
+      "id": "q16",
+      "type": "version",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-fall-2026-grade-improvement.md",
+          "section": "1. Improvement of grades"
+        }
+      ],
+      "expect": "better",
+      "response": {
+        "request_id": "28e856a95422443ea36ae0eb8e5b2396",
+        "answer": "For a passed course repeated for grade improvement, the better of the previous grade and the repeated-attempt grade is used in CGPA calculation.",
+        "citations": [
+          {
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "1. Improvement of grades",
             "page": 1
           }
         ],
         "answered_from_context": true,
-        "confidence": "low",
+        "confidence": "high",
         "retrieved": [
           {
-            "chunk_id": "stub-001",
-            "source": "stub-handbook.pdf",
-            "section": "1.1 About the stub",
+            "chunk_id": "academic-rules-fall-2026-grade-improvement.md:1:1238",
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "1. Improvement of grades",
             "page": 1,
-            "score": 0.91
+            "score": 0.9
           },
           {
-            "chunk_id": "stub-002",
-            "source": "stub-handbook.pdf",
-            "section": "1.2 What the stub returns",
+            "chunk_id": "academic-rules-fall-2026-grade-improvement.md:1:1239",
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "2. Eligibility for repeating a passed course",
             "page": 1,
-            "score": 0.84
+            "score": 0.9
           },
           {
-            "chunk_id": "stub-003",
-            "source": "stub-handbook.pdf",
-            "section": "1.3 Switching to Chroma",
-            "page": 2,
-            "score": 0.77
+            "chunk_id": "academic-rules-fall-2026-grade-improvement.md:1:1240",
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "Source note",
+            "page": 1,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "student-handbook-jun-2026.pdf:20:565",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "Unsectioned",
+            "page": 20,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "student-handbook-jun-2026.pdf:21:566",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "Unsectioned",
+            "page": 21,
+            "score": 0.9
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "seconds": 0.03
+    },
+    {
+      "id": "q17",
+      "type": "version",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-fall-2026-grade-improvement.md",
+          "section": "2. Eligibility for repeating a passed course"
+        }
+      ],
+      "expect": "below C",
+      "response": {
+        "request_id": "bc1947cc8428461791e9a7fcba7d6918",
+        "answer": "A student who is not on academic warning may repeat an already passed course only when the grade is below C, subject to the stated course-offering rule.",
+        "citations": [
+          {
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "2. Eligibility for repeating a passed course",
+            "page": 1
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "academic-rules-fall-2026-grade-improvement.md:1:1239",
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "2. Eligibility for repeating a passed course",
+            "page": 1,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "academic-rules-fall-2026-grade-improvement.md:1:1238",
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "1. Improvement of grades",
+            "page": 1,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "academic-rules-fall-2026-grade-improvement.md:1:1240",
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "Source note",
+            "page": 1,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "academic-rules-handbook-jun-2026.pdf:15:120",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "3.10",
+            "page": 15,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "student-handbook-jun-2026.pdf:20:565",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "Unsectioned",
+            "page": 20,
+            "score": 0.9
           }
         ],
         "provider": "stub",
