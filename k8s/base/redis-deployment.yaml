@@ -43,6 +43,12 @@ spec:
         - name: redis
           image: redis:7.4-alpine
           args: ["redis-server", "--appendonly", "yes"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL
           ports:
             - name: redis
               containerPort: 6379

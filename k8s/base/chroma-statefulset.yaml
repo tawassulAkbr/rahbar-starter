@@ -33,6 +33,12 @@ spec:
       containers:
         - name: chroma
           image: chromadb/chroma:1.0.12
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL
           ports:
             - name: http
               containerPort: 8000
