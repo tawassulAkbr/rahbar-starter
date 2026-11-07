@@ -1,0 +1,90 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: embedding-stub
+  namespace: rahbar
+spec:
+  type: ClusterIP
+  selector:
+    app: embedding-stub
+  ports:
+    - name: http
+      port: 11434
+      targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: embedding-stub
+  namespace: rahbar
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: embedding-stub
+  template:
+    metadata:
+      labels:
+        app: embedding-stub
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: embedding-stub
+          image: python:3.12.3-slim-bookworm
+          imagePullPolicy: IfNotPresent
+          command: ["python", "/stub/ci_embedding_stub.py"]
+          ports:
+            - name: http
+              containerPort: 11434
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: stub-code
+              mountPath: /stub
+              readOnly: true
+            - name: tmp
+              mountPath: /tmp
+          readinessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 2
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+      volumes:
+        - name: stub-code
+          configMap:
+            name: embedding-stub-code
+        - name: tmp
+          emptyDir: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-embedding-stub
+  namespace: rahbar
+spec:
+  podSelector:
+    matchLabels:
+      app: embedding-stub
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: api
+        - podSelector:
+            matchLabels:
+              app: indexer
+      ports:
+        - protocol: TCP
+          port: 11434
