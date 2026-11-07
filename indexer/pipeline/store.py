@@ -54,7 +54,7 @@ def store(chunks: list[Chunk], vectors: list[list[float]], settings: IndexerSett
     model = existing.get("embed_model")
     old_dimension = existing.get("dimension")
     try:
-        compatible_dimension = int(old_dimension)
+        compatible_dimension = int(str(old_dimension))
     except (TypeError, ValueError):
         compatible_dimension = -1
     if model != settings.embed_model or compatible_dimension != dimension:
