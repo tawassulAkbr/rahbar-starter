@@ -47,6 +47,7 @@ class Settings:
     ollama_url: str = "http://host.minikube.internal:11434"
     hosted_base_url: str = ""        # e.g. an OpenAI-compatible endpoint
     llm_api_key: str = field(default="", repr=False)   # from the Secret; never log it
+    corpus_dir: str = ""                  # optional local corpus for offline development
 
     log_level: str = "INFO"
 
@@ -72,5 +73,6 @@ def get_settings() -> Settings:
         ollama_url=os.environ.get("OLLAMA_URL", "http://host.minikube.internal:11434"),
         hosted_base_url=os.environ.get("HOSTED_BASE_URL", ""),
         llm_api_key=os.environ.get("LLM_API_KEY", ""),
+        corpus_dir=os.environ.get("CORPUS_DIR", ""),
         log_level=os.environ.get("LOG_LEVEL", "INFO"),
     )

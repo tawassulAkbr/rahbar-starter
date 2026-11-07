@@ -14,6 +14,17 @@ _HEADING = re.compile(r"^\s*(?:#{1,6}\s+|\d+(?:\.\d+)*[.)]?\s+)")
 _SENTENCE = re.compile(r"(?<=[.!?])\s+(?=[A-Z0-9])")
 
 
+def _section_label(line: str) -> str:
+    """Return a stable citation label for numbered clauses.
+
+    Extracted PDFs often turn a heading into ``4.2 A student must...``. The
+    clause number is the stable identity used by the golden set and is less
+    sensitive to extraction whitespace than the whole heading.
+    """
+    match = re.match(r"^\s*(\d+(?:\.\d+)+)\b", line)
+    return match.group(1) if match else line.strip()
+
+
 def _count(text: str) -> int:
     return len(_TOKEN.findall(text))
 
@@ -21,8 +32,8 @@ def _count(text: str) -> int:
 def _units(doc: Document, max_tokens: int) -> tuple[list[tuple[str, int, str]], int]:
     units: list[tuple[str, int, str]] = []
     original = 0
+    section = ""
     for page in doc.pages:
-        section = ""
         paragraphs = re.split(r"\n\s*\n+", page.text.strip()) if page.text.strip() else []
         for paragraph in paragraphs:
             lines = paragraph.splitlines()
@@ -30,7 +41,7 @@ def _units(doc: Document, max_tokens: int) -> tuple[list[tuple[str, int, str]], 
                 if _HEADING.match(line) or (
                     len(line) < 140 and re.match(r"^\d+(?:\.\d+)*\s", line)
                 ):
-                    section = line.strip()
+                    section = _section_label(line)
             text = paragraph.strip()
             if not text:
                 continue

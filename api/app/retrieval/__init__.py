@@ -8,7 +8,7 @@ def get_retriever(settings: Settings) -> Retriever:
     if settings.retriever == "stub":
         from .stub import StubRetriever
 
-        return StubRetriever()
+        return StubRetriever(settings.corpus_dir)
     if settings.retriever == "chroma":
         from .chroma import ChromaRetriever
 

@@ -11,6 +11,7 @@ spec:
       labels:
         app: indexer
     spec:
+      serviceAccountName: rahbar-indexer
       automountServiceAccountToken: false
       restartPolicy: OnFailure
       securityContext:

@@ -16,6 +16,7 @@ spec:
           labels:
             app: indexer
         spec:
+          serviceAccountName: rahbar-indexer
           automountServiceAccountToken: false
           restartPolicy: OnFailure
           securityContext:
@@ -26,6 +27,7 @@ spec:
             - name: indexer
               image: rahbar-indexer:dev
               imagePullPolicy: IfNotPresent
+              command: ["python", "-m", "pipeline.run"]
               envFrom:
                 - configMapRef:
                     name: rahbar-config
