@@ -1,0 +1,217 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [dev]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: "3.12"
+  PYTHONUNBUFFERED: "1"
+  RETRIEVER: stub
+  LLM_PROVIDER: stub
+  LLM_API_KEY: ""
+  OLLAMA_URL: http://127.0.0.1:11434
+
+jobs:
+  lint:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-python@v5.6.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: |
+            api/requirements.txt
+            indexer/requirements.txt
+      - name: Install dependencies and tooling
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r indexer/requirements.txt
+          python -m pip install -r api/requirements.txt
+          python -m pip install -r requirements-dev.txt
+      - run: ruff check .
+      - run: mypy api/ indexer/
+
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      CHROMA_HOST: 127.0.0.1
+      CHROMA_PORT: "8000"
+      CHROMA_COLLECTION: rahbar
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-python@v5.6.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: |
+            api/requirements.txt
+            indexer/requirements.txt
+      - name: Install dependencies and test tooling
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r indexer/requirements.txt
+          python -m pip install -r api/requirements.txt
+          python -m pip install -r requirements-dev.txt
+      - name: Run tests with coverage gate
+        run: >-
+          pytest api/tests/ indexer/tests/ --cov=app --cov=pipeline
+          --cov-report=term-missing --cov-fail-under=60
+
+  manifests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - name: Install kustomize
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/kubernetes-sigs/kustomize/kustomize/v5.5.0/hack/install_kustomize.sh | bash -s -- 5.5.0 /usr/local/bin
+      - name: Install kubeconform
+        run: |
+          curl -fsSL -o /tmp/kubeconform.tar.gz https://github.com/yannh/kubeconform/releases/download/v0.6.7/kubeconform-linux-amd64.tar.gz
+          tar -xzf /tmp/kubeconform.tar.gz -C /usr/local/bin kubeconform
+      - name: Validate production manifests
+        run: timeout 20s bash -o pipefail -c 'kustomize build k8s/overlays/prod | kubeconform -strict -summary'
+      - name: Validate development manifests
+        run: timeout 20s bash -o pipefail -c 'kustomize build k8s/overlays/dev | kubeconform -strict -summary'
+
+  build:
+    needs: [lint, test, manifests]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: docker/setup-qemu-action@v3.6.0
+      - uses: docker/setup-buildx-action@v3.10.0
+      - name: Build multi-architecture OCI archives
+        run: |
+          mkdir -p artifacts
+          docker buildx build --platform linux/amd64,linux/arm64 --output type=oci,dest=artifacts/rahbar-api.oci api/
+          docker buildx build --platform linux/amd64,linux/arm64 --output type=oci,dest=artifacts/rahbar-indexer.oci indexer/
+          docker buildx build --platform linux/amd64,linux/arm64 --output type=oci,dest=artifacts/rahbar-ui.oci ui/
+      - name: Build amd64 images for Kind and local scanning
+        run: |
+          docker buildx build --platform linux/amd64 -t rahbar-api:ci --load api/
+          docker buildx build --platform linux/amd64 -t rahbar-indexer:ci --load indexer/
+          docker buildx build --platform linux/amd64 -t rahbar-ui:ci --load ui/
+          docker save rahbar-api:ci -o artifacts/rahbar-api.tar
+          docker save rahbar-indexer:ci -o artifacts/rahbar-indexer.tar
+          docker save rahbar-ui:ci -o artifacts/rahbar-ui.tar
+      - uses: actions/upload-artifact@v4.6.2
+        with:
+          name: rahbar-images
+          path: artifacts/
+          if-no-files-found: error
+          retention-days: 7
+
+  scan:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        image: [rahbar-api, rahbar-indexer, rahbar-ui]
+    steps:
+      - uses: actions/download-artifact@v4.3.0
+        with:
+          name: rahbar-images
+          path: artifacts
+      - name: Scan ${{ matrix.image }}
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: image
+          input: ${{ github.workspace }}/artifacts/${{ matrix.image }}.tar
+          format: json
+          output: trivy-${{ matrix.image }}.json
+          severity: HIGH,CRITICAL
+          ignore-unfixed: false
+          exit-code: "1"
+      - uses: actions/upload-artifact@v4.6.2
+        if: always()
+        with:
+          name: trivy-${{ matrix.image }}
+          path: trivy-${{ matrix.image }}.json
+          if-no-files-found: ignore
+          retention-days: 14
+
+  e2e-eval:
+    needs: [lint, test, manifests, build, scan]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      KIND_EXPERIMENTAL_PROVIDER: docker
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/download-artifact@v4.3.0
+        with:
+          name: rahbar-images
+          path: artifacts
+      - name: Load images into Docker
+        run: |
+          docker load -i artifacts/rahbar-api.tar
+          docker load -i artifacts/rahbar-indexer.tar
+          docker load -i artifacts/rahbar-ui.tar
+      - uses: helm/kind-action@v1.12.0
+        with:
+          node_image: kindest/node:v1.31.4
+          cluster_name: rahbar-ci
+      - name: Load images into Kind nodes
+        run: |
+          kind load docker-image rahbar-api:ci --name rahbar-ci
+          kind load docker-image rahbar-indexer:ci --name rahbar-ci
+          kind load docker-image rahbar-ui:ci --name rahbar-ci
+      - name: Create fixture corpus ConfigMap
+        run: |
+          kubectl create namespace rahbar --dry-run=client -o yaml | kubectl apply -f -
+          kubectl create configmap corpus-fixtures -n rahbar \
+            --from-file=academic-rules-2023.md=eval/fixtures/academic-rules-2023.md \
+            --from-file=academic-rules-2026.md=eval/fixtures/academic-rules-2026.md \
+            --from-file=fees-2026.md=eval/fixtures/fees-2026.md \
+            --dry-run=client -o yaml | kubectl apply -f -
+          kubectl create configmap embedding-stub-code -n rahbar \
+            --from-file=ci_embedding_stub.py=scripts/ci_embedding_stub.py \
+            --dry-run=client -o yaml | kubectl apply -f -
+      - name: Apply CI overlay
+        run: kubectl apply -k k8s/overlays/ci
+      - name: Wait for infrastructure
+        run: |
+          kubectl wait --for=condition=ready pod -l app=chroma -n rahbar --timeout=180s
+          kubectl wait --for=condition=ready pod -l app=redis -n rahbar --timeout=120s
+          kubectl wait --for=condition=available deployment/embedding-stub -n rahbar --timeout=120s
+      - name: Index fixture corpus with the real pipeline
+        run: |
+          kubectl wait --for=condition=complete job/indexer-job -n rahbar --timeout=300s
+          kubectl logs job/indexer-job -n rahbar
+      - name: Verify API rollout
+        run: kubectl rollout status deployment/api -n rahbar --timeout=120s
+      - name: Run evaluation gate
+        run: |
+          test -f eval/fixtures/baseline.json
+          kubectl port-forward service/api 8000:8000 -n rahbar >/tmp/rahbar-port-forward.log 2>&1 &
+          port_forward_pid=$!
+          trap 'kill "$port_forward_pid"' EXIT
+          for attempt in $(seq 1 30); do curl --fail --silent http://127.0.0.1:8000/healthz && break || sleep 2; done
+          python eval/run_eval.py --api http://localhost:8000 --fixtures
+      - name: Upload evaluation output
+        if: always()
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: evaluation-results
+          path: |
+            eval/results.json
+            /tmp/rahbar-port-forward.log
+          if-no-files-found: ignore

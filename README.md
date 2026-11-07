@@ -190,6 +190,14 @@ The real command requires reachable Ollama and ChromaDB services. See
 `docs/PIPELINE.md` for environment variables, embedding migration safeguards,
 OCR requirements, and troubleshooting.
 
+### Phase 4 CI/CD
+
+CI/CD workflow architecture, required secrets, local validation commands, Kind
+fixture testing, Trivy scanning, immutable image tags, and branch-protection
+instructions are documented in [`docs/CI-CD.md`](docs/CI-CD.md). The CI-only
+Kind overlay uses the real indexing pipeline with a deterministic local embedding
+service and does not alter production configuration.
+
 ---
 
 ## 6. API Endpoint Contract

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 from pathlib import Path
+from typing import Any
 
 from .models import Document
 from .models import Page
@@ -41,9 +42,9 @@ def _remove_repeated_edges(pages: list[Page]) -> None:
         page.text = "\n".join(lines)
 
 
-def _ocr_page(pdf_page: object) -> str:
+def _ocr_page(pdf_page: Any) -> str:
     try:
-        import pytesseract
+        import pytesseract  # type: ignore[import-untyped]
         from PIL import Image  # noqa: F401
     except ImportError as exc:
         raise RuntimeError(

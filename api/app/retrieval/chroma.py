@@ -74,7 +74,7 @@ class ChromaRetriever:
                 query["where"] = {"doc_version": requested_version}
             else:
                 query["where"] = {"superseded": False}
-            result = collection.query(**query)
+            result = collection.query(**query)  # type: ignore[arg-type]
         except RetrievalError:
             raise
         except Exception as exc:
