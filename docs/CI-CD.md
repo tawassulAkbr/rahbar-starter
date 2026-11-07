@@ -42,6 +42,13 @@ questions, and at least 95% citation validity. A measured
 until the fixture corpus has been indexed and evaluated in a real local or CI
 Kind run. The CI job fails clearly while that prerequisite is absent.
 
+The full university-corpus evaluation uses `eval/golden.yaml` and writes
+`eval/results.json`. `eval/baseline.json` may only be created by
+`python eval/run_eval.py --api <running-api> --update-baseline` after a genuine
+end-to-end run; the runner records the dataset hash, timestamp, configuration,
+per-question responses, and aggregate/category metrics. Missing services or a
+failed quality gate never produce a baseline.
+
 ## GitHub secrets
 
 Configure these under **Settings → Secrets and variables → Actions**:
