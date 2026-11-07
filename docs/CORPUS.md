@@ -1,46 +1,35 @@
 # Corpus
 
-## Current status
+## Verified acquisition
 
-The repository currently contains the corpus fetcher and source template, but no
-`corpus/sources.yaml`, downloaded `corpus/raw/` documents, or verified manifest.
-Consequently the seven mandatory corpus properties are not yet satisfied. This is
-intentional documentation of the current state; no document, page count, hash, or
-policy identifier is invented here.
+The local corpus contains nine manifest entries. `python corpus/fetch.py --verify`
+reports **9 of 9 match the manifest**. The PDFs have 279 pages in total, including
+the active June 2026 academic rules handbook and the superseded August 2023 rules.
 
 | Property | Status | Evidence |
 | --- | --- | --- |
-| At least six documents and more than 40 pages | Missing | `corpus/raw/` is absent |
-| Two versions of one policy | Missing | No downloaded policy versions |
-| Scanned image-only PDF | Missing | No local PDF to inspect with `pdffonts` |
-| Real tables | Missing | No local corpus documents |
-| Long definitions | Missing | No local corpus documents |
-| Deliberately absent topic | Planned, not verified | Must be selected after corpus acquisition |
-| Exact identifiers | Missing | No verified local source text |
+| At least six documents and more than 40 pages | Verified | 9 manifest entries; 279 PDF pages |
+| Two versions of one policy | Verified | `undergraduate-academic-rules-aug-2023.pdf` and `academic-rules-handbook-jun-2026.pdf` |
+| Scanned image-only PDF | Verified | `pdffonts` returns no fonts for `faculty-entrepreneurship-and-technical-start-ups-policy.pdf` |
+| Real tables | Verified | Fee and grading HTML tables; tabular PDF content in the annual reports |
+| Long definitions | Verified | Student Handbook 2026 and Academic Rules Handbook 2026 |
+| Deliberately absent topic | Verified for golden set | Hostel allotment and mess-refund procedures are not represented; the handbook only mentions hostel facilities |
+| Exact identifiers and clauses | Verified | Academic Rules Handbook clauses `1.21`, `4.2`, `5.4`; fee page value `Rs. 12,000` |
 
-## Acquisition and integrity procedure
+The downloaded bytes and metadata are recorded in `corpus/MANIFEST.md` and
+`corpus/raw/_index.json`. The 2023 rules PDF is image-only, so its detailed text
+must be extracted in the production/indexer image where Tesseract is installed.
+The host-side OCR check is therefore environment-dependent and must not be
+reported as a successful OCR run without that executable.
 
-Copy `corpus/sources.example.yaml` to `corpus/sources.yaml`, review every public
-URL, then run:
+## Reverification
 
 ```bash
-python corpus/fetch.py
 python corpus/fetch.py --verify
+pdfinfo corpus/raw/academic-rules-handbook-jun-2026.pdf | grep Pages
+pdffonts corpus/raw/faculty-entrepreneurship-and-technical-start-ups-policy.pdf
 ```
 
-The fetcher stores files under the gitignored `corpus/raw/`, records source URLs,
-versions, superseded flags, sizes, and SHA-256 hashes in `corpus/MANIFEST.md`, and
-avoids downloading an unchanged file twice. `--verify` checks every manifest hash.
-Confirm public-source access terms before acquisition.
-
-After downloading, verify page counts with `pdfinfo` or `pypdf`, inspect the
-scanned candidate with `pdffonts`, and search extracted text for exact clauses,
-course codes, thresholds, and the deliberately absent topic. Update the manifest
-with actual evidence only.
-
-## Pipeline handling
-
-`doc_version` and `superseded` come from `corpus/raw/_index.json` or Markdown front
-matter and flow into every indexed chunk. Scanned pages use the indexer's Tesseract
-fallback. Tables are preserved as extracted text where the source layout permits;
-OCR table reconstruction is not claimed without evidence.
+`doc_version` and `superseded` come from `corpus/raw/_index.json` and flow into
+every indexed chunk. Scanned pages use the indexer's Tesseract fallback. Tables
+are preserved as extracted text where the source layout permits.
