@@ -203,11 +203,22 @@ jobs:
       - name: Capture cluster diagnostics on failure
         if: failure()
         run: |
+          mkdir -p /tmp/rahbar-diagnostics
           kubectl get pods -n rahbar -o wide
-          kubectl describe pods -n rahbar
+          kubectl get pods -n rahbar -o wide > /tmp/rahbar-diagnostics/pods.txt
+          kubectl get events -n rahbar --sort-by=.lastTimestamp > /tmp/rahbar-diagnostics/events.txt
+          kubectl describe pods -n rahbar > /tmp/rahbar-diagnostics/describe.txt
           for pod in $(kubectl get pods -n rahbar -o jsonpath='{.items[*].metadata.name}'); do
-            kubectl logs "$pod" -n rahbar --all-containers --tail=200 || true
+            kubectl logs "$pod" -n rahbar --all-containers --tail=200 > "/tmp/rahbar-diagnostics/$pod.log" 2>&1 || true
           done
+      - name: Upload cluster diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: cluster-diagnostics
+          path: /tmp/rahbar-diagnostics
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Index fixture corpus with the real pipeline
         run: |
           kubectl wait --for=condition=complete job/indexer-job -n rahbar --timeout=300s
