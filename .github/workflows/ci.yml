@@ -130,7 +130,7 @@ jobs:
           name: rahbar-images
           path: artifacts
       - name: Scan ${{ matrix.image }}
-        uses: aquasecurity/trivy-action@v0.28.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: image
           input: ${{ github.workspace }}/artifacts/${{ matrix.image }}.tar
