@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import shutil
 from pathlib import Path
 
 from app.config import Settings
@@ -60,4 +61,28 @@ def test_local_loader_formats_grade_interpretation() -> None:
 
     assert "A+ = Outstanding" in result.answer
     assert "FA = Fail due to shortage of attendance" in result.answer
+    assert result.citations[0].section == "2.2"
+
+
+def test_local_loader_grade_fallback_works_without_fetched_raw_files(tmp_path: Path) -> None:
+    source_root = Path(__file__).resolve().parents[2] / "corpus"
+    shutil.copy2(source_root / "_index.json", tmp_path / "_index.json")
+    shutil.copy2(
+        source_root / "Academic Rules and Regulations.pdf",
+        tmp_path / "Academic Rules and Regulations.pdf",
+    )
+    shutil.copy2(
+        source_root / "academic-rules-fall-2026-grade-improvement.md",
+        tmp_path / "academic-rules-fall-2026-grade-improvement.md",
+    )
+
+    retriever = StubRetriever(str(tmp_path))
+    result = answer_question(
+        "What is the interpretation of the letter grades?",
+        retriever,
+        StubProvider(),
+        Settings(corpus_dir=str(tmp_path)),
+    )
+
+    assert "A+ = Outstanding" in result.answer
     assert result.citations[0].section == "2.2"
