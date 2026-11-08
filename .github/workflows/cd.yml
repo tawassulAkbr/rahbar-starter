@@ -112,9 +112,18 @@ jobs:
           docker build -t "$PREFIX/rahbar-api:$SHA" api/
           docker build -t "$PREFIX/rahbar-ui:$SHA" ui/
           docker build -f indexer/Dockerfile -t "$PREFIX/rahbar-indexer:$SHA" .
+          # The dev overlay resolves these images to the local :dev tags.
+          # Keep the immutable SHA tags for provenance, and load matching
+          # overlay tags so Kubernetes never attempts a registry pull.
+          docker tag "$PREFIX/rahbar-api:$SHA" rahbar-api:dev
+          docker tag "$PREFIX/rahbar-ui:$SHA" rahbar-ui:dev
+          docker tag "$PREFIX/rahbar-indexer:$SHA" rahbar-indexer:dev
           kind load docker-image "$PREFIX/rahbar-api:$SHA" --name rahbar-cd
           kind load docker-image "$PREFIX/rahbar-ui:$SHA" --name rahbar-cd
           kind load docker-image "$PREFIX/rahbar-indexer:$SHA" --name rahbar-cd
+          kind load docker-image rahbar-api:dev --name rahbar-cd
+          kind load docker-image rahbar-ui:dev --name rahbar-cd
+          kind load docker-image rahbar-indexer:dev --name rahbar-cd
       - name: Deploy manifests to cluster
         env:
           PREFIX: ${{ secrets.DOCKERHUB_USERNAME || 'rahbar' }}
