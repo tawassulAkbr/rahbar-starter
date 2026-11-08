@@ -13,3 +13,4 @@ spec:
           # The upstream entrypoint chowns the data directory; CI uses an
           # ephemeral volume, so invoke Redis directly with the pod fsGroup.
           command: ["redis-server"]
+          args: ["--appendonly", "yes"]
