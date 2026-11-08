@@ -135,6 +135,9 @@ jobs:
           kubectl set image deployment/ui ui="$PREFIX/rahbar-ui:$SHA" -n rahbar
       - name: Verify rollouts
         run: |
+          kubectl wait --for=condition=ready pod -l app=chroma -n rahbar --timeout=180s
+          kubectl wait --for=condition=ready pod -l app=redis -n rahbar --timeout=120s
+          kubectl wait --for=condition=complete job/indexer-job -n rahbar --timeout=300s
           kubectl rollout status deployment/api -n rahbar --timeout=180s
           kubectl rollout status deployment/ui -n rahbar --timeout=180s
       - name: Ingress smoke test
