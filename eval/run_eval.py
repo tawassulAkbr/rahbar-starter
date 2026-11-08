@@ -35,17 +35,25 @@ MIN_CITATION_VALIDITY = 0.95   # at least 95% of citations must match retrieved 
 REQUIRED_ABSTENTION = 1.0      # every must-abstain question must be declined
 
 
-def load_golden(path: Path) -> list[dict]:
+def load_golden(path: Path, *, fixture: bool = False) -> list[dict]:
     data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     questions = data.get("questions") or []
     if not questions:
         sys.exit(f"no questions in {path}")
-    required_types = {"ordinary": 8, "version": 2, "exact": 2, "abstain": 2, "injection": 1}
+    # The production golden set follows section 5.1's 15-question contract.
+    # CI deliberately uses a smaller six-question fixture corpus so the Kind
+    # smoke test stays fast; it still exercises every evaluator question type.
+    minimum_questions = 6 if fixture else 15
+    required_types = (
+        {"ordinary": 1, "version": 2, "exact": 1, "abstain": 1, "injection": 1}
+        if fixture
+        else {"ordinary": 8, "version": 2, "exact": 2, "abstain": 2, "injection": 1}
+    )
     counts = {kind: sum(q.get("type") == kind for q in questions) for kind in required_types}
     missing = [f"{kind}>={minimum}" for kind, minimum in required_types.items()
                if counts[kind] < minimum]
-    if len(questions) < 15 or missing:
-        sys.exit(f"golden set must contain at least 15 questions with {missing}")
+    if len(questions) < minimum_questions or missing:
+        sys.exit(f"golden set must contain at least {minimum_questions} questions with {missing}")
     ids = [q.get("id") for q in questions]
     if any(not question_id for question_id in ids) or len(set(ids)) != len(ids):
         sys.exit("golden question ids must be present and unique")
@@ -233,7 +241,7 @@ def main() -> int:
     assert args.golden is not None
     assert args.baseline is not None
 
-    questions = load_golden(args.golden)
+    questions = load_golden(args.golden, fixture=args.fixtures)
     rows = []
     headers = {"Host": args.host} if args.host else {}
     try:
