@@ -1,13 +1,5 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: redis
-  namespace: rahbar
-spec:
-  template:
-    spec:
-      # CI does not need Redis persistence; avoid storage-provider permissions
-      # obscuring the application/evaluation signal in an ephemeral Kind cluster.
-      volumes:
-        - name: redis-data
-          emptyDir: {}
+- op: replace
+  path: /spec/template/spec/volumes/0
+  value:
+    name: redis-data
+    emptyDir: {}
