@@ -1,6 +1,7 @@
 # Indexing and retrieval pipeline
 
 ## Overview
+
 The indexer is a one-shot writer. From `indexer/` it runs
 `python -m pipeline.run` as `Discover → Extract → Clean → Chunk → Embed → Store`.
 The API never runs these stages. ChromaDB receives one record per chunk and Redis
@@ -13,6 +14,7 @@ golden set while still allowing the CI fixture directory to work without a
 fetch step.
 
 ## Extraction
+
 PDFs are extracted one page at a time with `pdfplumber`. A page with fewer than 20
 non-whitespace characters is treated as scanned and sent to Tesseract through
 `pdfplumber`'s rendered image. OCR failures are surfaced as errors, rather than
@@ -36,9 +38,9 @@ The cleaned extractor keeps row and cell boundaries instead:
 
 ```text
 | Programme | Tuition fee per credit hour |
-| BBA | Rs. 12,000 |
-| BS | Rs. 12,000 |
-| MS | Rs. 15,000 |
+| BBA | Rs. 12,000 (revised every year) |
+| BS | Rs. 12,000 (revised every year) |
+| MS | Rs. 15,000 (revised every year) |
 ```
 
 This is why table delimiters are preserved during cleaning. OCR of the scanned
@@ -51,6 +53,7 @@ Markdown front matter is excluded from page text, while its version and supersed
 values are supplied by discovery.
 
 ## Cleaning
+
 Whitespace is collapsed within lines, encoding artifacts (BOM, soft hyphen,
 non-breaking spaces, and control characters) are removed, and adjacent wrapped
 lines are joined when the continuation starts with lowercase text. Blank lines,
@@ -59,6 +62,7 @@ preserved so sections and table relationships remain visible. We do not remove
 meaningful headings or merge lines around structural markers.
 
 ## Chunking
+
 Chunking first tracks headings and numbered clauses, then paragraphs and sentences.
 The configured `CHUNK_SIZE` is the target token budget and `CHUNK_OVERLAP` is copied
 from the preceding chunk at word boundaries. Chunk IDs are SHA-256-derived from the
@@ -75,10 +79,10 @@ included because PDF/OCR dependencies and live embeddings are not available in
 the offline measurement environment.
 
 | Size (tokens) | Overlap (tokens) | recall@5 | Chunks stored |
-| --- | --- | --- | --- |
-| 200 | 25 | 1.00 | 11 |
-| 400 (shipped) | 50 | 1.00 | 8 |
-| 800 | 100 | 1.00 | 6 |
+| ------------- | ---------------- | -------- | ------------- |
+| 200           | 25               | 1.00     | 11            |
+| 400 (shipped) | 50               | 1.00     | 8             |
+| 800           | 100              | 1.00     | 6             |
 
 The corresponding storage amplification values are 1.087, 1.087, and 1.058.
 The 400/50 setting is retained because it preserves the measured recall while
@@ -88,6 +92,7 @@ authoritative service-backed evaluation harness; these offline figures do not
 claim production retrieval quality.
 
 ## Embedding
+
 Ollama `/api/embed` is called with the configured `EMBED_MODEL` in batches. The
 configured `EMBED_DIMENSION` defaults to 768 and every returned vector is validated
 against it. Temporary HTTP failures retry with exponential backoff. Chroma metadata
@@ -95,6 +100,7 @@ stores both values; the store refuses to reuse a collection pinned to a differen
 model or dimension, requiring an explicit safe re-index.
 
 ## Semantic cache
+
 After a successful upsert, the indexer publishes `index-updated` on
 `REDIS_INVALIDATION_CHANNEL` when `REDIS_URL` is configured. If Redis is not
 configured or unavailable, the indexer logs that invalidation was skipped/failed;
@@ -106,34 +112,36 @@ The semantic cache was tested with six paraphrase pairs and two deliberately
 near-but-different policy questions. A false hit means that the answer to the
 first question would be served for the second one.
 
-| Threshold | Observed hits | False hits | Decision |
-| ---: | ---: | ---: | --- |
-| 0.88 | 6/6 | 1 | Rejected: grade-improvement and general-CGPA questions matched |
-| 0.90 | 6/6 | 1 | Rejected: the same pair still crossed the cutoff |
-| 0.92 | 6/6 | 0 | Shipped: lowest tested threshold with zero false hits |
+| Threshold | Observed hits | False hits | Decision                                                       |
+| --------: | ------------: | ---------: | -------------------------------------------------------------- |
+|      0.88 |           6/6 |          1 | Rejected: grade-improvement and general-CGPA questions matched |
+|      0.90 |           6/6 |          1 | Rejected: the same pair still crossed the cutoff               |
+|      0.92 |           6/6 |          0 | Shipped: lowest tested threshold with zero false hits          |
 
 This is a deterministic cache-policy fixture, not a claim about a live Redis
 vector index. Repeat it against production embeddings before changing
 `CACHE_THRESHOLD`; the ConfigMap default remains `0.92`.
 
 ## Configuration
+
 The indexer reads these environment variables through `indexer/pipeline/config.py`:
 
-| Variable | Default | Meaning |
-| --- | --- | --- |
-| `CORPUS_DIR` | `/corpus` | Input directory |
-| `CHUNK_SIZE` / `CHUNK_OVERLAP` | `400` / `50` | Token target and overlap |
-| `EMBED_MODEL` | `nomic-embed-text` | Ollama model pin |
-| `EMBED_DIMENSION` | `768` | Expected vector length (`EMBED_DIM` is an alias) |
-| `EMBED_BATCH_SIZE` | `32` | Texts per Ollama request |
-| `EMBED_RETRIES` / `EMBED_TIMEOUT` | `3` / `60` | Retries and request timeout |
-| `OLLAMA_URL` | `http://host.minikube.internal:11434` | Ollama base URL |
-| `CHROMA_HOST` / `CHROMA_PORT` | `chroma` / `8000` | ChromaDB service |
-| `CHROMA_COLLECTION` | `rahbar` | Collection name |
-| `REDIS_URL` | empty | Optional Redis URL |
-| `REDIS_INVALIDATION_CHANNEL` | `rahbar:index-updated` | Pub/sub channel |
+| Variable                          | Default                               | Meaning                                          |
+| --------------------------------- | ------------------------------------- | ------------------------------------------------ |
+| `CORPUS_DIR`                      | `/corpus`                             | Input directory                                  |
+| `CHUNK_SIZE` / `CHUNK_OVERLAP`    | `400` / `50`                          | Token target and overlap                         |
+| `EMBED_MODEL`                     | `nomic-embed-text`                    | Ollama model pin                                 |
+| `EMBED_DIMENSION`                 | `768`                                 | Expected vector length (`EMBED_DIM` is an alias) |
+| `EMBED_BATCH_SIZE`                | `32`                                  | Texts per Ollama request                         |
+| `EMBED_RETRIES` / `EMBED_TIMEOUT` | `3` / `60`                            | Retries and request timeout                      |
+| `OLLAMA_URL`                      | `http://host.minikube.internal:11434` | Ollama base URL                                  |
+| `CHROMA_HOST` / `CHROMA_PORT`     | `chroma` / `8000`                     | ChromaDB service                                 |
+| `CHROMA_COLLECTION`               | `rahbar`                              | Collection name                                  |
+| `REDIS_URL`                       | empty                                 | Optional Redis URL                               |
+| `REDIS_INVALIDATION_CHANNEL`      | `rahbar:index-updated`                | Pub/sub channel                                  |
 
 ## Installation and operation
+
 From the repository root:
 
 ```bash
@@ -149,6 +157,7 @@ requires ChromaDB and writes deterministic placeholder vectors. Tests use fixtur
 and mocks; they do not require Ollama, Redis, or ChromaDB.
 
 ## Safe re-indexing and troubleshooting
+
 Collection metadata pins `embed_model` and `dimension`. If either configured value
 differs from an existing collection, storage stops with an explicit migration error.
 Create a separately named collection, index with the new pin, verify its count and
@@ -162,6 +171,7 @@ connection errors (check host/port readiness). Redis is optional, but skipped or
 failed invalidation is always logged.
 
 ## Evaluation method
+
 The evaluation fixtures identify expected passages by source and section. Recall@k
 is a hit when a retrieved passage matches an expected source/section pair within the
 top k; chunk IDs are not used because chunking settings can legitimately change.
