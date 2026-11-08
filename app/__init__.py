@@ -1,4 +1,3 @@
-import os
 import pathlib
 # Make the top‑level ``app`` package point to the actual implementation under ``api/app``.
 _module_dir = pathlib.Path(__file__).resolve().parent.parent / 'api' / 'app'
