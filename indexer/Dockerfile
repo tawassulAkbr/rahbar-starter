@@ -4,6 +4,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PYTHONPATH=/app
 WORKDIR /app
 
 RUN apt-get update \
+    && apt-get upgrade -y \
     && apt-get install --no-install-recommends -y tesseract-ocr poppler-utils \
     && rm -rf /var/lib/apt/lists/* \
     && groupadd --system --gid 10002 rahbarindexer \

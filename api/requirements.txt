@@ -1,7 +1,8 @@
 # Pinned: an unpinned dependency is the drift problem from Lecture 04.
-fastapi==0.115.12
+fastapi==0.162.2
 # Starlette's TestClient requires AnyIO 4 on Python 3.12 in the pinned API stack.
-anyio==4.9.0
+anyio==4.16.0
+starlette==1.10.0
 uvicorn==0.34.2
 pydantic==2.11.4
 httpx==0.28.1
@@ -14,4 +15,7 @@ posthog==5.4.0
 redis==5.2.1
 # Used only by the dependency-free local corpus fallback; production retrieval
 # reads the already indexed Chroma collection.
-pypdf==5.4.0
+pypdf==7.0.0
+# Keep packaging tools patched in the runtime image; Trivy scans them as installed packages.
+setuptools==84.2.1
+wheel==0.48.0
