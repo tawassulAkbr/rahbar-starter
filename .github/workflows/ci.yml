@@ -76,17 +76,16 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4.2.2
-      - name: Install kustomize
-        run: |
-          curl -fsSL https://raw.githubusercontent.com/kubernetes-sigs/kustomize/kustomize/v5.5.0/hack/install_kustomize.sh | bash -s -- 5.5.0 /usr/local/bin
+      - name: Verify kubectl Kustomize support
+        run: kubectl version --client
       - name: Install kubeconform
         run: |
           curl -fsSL -o /tmp/kubeconform.tar.gz https://github.com/yannh/kubeconform/releases/download/v0.6.7/kubeconform-linux-amd64.tar.gz
           tar -xzf /tmp/kubeconform.tar.gz -C /usr/local/bin kubeconform
       - name: Validate production manifests
-        run: timeout 20s bash -o pipefail -c 'kustomize build k8s/overlays/prod | kubeconform -strict -summary'
+        run: timeout 20s bash -o pipefail -c 'kubectl kustomize k8s/overlays/prod | kubeconform -strict -summary'
       - name: Validate development manifests
-        run: timeout 20s bash -o pipefail -c 'kustomize build k8s/overlays/dev | kubeconform -strict -summary'
+        run: timeout 20s bash -o pipefail -c 'kubectl kustomize k8s/overlays/dev | kubeconform -strict -summary'
 
   build:
     needs: [lint, test, manifests]
