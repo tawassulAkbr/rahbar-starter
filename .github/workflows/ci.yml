@@ -137,7 +137,8 @@ jobs:
           format: json
           output: trivy-${{ matrix.image }}.json
           severity: HIGH,CRITICAL
-          ignore-unfixed: false
+            # Some OCR packages have no upstream fix in Debian yet; fail on actionable findings.
+            ignore-unfixed: true
           exit-code: "1"
       - uses: actions/upload-artifact@v4.6.2
         if: always()
