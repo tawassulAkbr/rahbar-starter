@@ -174,6 +174,14 @@ jobs:
           kind load docker-image rahbar-api:ci --name rahbar-ci
           kind load docker-image rahbar-indexer:ci --name rahbar-ci
           kind load docker-image rahbar-ui:ci --name rahbar-ci
+      - name: Load infrastructure images into Kind nodes
+        run: |
+          docker pull chromadb/chroma:1.0.12
+          docker pull redis:7.4-alpine
+          docker pull python:3.12.3-slim-bookworm
+          kind load docker-image chromadb/chroma:1.0.12 --name rahbar-ci
+          kind load docker-image redis:7.4-alpine --name rahbar-ci
+          kind load docker-image python:3.12.3-slim-bookworm --name rahbar-ci
       - name: Create fixture corpus ConfigMap
         run: |
           kubectl create namespace rahbar --dry-run=client -o yaml | kubectl apply -f -
@@ -192,6 +200,14 @@ jobs:
           kubectl wait --for=condition=ready pod -l app=chroma -n rahbar --timeout=180s
           kubectl wait --for=condition=ready pod -l app=redis -n rahbar --timeout=120s
           kubectl wait --for=condition=available deployment/embedding-stub -n rahbar --timeout=120s
+      - name: Capture cluster diagnostics on failure
+        if: failure()
+        run: |
+          kubectl get pods -n rahbar -o wide
+          kubectl describe pods -n rahbar
+          for pod in $(kubectl get pods -n rahbar -o jsonpath='{.items[*].metadata.name}'); do
+            kubectl logs "$pod" -n rahbar --all-containers --tail=200 || true
+          done
       - name: Index fixture corpus with the real pipeline
         run: |
           kubectl wait --for=condition=complete job/indexer-job -n rahbar --timeout=300s
