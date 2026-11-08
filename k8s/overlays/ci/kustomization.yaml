@@ -7,6 +7,7 @@ resources:
 patches:
   - path: config-patch.yaml
   - path: indexer-job-patch.yaml
+  - path: redis-ci-patch.yaml
 images:
   - name: rahbar-api
     newName: rahbar-api
