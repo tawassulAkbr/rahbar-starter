@@ -232,7 +232,16 @@ jobs:
           port_forward_pid=$!
           trap 'kill "$port_forward_pid"' EXIT
           for attempt in $(seq 1 30); do curl --fail --silent http://127.0.0.1:8000/healthz && break || sleep 2; done
-          python eval/run_eval.py --api http://localhost:8000 --fixtures
+          set -o pipefail
+          python eval/run_eval.py --api http://localhost:8000 --fixtures 2>&1 | tee /tmp/evaluation.log
+      - name: Capture evaluation diagnostics on failure
+        if: failure()
+        run: |
+          mkdir -p /tmp/rahbar-evaluation-diagnostics
+          cp /tmp/evaluation.log /tmp/rahbar-evaluation-diagnostics/evaluation.log || true
+          cp /tmp/rahbar-port-forward.log /tmp/rahbar-evaluation-diagnostics/port-forward.log || true
+          kubectl get pods -n rahbar -o wide > /tmp/rahbar-evaluation-diagnostics/pods.txt
+          kubectl logs deployment/api -n rahbar --all-containers --tail=300 > /tmp/rahbar-evaluation-diagnostics/api.log 2>&1 || true
       - name: Upload evaluation output
         if: always()
         uses: actions/upload-artifact@v4.6.2
@@ -241,4 +250,6 @@ jobs:
           path: |
             eval/results.json
             /tmp/rahbar-port-forward.log
+            /tmp/evaluation.log
+            /tmp/rahbar-evaluation-diagnostics
           if-no-files-found: ignore
