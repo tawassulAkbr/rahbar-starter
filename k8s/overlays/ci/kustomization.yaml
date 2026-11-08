@@ -13,6 +13,7 @@ patches:
       version: v1
       kind: Deployment
       name: redis
+  - path: redis-security-ci-patch.yaml
 images:
   - name: rahbar-api
     newName: rahbar-api

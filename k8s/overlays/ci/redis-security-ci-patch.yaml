@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: rahbar
+spec:
+  template:
+    spec:
+      securityContext:
+        fsGroup: 999
+      containers:
+        - name: redis
+          # The upstream entrypoint chowns the data directory; CI uses an
+          # ephemeral volume, so invoke Redis directly with the pod fsGroup.
+          command: ["redis-server"]
