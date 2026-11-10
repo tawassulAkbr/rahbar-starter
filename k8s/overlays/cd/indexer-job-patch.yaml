@@ -23,3 +23,13 @@ spec:
             - >-
               until wget -q -O- http://embedding-stub:11434/ >/dev/null; do
               echo waiting for embedding stub; sleep 2; done
+      containers:
+        - name: indexer
+          args: []
+          volumeMounts:
+            - name: corpus
+              mountPath: /corpus
+      volumes:
+        - name: corpus
+          configMap:
+            name: corpus-fixtures

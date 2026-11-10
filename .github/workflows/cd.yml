@@ -96,7 +96,7 @@ jobs:
   deploy:
     needs: [build-push]
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 30
     permissions:
       contents: read
     steps:
@@ -144,6 +144,11 @@ jobs:
           kubectl create namespace rahbar --dry-run=client -o yaml | kubectl apply -f -
           kubectl create configmap embedding-stub-code -n rahbar \
             --from-file=ci_embedding_stub.py=scripts/ci_embedding_stub.py \
+            --dry-run=client -o yaml | kubectl apply -f -
+          kubectl create configmap corpus-fixtures -n rahbar \
+            --from-file=academic-rules-2023.md=eval/fixtures/academic-rules-2023.md \
+            --from-file=academic-rules-2026.md=eval/fixtures/academic-rules-2026.md \
+            --from-file=fees-2026.md=eval/fixtures/fees-2026.md \
             --dry-run=client -o yaml | kubectl apply -f -
           kubectl apply -k k8s/overlays/cd
           kubectl set image deployment/api api="$PREFIX/rahbar-api:$SHA" -n rahbar
