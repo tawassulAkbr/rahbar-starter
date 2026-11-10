@@ -7,6 +7,13 @@ resources:
 patches:
   - path: config-patch.yaml
   - path: indexer-job-patch.yaml
+  - path: redis-cd-patch.yaml
+    target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: redis
+  - path: redis-security-cd-patch.yaml
 images:
   - name: rahbar-api
     newName: rahbar-api
