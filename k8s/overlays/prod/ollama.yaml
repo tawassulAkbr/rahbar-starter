@@ -71,7 +71,7 @@ spec:
               port: http
             periodSeconds: 10
             timeoutSeconds: 5
-            failureThreshold: 60
+            failureThreshold: 30
           readinessProbe:
             exec:
               command:

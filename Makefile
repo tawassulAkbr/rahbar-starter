@@ -47,7 +47,7 @@ live-status: ## show live service status and API readiness
 	curl --fail --silent http://localhost:8000/readyz
 
 live-ask: ## ask the live stack: make live-ask Q="What CGPA puts a student on academic warning?"
-	@curl --fail --silent -X POST "http://localhost:8080/api/ask" -H 'Content-Type: application/json' -d "$$(Q="$(Q)" $(PY) -c 'import json,os; print(json.dumps({"question": os.environ["Q"]}))')" | $(PY) -m json.tool
+	@curl --fail --silent -X POST "http://localhost:8081/api/ask" -H 'Content-Type: application/json' -d "$$(Q="$(Q)" $(PY) -c 'import json,os; print(json.dumps({"question": os.environ["Q"]}))')" | $(PY) -m json.tool
 
 cluster: ## start minikube with Calico, then enable metrics-server and ingress
 	minikube start --driver=docker --cni=calico --memory=6144 --cpus=4

@@ -43,6 +43,10 @@ def _requests_older_version(question: str) -> bool:
 
 
 def _requested_version(question: str) -> str | None:
+    # A historical year mentioned for comparison should not override an
+    # explicit request for the current/latest policy.
+    if re.search(r"\b(?:current|currently|latest|now)\b", question, flags=re.IGNORECASE):
+        return None
     season = re.search(
         r"\b(Fall|Spring|Summer|Winter)\s+((?:19|20)\d{2})\b",
         question,
@@ -52,6 +56,10 @@ def _requested_version(question: str) -> str | None:
         return f"{season.group(2)}-{season.group(1).title()}"
     match = re.search(r"\b((?:19|20)\d{2}(?:[-/]\d{1,2})?)\b", question)
     return match.group(1).replace("/", "-") if match else None
+
+
+def _tokens(text: str) -> set[str]:
+    return set(re.findall(r"[a-z0-9]+", text.lower()))
 
 
 class ChromaRetriever:
@@ -76,14 +84,52 @@ class ChromaRetriever:
                 return []
             embedding = _query_embedding(question, self.settings)
             requested_version = _requested_version(question)
-            # Keep a wider candidate set so exact terms (attendance, clause numbers,
-            # course codes) can be recovered by the lexical reranker below.
-            query: dict[str, object] = {"query_embeddings": [embedding], "n_results": max(k, 20)}
-            if requested_version:
-                query["where"] = {"doc_version": requested_version}
-            else:
-                query["where"] = {"superseded": False}
+            # Fetch enough candidates for lexical and clause-aware reranking.
+            # An explicit version request must include that version even when
+            # superseded. General queries stay on current documents. The wider
+            # candidate pool gives clause and exact-term reranking room to work.
+            query: dict[str, object] = {
+                "query_embeddings": [embedding], "n_results": max(k, 50),
+                "where": ({"doc_version": requested_version} if requested_version
+                          else {"superseded": False}),
+            }
             result = collection.query(**query)  # type: ignore[arg-type]
+            ignored = {
+                "what", "is", "the", "a", "an", "to", "of", "for", "does", "if", "how",
+                "who", "under", "and", "in", "on", "when", "superseded", "both", "indexed",
+                "which", "version", "should", "answer", "question", "current", "latest",
+            }
+            keyword_terms = _tokens(question) - ignored
+            if len(keyword_terms) > 1:
+                keyword_vector = _query_embedding(" ".join(sorted(keyword_terms)), self.settings)
+                keyword_result = collection.query(
+                    **{**query, "query_embeddings": [keyword_vector]}
+                )  # type: ignore[arg-type]
+                if isinstance(result, dict) and isinstance(keyword_result, dict):
+                    for key in ("ids", "documents", "metadatas", "distances"):
+                        original = result.get(key) or [[]]
+                        additional = keyword_result.get(key) or [[]]
+                        if (original and additional and isinstance(original[0], list)
+                                and isinstance(additional[0], list)):
+                            result[key] = [original[0] + additional[0]]
+                # Exact document-term probes recover lexical hits that both
+                # vector formulations may rank below their candidate cutoff.
+                lexical_terms = sorted(
+                    (term for term in keyword_terms if len(term) >= 6 and not term.isdigit()),
+                    key=lambda term: (-len(term), term),
+                )[:2]
+                for term in lexical_terms:
+                    lexical_result = collection.query(
+                        **{**query, "query_embeddings": [keyword_vector],
+                           "where_document": {"$contains": term}}
+                    )  # type: ignore[arg-type]
+                    if isinstance(result, dict) and isinstance(lexical_result, dict):
+                        for key in ("ids", "documents", "metadatas", "distances"):
+                            original = result.get(key) or [[]]
+                            additional = lexical_result.get(key) or [[]]
+                            if (original and additional and isinstance(original[0], list)
+                                    and isinstance(additional[0], list)):
+                                result[key] = [original[0] + additional[0]]
         except RetrievalError:
             raise
         except Exception as exc:
@@ -102,9 +148,13 @@ class ChromaRetriever:
         metadatas = raw_metadatas[0]
         distances = raw_distances[0]
         passages: list[Passage] = []
+        seen_ids: set[str] = set()
         for position, chunk_id in enumerate(ids):
             if not isinstance(chunk_id, str) or position >= len(documents):
                 continue
+            if chunk_id in seen_ids:
+                continue
+            seen_ids.add(chunk_id)
             metadata = metadatas[position] if position < len(metadatas) else {}
             metadata = metadata if isinstance(metadata, dict) else {}
             text = documents[position]
@@ -124,13 +174,43 @@ class ChromaRetriever:
                 section=str(metadata.get("section", "Unsectioned")),
                 page=page, score=score,
             ))
-        stopwords = {"what", "is", "the", "a", "an", "to", "of", "for", "does", "if", "how"}
-        terms = set(re.findall(r"[a-z0-9]+", question.lower())) - stopwords
-        passages.sort(
-            key=lambda passage: (
-                len(terms & set(re.findall(r"[a-z0-9]+", passage.text.lower()))),
-                passage.score,
-            ),
-            reverse=True,
-        )
+        stopwords = {"what", "is", "the", "a", "an", "to", "of", "for", "does", "if", "how", "who", "under", "and", "in", "on", "when", "superseded", "both", "indexed", "which", "version", "should", "answer", "question", "current", "latest"}
+        terms = _tokens(question) - stopwords
+        clause_numbers = set(re.findall(r"\b\d+(?:\.\d+)+\b", question))
+        document_frequency = {
+            term: sum(term in (_tokens(passage.text) | _tokens(passage.section))
+                      for passage in passages)
+            for term in terms
+        }
+
+        def rank(passage: Passage) -> tuple[float, float]:
+            passage_terms = _tokens(passage.text)
+            section_terms = _tokens(passage.section)
+            matched_terms = terms & passage_terms
+            lexical_score = sum(
+                1.0 + (len(passages) / (document_frequency[term] + 1)) ** 0.5
+                for term in matched_terms
+            )
+            # Exact clause IDs and distinctive query phrases carry more weight
+            # than generic semantic similarity alone.
+            clause_bonus = 3.0 if any(
+                re.search(rf"(?<!\d){re.escape(clause)}(?!\d)", passage.text)
+                or clause in passage.section for clause in clause_numbers
+            ) else 0.0
+            section_bonus = 1.5 * len(terms & section_terms)
+            phrase_bonus = 2.0 if len(terms) >= 2 and " ".join(
+                re.findall(r"[a-z0-9]+", question.lower())
+            ) in passage.text.lower() else 0.0
+            version_bonus = 0.0
+            if requested_version:
+                normalized_version = requested_version.lower()
+                if normalized_version in passage.source.lower():
+                    version_bonus = 2.0
+                elif normalized_version[:4] in passage.source.lower():
+                    version_bonus = 1.0
+            return (lexical_score + section_bonus + clause_bonus + phrase_bonus + version_bonus
+                    + passage.score,
+                    passage.score)
+
+        passages.sort(key=rank, reverse=True)
         return passages[:k]
