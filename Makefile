@@ -13,7 +13,7 @@ INGRESS_IP ?= $(shell minikube ip 2>/dev/null)
 HOST ?= rahbar.local
 
 .DEFAULT_GOAL := help
-.PHONY: help install test lint dev cluster images apply secret index ask fetch eval eval-fixtures check
+.PHONY: help install test lint dev live-up live-down live-status live-ask cluster images apply secret index ask fetch eval eval-fixtures check
 
 help: ## list the targets
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  make %-14s %s\n", $$1, $$2}'
@@ -34,6 +34,20 @@ lint: ## ruff and mypy over everything in Python
 
 dev: ## run the API with stubs on http://localhost:8000, serving the chat UI too
 	cd api && SERVE_UI_DIR=../ui CORPUS_DIR=../corpus RETRIEVER=stub LLM_PROVIDER=stub $(BIN)/uvicorn app.main:app --reload --port 8000
+
+live-up: ## build and start Chroma, Ollama, Redis, indexer, API and UI
+	docker compose up --build -d
+
+live-down: ## stop the live Docker Compose stack (named data volumes are retained)
+	docker compose down
+
+live-status: ## show live service status and API readiness
+	docker compose ps
+	curl --fail --silent http://localhost:8000/healthz
+	curl --fail --silent http://localhost:8000/readyz
+
+live-ask: ## ask the live stack: make live-ask Q="What CGPA puts a student on academic warning?"
+	@curl --fail --silent -X POST "http://localhost:8080/api/ask" -H 'Content-Type: application/json' -d "$$(Q="$(Q)" $(PY) -c 'import json,os; print(json.dumps({"question": os.environ["Q"]}))')" | $(PY) -m json.tool
 
 cluster: ## start minikube with Calico, then enable metrics-server and ingress
 	minikube start --driver=docker --cni=calico --memory=6144 --cpus=4
