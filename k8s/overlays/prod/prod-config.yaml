@@ -6,5 +6,5 @@ metadata:
 data:
   EMBED_MODEL: nomic-embed-text
   RETRIEVER: chroma
-  LLM_PROVIDER: ollama-host
+  LLM_PROVIDER: ollama-incluster
   OLLAMA_URL: http://ollama:11434
