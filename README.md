@@ -183,7 +183,7 @@ fixture results remain in `eval/fixtures/` and do not represent live quality.
 
 ## CI/CD workflow
 
-`.github/workflows/ci.yml` runs tests, coverage, linting, type checks, compilation, manifest validation, and security checks. `.github/workflows/cd.yml` runs the test gate, builds the API/indexer/UI images, and deploys the CD overlay to an ephemeral Kind cluster. The CD overlay uses deterministic fixture embeddings and the stub generation provider so that GitHub Actions does not depend on downloading an LLM; it still verifies real Chroma indexing, API readiness, rollouts, and health endpoints. The Docker Compose path above is the repeatable real Ollama verification path.
+`.github/workflows/ci.yml` runs on pull requests to `main`, pushes to `dev`, and manual dispatches. Its jobs cover Ruff and mypy, tests with a 60% coverage gate, Kustomize manifest validation, multi-architecture image builds, Trivy image scans, and a Kind integration/evaluation run using deterministic fixtures. `.github/workflows/cd.yml` runs on pushes to `main` and manual dispatches. It runs tests and linting, builds SHA-tagged API/indexer/UI images, and deploys to an ephemeral Kind cluster. CD publishes to Docker Hub only when the configured credentials are valid; without them, it still performs a local build and deployment check. CI/CD use stubbed generation and fixture embeddings, so they do not validate live Ollama answer quality. Use the Docker Compose workflow above for real Ollama and university-corpus verification.
 
 For deployment details and required Docker Hub secrets, see [`docs/CI-CD.md`](docs/CI-CD.md). For system design, see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md); for the indexing pipeline, see [`docs/PIPELINE.md`](docs/PIPELINE.md).
 
@@ -193,13 +193,13 @@ The main runtime settings are supplied through environment variables and are def
 
 ## Assignment verification status
 
-The assignment submission checker currently reports **166 passed, 2 warnings, and 0 mechanical failures**. The warnings concern Git history authorship distribution and the committed placeholder Secret manifest; neither is an implementation failure, but review both before submission. The checker is a static lint and does not establish live retrieval quality or satisfy the manual deployment and evidence requirements.
+The repository includes `scripts/check_submission.py` as a static submission check. Its result is separate from CI and from the live retrieval evaluation below; a clean static check does not establish answer quality or replace deployment evidence.
 
-The committed `eval/results.json` is a live Ollama/Chroma run, not a stub report. It scored recall@5 `0.20` against a `1.00` baseline and failed the evaluation gate. Citation validity was `1.00` and both must-abstain questions were correct, but retrieval did not reliably surface expected passages. Treat the run as evidence of a live quality gap, not as a passing production-quality claim; rerun after retrieval changes.
+The committed `eval/results.json` is a live Ollama/Chroma run, not a stub report. It contains 17 questions and was generated on 2026-11-11. Recall@3 and recall@5 were both `0.20`; citation validity was `1.00`, and both must-abstain questions were correct. The run failed the `1.00` recall@5 baseline, so it records a retrieval quality gap rather than a passing quality result. Rerun the evaluation after retrieval changes.
 
 ### Remaining submission checks
 
 - Capture genuine GitHub branch-protection and failed/passing evaluation-gate evidence; the evidence README documents the missing branch-protection screenshot.
-- Confirm a successful `cd.yml` run has published and deployed the commit-SHA images, then submit its link with the repository URL.
+- Confirm a successful `cd.yml` run has published the commit-SHA images when Docker Hub credentials are configured, and completed its ephemeral Kind deployment.
 - Recheck source downloads and OCR on the deployment environment; the old 2023 policy PDF is scanned, and host OCR availability is environment-dependent.
-- Review the two checker warnings and confirm the protected-branch rules are active on GitHub.
+- Review any warnings from the current submission check and confirm the protected-branch rules are active on GitHub.
