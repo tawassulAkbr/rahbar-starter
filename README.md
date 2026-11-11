@@ -107,7 +107,7 @@ kubectl rollout status deployment/api -n rahbar --timeout=180s
 kubectl rollout status deployment/ui -n rahbar --timeout=180s
 ```
 
-The `dev` overlay is a cluster smoke-test configuration. For a real model-backed cluster, use `k8s/overlays/prod`, point `OLLAMA_URL` at a reachable Ollama service, ensure that `nomic-embed-text` and `llama3.2:3b` are available there, and set the API and indexer images to the locally built `prod` tags. Do not use the CI embedding stub as a production model.
+The `dev` overlay is a cluster smoke-test configuration. The `prod` overlay deploys Ollama in-cluster as a single Deployment with a 20Gi PVC mounted at `/root/.ollama`. On first startup it downloads `nomic-embed-text` and `llama3.2:3b`; the Ollama startup probe allows up to ten minutes for server startup and model initialization. The API and indexer use the in-cluster `http://ollama:11434` Service. Build and load the API, indexer, and UI images with the `prod` tag before applying this overlay. Do not use the CI embedding stub as a production model.
 
 ## Corpus and indexing
 
