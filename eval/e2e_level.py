@@ -17,7 +17,7 @@ def _faithful(answer: str, context: str) -> bool:
     return bool(answer_terms) and len(answer_terms & tokens(context)) / len(answer_terms) >= 0.5
 
 
-def run_e2e_level(corpus_dir: Path, golden_path: Path, seed: int = 2026) -> dict[str, object]:
+def run_e2e_level(corpus_dir: Path, golden_path: Path, seed: int = 2026, top_k: int = 5) -> dict[str, object]:
     golden = load_golden(golden_path)
     passages, corpus_info = load_passages(corpus_dir, golden)
     retriever = LexicalRetriever(passages)
@@ -30,7 +30,7 @@ def run_e2e_level(corpus_dir: Path, golden_path: Path, seed: int = 2026) -> dict
     rows: list[dict[str, object]] = []
     for row in golden:
         started = time.perf_counter()
-        retrieved = retriever.retrieve(row["question"], 5)
+        retrieved = retriever.retrieve(row["question"], top_k)
         if row["must_abstain"]:
             answer = "I do not have enough information in the indexed policy documents to answer that."
             answered_from_context = False
@@ -61,6 +61,7 @@ def run_e2e_level(corpus_dir: Path, golden_path: Path, seed: int = 2026) -> dict
         "level": "end_to_end_answers",
         "seed": seed,
         "mode": "deterministic-local-reference",
+        "top_k": top_k,
         "corpus": corpus_info,
         "faithfulness": average(faithfulness),
         "faithfulness_judge": "deterministic lexical support; no LLM judge used",
