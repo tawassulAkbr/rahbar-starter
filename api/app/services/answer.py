@@ -14,6 +14,7 @@ from ..providers.llm.base import LLMProvider
 from ..retrieval.chroma import RetrievalError
 from ..retrieval.base import Retriever
 from ..schemas import Answer, AskResponse, Citation, Passage, RetrievedRef
+from ..tracing import base_record, detect_guardrail_actions, emit_trace, new_trace_id
 
 log = logging.getLogger("rahbar.answer")
 
@@ -304,13 +305,18 @@ def _exact_policy_answer(question: str, passages: list[Passage]) -> Answer | Non
 def answer_question(
     question: str, retriever: Retriever, provider: LLMProvider, settings: Settings
 ) -> AskResponse:
+    trace_id = new_trace_id()
+    total_start = time.perf_counter()
     retrieval_start = time.perf_counter()
     try:
         passages = retriever.retrieve(question, k=settings.top_k)
     except RetrievalError as exc:
         log.warning("retrieval failed", extra={"error": str(exc)})
         passages = []
-    metrics.RETRIEVAL_LATENCY.observe(time.perf_counter() - retrieval_start)
+    retrieval_seconds = time.perf_counter() - retrieval_start
+    metrics.RETRIEVAL_LATENCY.observe(retrieval_seconds)
+    prompt = build_grounded_prompt(question, passages)
+    guardrail_actions = detect_guardrail_actions(passages)
     if not passages or max(passage.score for passage in passages) < settings.relevance_floor:
         metrics.ABSTENTIONS.inc()
         answer = _fallback("no retrieved passage cleared the relevance floor")
@@ -325,7 +331,8 @@ def answer_question(
         except Exception as exc:
             log.warning("provider output rejected", extra={"error": str(exc)})
             answer = _fallback("provider output failed schema or citation validation")
-        metrics.GENERATION_LATENCY.observe(time.perf_counter() - generation_start)
+        generation_seconds = time.perf_counter() - generation_start
+        metrics.GENERATION_LATENCY.observe(generation_seconds)
         if not _valid_citations(answer, passages):
             log.warning("provider returned a citation outside retrieved evidence")
             answer = _fallback("provider returned a citation outside retrieved evidence")
@@ -333,18 +340,7 @@ def answer_question(
     metrics.TOKENS_IN.inc(len(question.split()) + sum(len(p.text.split()) for p in passages))
     metrics.TOKENS_OUT.inc(len(answer.answer.split()))
 
-    log.info(
-        "answered",
-        extra={
-            "retriever": retriever.name,
-            "provider": provider.name,
-            "top_k": settings.top_k,
-            "chunk_ids": [p.chunk_id for p in passages],
-            "scores": [round(p.score, 4) for p in passages],
-            "answered_from_context": answer.answered_from_context,
-        },
-    )
-    return AskResponse(
+    result = AskResponse(
         request_id=request_id_var.get(),
         answer=answer.answer,
         citations=answer.citations,
@@ -358,3 +354,41 @@ def answer_question(
         ],
         provider=provider.name,
     )
+    trace = base_record(
+        trace_id=trace_id,
+        query=question,
+        settings=settings,
+        collection=settings.collection,
+        retrieved=[{
+            "chunk_id": p.chunk_id, "document_id": p.source,
+            "doc_version": getattr(p, "doc_version", "unknown"), "score": p.score,
+        } for p in passages],
+        filters={"relevance_floor": settings.relevance_floor, "superseded": False},
+        reranked_order=[p.chunk_id for p in passages],
+        prompt=prompt,
+        context=[p.text for p in passages],
+        model=provider.name,
+        parameters={"top_k": settings.top_k, "temperature": settings.temperature},
+        response={"answer": result.answer, "answered_from_context": result.answered_from_context,
+                  "confidence": result.confidence},
+        citations=[citation.model_dump() for citation in result.citations],
+        guardrail_actions=guardrail_actions,
+        latency_per_stage={"retrieval_ms": round(retrieval_seconds * 1000, 3),
+                           "generation_ms": round(locals().get("generation_seconds", 0) * 1000, 3),
+                           "total_ms": round((time.perf_counter() - total_start) * 1000, 3)},
+        cache_hit=False,
+    )
+    emit_trace(trace, settings.trace_dir)
+    metrics.record_trace_metrics(trace)
+    log.info(
+        "answered",
+        extra={
+            "retriever": retriever.name,
+            "provider": provider.name,
+            "top_k": settings.top_k,
+            "chunk_ids": [p.chunk_id for p in passages],
+            "scores": [round(p.score, 4) for p in passages],
+            "answered_from_context": answer.answered_from_context,
+        },
+    )
+    return result
