@@ -23,6 +23,12 @@ class IndexerSettings:
     redis_url: str = ""
     redis_channel: str = "rahbar:index-updated"
     redis_generation_key: str = "rahbar:index_generation"
+    quarantine_dir: str = "data/quarantine"
+    archive_dir: str = "data/archive"
+    verify_enabled: bool = True
+    verification_report_dir: str = "eval/results"
+    state_file: str = "eval/results/index-state.json"
+    near_duplicate_threshold: float = 0.97
 
     @property
     def chroma_collection(self) -> str:
@@ -48,4 +54,10 @@ def get_settings() -> IndexerSettings:
         redis_url=os.environ.get("REDIS_URL", ""),
         redis_channel=os.environ.get("REDIS_INVALIDATION_CHANNEL", "rahbar:index-updated"),
         redis_generation_key=os.environ.get("REDIS_GENERATION_KEY", "rahbar:index_generation"),
+        quarantine_dir=os.environ.get("QUARANTINE_DIR", "data/quarantine"),
+        archive_dir=os.environ.get("ARCHIVE_DIR", "data/archive"),
+        verify_enabled=os.environ.get("VERIFY_ENABLED", "true").lower() in {"1", "true", "yes", "on"},
+        verification_report_dir=os.environ.get("VERIFY_REPORT_DIR", "eval/results"),
+        state_file=os.environ.get("INDEX_STATE_FILE", "eval/results/index-state.json"),
+        near_duplicate_threshold=float(os.environ.get("NEAR_DUPLICATE_THRESHOLD", "0.97")),
     )
