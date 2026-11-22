@@ -54,18 +54,13 @@ def _sections(text: str, suffix: str) -> list[tuple[str, str]]:
 
 def _file_passages(path: Path) -> list[Passage]:
     suffix = path.suffix.lower()
-    if suffix not in {".md", ".txt", ".html", ".htm", ".pdf"}:
+    if suffix not in {".md", ".txt", ".html", ".htm"}:
         return []
     try:
-        if suffix == ".pdf":
-            from pypdf import PdfReader
-            pages = [(index, page.extract_text() or "") for index, page in enumerate(PdfReader(str(path)).pages, 1)]
-            sections = [(f"page-{page}", text, page) for page, text in pages]
-        else:
-            raw = path.read_text(encoding="utf-8")
-            if suffix in {".html", ".htm"}:
-                raw = re.sub(r"<[^>]+>", " ", html.unescape(raw))
-            sections = [(section, text, 1) for section, text in _sections(raw, suffix)]
+        raw = path.read_text(encoding="utf-8")
+        if suffix in {".html", ".htm"}:
+            raw = re.sub(r"<[^>]+>", " ", html.unescape(raw))
+        sections = [(section, text, 1) for section, text in _sections(raw, suffix)]
     except (OSError, UnicodeError, ImportError, ValueError):
         return []
     result: list[Passage] = []
