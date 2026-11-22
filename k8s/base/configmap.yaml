@@ -31,6 +31,8 @@ data:
   GATE_ABSTENTION_MIN: "1.0"
   COVERAGE_THRESHOLD: "0.80"
   TRACE_VOLUME: "1.0"
+  TRACE_DIR: /data/traces
+  EMBED_MODEL_VERSION: assignment-03
   VERIFY_REPORT_DIR: /data/reports
   INDEX_STATE_FILE: /data/index-state.json
   CANDIDATE_IMAGE: rahbar-indexer:phase3-topk4
