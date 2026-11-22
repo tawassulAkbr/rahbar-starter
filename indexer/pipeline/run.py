@@ -60,7 +60,7 @@ def discover(corpus_dir: str) -> list[tuple[Path, str, bool]]:
         # index is present. These are owned policy updates, not downloaded
         # files, so they are intentionally outside corpus/raw/_index.json.
         for path in sorted(root.glob("*.md")):
-            if path.name.lower().startswith("readme") or path.name in known:
+            if path.name.lower().startswith(("readme", "manifest")) or path.name in known:
                 continue
             metadata = _front_matter(path)
             if metadata:
@@ -79,7 +79,7 @@ def discover(corpus_dir: str) -> list[tuple[Path, str, bool]]:
     for path in sorted(root.glob("*")):
         if path.suffix.lower() not in {".pdf", ".md", ".html", ".txt"}:
             continue
-        if path.name.lower().startswith("readme"):
+        if path.name.lower().startswith(("readme", "manifest")):
             continue
         meta = _front_matter(path) if path.suffix.lower() == ".md" else {}
         found.append((path, meta.get("doc_version", "unknown"),
