@@ -13,7 +13,7 @@ INGRESS_IP ?= $(shell minikube ip 2>/dev/null)
 HOST ?= rahbar.local
 
 .DEFAULT_GOAL := help
-.PHONY: help install test lint dev live-up live-down live-status live-ask cluster images apply secret index ask fetch eval eval-fixtures check
+.PHONY: help install test lint dev live-up live-down live-status live-ask cluster images apply secret index ask fetch eval eval-offline eval-fixtures check
 
 help: ## list the targets
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  make %-14s %s\n", $$1, $$2}'
@@ -84,6 +84,9 @@ fetch: ## download the documents listed in corpus/sources.yaml
 
 eval: ## score eval/golden.yaml through the Ingress and apply the CI gate
 	$(BIN)/python eval/run_eval.py --api "http://$(INGRESS_IP)" --host $(HOST)
+
+eval-offline: ## run the Phase 2 three-level offline suite twice with a fixed seed
+	$(PY) eval/run_offline_suite.py --corpus corpus --golden eval/golden.jsonl
 
 eval-fixtures: ## score the CI fixture golden set against a local `make dev`
 	$(BIN)/python eval/run_eval.py --api http://localhost:8000 --golden eval/fixtures/golden.fixture.yaml --out /tmp/rahbar-fixture-results.json
