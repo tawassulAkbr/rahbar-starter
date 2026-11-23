@@ -1,0 +1,688 @@
+{
+  "suite": "rahbar-phase-2-offline",
+  "generated_at": "2026-11-22T10:15:29.967886+00:00",
+  "seed": 2026,
+  "golden": "eval\\golden.jsonl",
+  "golden_questions": 33,
+  "runs": {
+    "run_1": {
+      "module": {
+        "level": "module_embedding",
+        "seed": 2026,
+        "provider": "deterministic-hash-v1",
+        "paraphrase_pairs": 15,
+        "unrelated_pairs": 15,
+        "mean_paraphrase_cosine": 0.13358091760920762,
+        "mean_unrelated_cosine": 0.12879576731085135,
+        "paraphrase_unrelated_gap": 0.004785150298356272,
+        "embedding_time_ms_per_text": 0.030656666785944253,
+        "determinism_largest_abs_difference": 0.0,
+        "determinism_pass": true
+      },
+      "component": {
+        "level": "component_retrieval",
+        "seed": 2026,
+        "retriever": "offline-lexical-reference",
+        "corpus": {
+          "corpus_dir": "corpus",
+          "fallback_passages": 14
+        },
+        "passages": 28,
+        "baseline": {
+          "questions": 33,
+          "answerable_questions": 27,
+          "unanswerable_questions": 6,
+          "recall_at_3": 0.9259259259259259,
+          "recall_at_5": 0.9629629629629629,
+          "mrr": 0.8716049382716049,
+          "ndcg_at_5": 0.8943967523843502
+        },
+        "noise_test": {
+          "irrelevant_documents_added": 3,
+          "metrics": {
+            "questions": 33,
+            "answerable_questions": 27,
+            "unanswerable_questions": 6,
+            "recall_at_3": 0.9259259259259259,
+            "recall_at_5": 0.9259259259259259,
+            "mrr": 0.8580246913580247,
+            "ndcg_at_5": 0.8752196205026466
+          },
+          "deltas": {
+            "recall_at_3": 0.0,
+            "recall_at_5": -0.03703703703703698,
+            "mrr": -0.013580246913580174,
+            "ndcg_at_5": -0.01917713188170367
+          }
+        }
+      },
+      "end_to_end": {
+        "level": "end_to_end_answers",
+        "seed": 2026,
+        "mode": "deterministic-local-reference",
+        "corpus": {
+          "corpus_dir": "corpus",
+          "fallback_passages": 14
+        },
+        "faithfulness": 0.9259259259259259,
+        "faithfulness_judge": "deterministic lexical support; no LLM judge used",
+        "abstention_correctness": 1.0,
+        "abstention_correct": 6,
+        "abstention_total": 6,
+        "citation_validity": 1.0,
+        "citations_valid": 27,
+        "citations_total": 27,
+        "latency_ms_p50": 0.4434000002220273,
+        "latency_ms_p95": 0.8806799945887176,
+        "answers": [
+          {
+            "id": "q001",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q002",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q003",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q004",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q005",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q006",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q007",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q008",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q009",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q010",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q011",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q012",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q013",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q014",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q015",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q016",
+            "answered_from_context": false,
+            "faithful": null,
+            "citation_count": 0,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q017",
+            "answered_from_context": false,
+            "faithful": null,
+            "citation_count": 0,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q018",
+            "answered_from_context": false,
+            "faithful": null,
+            "citation_count": 0,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q019",
+            "answered_from_context": false,
+            "faithful": null,
+            "citation_count": 0,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q020",
+            "answered_from_context": false,
+            "faithful": null,
+            "citation_count": 0,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q021",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q022",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q023",
+            "answered_from_context": true,
+            "faithful": 0.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q024",
+            "answered_from_context": true,
+            "faithful": 0.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q025",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "human-q01",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "human-q02",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "human-q03",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "human-q04",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "human-q05",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "human-q06",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "human-q07",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "human-q08",
+            "answered_from_context": false,
+            "faithful": null,
+            "citation_count": 0,
+            "retrieved_count": 5
+          }
+        ]
+      }
+    },
+    "run_2": {
+      "module": {
+        "level": "module_embedding",
+        "seed": 2026,
+        "provider": "deterministic-hash-v1",
+        "paraphrase_pairs": 15,
+        "unrelated_pairs": 15,
+        "mean_paraphrase_cosine": 0.13358091760920762,
+        "mean_unrelated_cosine": 0.12879576731085135,
+        "paraphrase_unrelated_gap": 0.004785150298356272,
+        "embedding_time_ms_per_text": 0.024216666740054887,
+        "determinism_largest_abs_difference": 0.0,
+        "determinism_pass": true
+      },
+      "component": {
+        "level": "component_retrieval",
+        "seed": 2026,
+        "retriever": "offline-lexical-reference",
+        "corpus": {
+          "corpus_dir": "corpus",
+          "fallback_passages": 14
+        },
+        "passages": 28,
+        "baseline": {
+          "questions": 33,
+          "answerable_questions": 27,
+          "unanswerable_questions": 6,
+          "recall_at_3": 0.9259259259259259,
+          "recall_at_5": 0.9629629629629629,
+          "mrr": 0.8716049382716049,
+          "ndcg_at_5": 0.8943967523843502
+        },
+        "noise_test": {
+          "irrelevant_documents_added": 3,
+          "metrics": {
+            "questions": 33,
+            "answerable_questions": 27,
+            "unanswerable_questions": 6,
+            "recall_at_3": 0.9259259259259259,
+            "recall_at_5": 0.9259259259259259,
+            "mrr": 0.8580246913580247,
+            "ndcg_at_5": 0.8752196205026466
+          },
+          "deltas": {
+            "recall_at_3": 0.0,
+            "recall_at_5": -0.03703703703703698,
+            "mrr": -0.013580246913580174,
+            "ndcg_at_5": -0.01917713188170367
+          }
+        }
+      },
+      "end_to_end": {
+        "level": "end_to_end_answers",
+        "seed": 2026,
+        "mode": "deterministic-local-reference",
+        "corpus": {
+          "corpus_dir": "corpus",
+          "fallback_passages": 14
+        },
+        "faithfulness": 0.9259259259259259,
+        "faithfulness_judge": "deterministic lexical support; no LLM judge used",
+        "abstention_correctness": 1.0,
+        "abstention_correct": 6,
+        "abstention_total": 6,
+        "citation_validity": 1.0,
+        "citations_valid": 27,
+        "citations_total": 27,
+        "latency_ms_p50": 0.44180001714266837,
+        "latency_ms_p95": 1.160360005451366,
+        "answers": [
+          {
+            "id": "q001",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q002",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q003",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q004",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q005",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q006",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q007",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q008",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q009",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q010",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q011",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q012",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q013",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q014",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q015",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q016",
+            "answered_from_context": false,
+            "faithful": null,
+            "citation_count": 0,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q017",
+            "answered_from_context": false,
+            "faithful": null,
+            "citation_count": 0,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q018",
+            "answered_from_context": false,
+            "faithful": null,
+            "citation_count": 0,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q019",
+            "answered_from_context": false,
+            "faithful": null,
+            "citation_count": 0,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q020",
+            "answered_from_context": false,
+            "faithful": null,
+            "citation_count": 0,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q021",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q022",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q023",
+            "answered_from_context": true,
+            "faithful": 0.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q024",
+            "answered_from_context": true,
+            "faithful": 0.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "q025",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "human-q01",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "human-q02",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "human-q03",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "human-q04",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "human-q05",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "human-q06",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "human-q07",
+            "answered_from_context": true,
+            "faithful": 1.0,
+            "citation_count": 1,
+            "retrieved_count": 5
+          },
+          {
+            "id": "human-q08",
+            "answered_from_context": false,
+            "faithful": null,
+            "citation_count": 0,
+            "retrieved_count": 5
+          }
+        ]
+      }
+    }
+  },
+  "stochasticity": {
+    "same_seed": true,
+    "metric_deltas_run_2_minus_run_1": {
+      "module": {
+        "mean_paraphrase_cosine": 0.0,
+        "mean_unrelated_cosine": 0.0,
+        "paraphrase_unrelated_gap": 0.0,
+        "embedding_time_ms_per_text": -0.0064400000458893665
+      },
+      "component": {
+        "recall_at_3": 0.0,
+        "recall_at_5": 0.0,
+        "mrr": 0.0,
+        "ndcg_at_5": 0.0
+      },
+      "end_to_end": {
+        "faithfulness": 0.0,
+        "abstention_correctness": 0.0,
+        "citation_validity": 0.0,
+        "latency_ms_p50": -0.0015999830793589354,
+        "latency_ms_p95": 0.2796800108626485
+      }
+    },
+    "explanation": "The deterministic local reference harness uses a fixed fixture order and seed; timing may vary slightly on different machines."
+  },
+  "summary_table": [
+    {
+      "level": "module",
+      "metrics": {
+        "level": "module_embedding",
+        "seed": 2026,
+        "provider": "deterministic-hash-v1",
+        "paraphrase_pairs": 15,
+        "unrelated_pairs": 15,
+        "mean_paraphrase_cosine": 0.13358091760920762,
+        "mean_unrelated_cosine": 0.12879576731085135,
+        "paraphrase_unrelated_gap": 0.004785150298356272,
+        "embedding_time_ms_per_text": 0.030656666785944253,
+        "determinism_largest_abs_difference": 0.0,
+        "determinism_pass": true
+      }
+    },
+    {
+      "level": "component",
+      "metrics": {
+        "questions": 33,
+        "answerable_questions": 27,
+        "unanswerable_questions": 6,
+        "recall_at_3": 0.9259259259259259,
+        "recall_at_5": 0.9629629629629629,
+        "mrr": 0.8716049382716049,
+        "ndcg_at_5": 0.8943967523843502
+      },
+      "noise_deltas": {
+        "recall_at_3": 0.0,
+        "recall_at_5": -0.03703703703703698,
+        "mrr": -0.013580246913580174,
+        "ndcg_at_5": -0.01917713188170367
+      }
+    },
+    {
+      "level": "end_to_end",
+      "metrics": {
+        "faithfulness": 0.9259259259259259,
+        "abstention_correctness": 1.0,
+        "citation_validity": 1.0,
+        "latency_ms_p50": 0.4434000002220273,
+        "latency_ms_p95": 0.8806799945887176
+      }
+    }
+  ]
+}

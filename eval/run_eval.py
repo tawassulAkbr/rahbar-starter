@@ -36,8 +36,11 @@ REQUIRED_ABSTENTION = 1.0      # every must-abstain question must be declined
 
 
 def load_golden(path: Path, *, fixture: bool = False) -> list[dict]:
-    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    questions = data.get("questions") or []
+    if path.suffix.lower() == ".jsonl":
+        questions = _load_jsonl_golden(path)
+    else:
+        data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        questions = data.get("questions") or []
     if not questions:
         sys.exit(f"no questions in {path}")
     # The production golden set follows section 5.1's 15-question contract.
@@ -62,6 +65,69 @@ def load_golden(path: Path, *, fixture: bool = False) -> list[dict]:
             sys.exit(f"question {question.get('id')} has no question text")
         if question.get("must_abstain", False) and question.get("relevant"):
             sys.exit(f"abstention question {question['id']} cannot have relevant passages")
+    return questions
+
+
+def _load_jsonl_golden(path: Path) -> list[dict]:
+    """Load the Assignment 03 JSONL contract and normalize it for the evaluator."""
+    allowed_types = {"answerable", "unanswerable", "hard"}
+    allowed_labels = {"human", "synthetic"}
+    allowed_categories = {"ordinary", "version", "exact", "abstain", "injection"}
+    questions: list[dict] = []
+    for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        if not line.strip():
+            continue
+        try:
+            item = json.loads(line)
+        except json.JSONDecodeError as exc:
+            sys.exit(f"invalid JSONL golden line {line_number}: {exc}")
+        if not isinstance(item, dict):
+            sys.exit(f"golden line {line_number} must be a JSON object")
+        missing = [field for field in ("id", "question", "type", "source", "page", "label", "reviewed")
+                   if field not in item]
+        if missing:
+            sys.exit(f"golden line {line_number} is missing fields: {missing}")
+        if item["type"] not in allowed_types:
+            sys.exit(f"golden line {line_number} has invalid type: {item['type']}")
+        if item["label"] not in allowed_labels or not isinstance(item["reviewed"], bool):
+            sys.exit(f"golden line {line_number} has invalid label/reviewed fields")
+        if item["type"] != "unanswerable" and (not isinstance(item["source"], str) or not isinstance(item["page"], int) or item["page"] < 1):
+            sys.exit(f"golden line {line_number} needs a source and positive page")
+        if item["type"] == "unanswerable" and (item["source"] is not None or item["page"] is not None):
+            sys.exit(f"golden line {line_number} unanswerable entries must have null source/page")
+        category = item.get("category")
+        if category is not None and category not in allowed_categories:
+            sys.exit(f"golden line {line_number} has invalid category: {category}")
+        normalized_type = category or {
+            "answerable": "ordinary", "unanswerable": "abstain", "hard": "ordinary"
+        }[item["type"]]
+        relevant = [] if item["type"] == "unanswerable" else [{
+            "source": item["source"], "page": item["page"],
+            "section": item.get("section", "Unsectioned"),
+        }]
+        questions.append({
+            **item,
+            "original_type": item["type"],
+            "type": normalized_type,
+            "relevant": relevant,
+            "must_abstain": item["type"] == "unanswerable",
+        })
+    ids = [question["id"] for question in questions]
+    if len(questions) < 25 or len(set(ids)) != len(ids):
+        sys.exit("JSONL golden set must contain at least 25 unique questions")
+    counts = {kind: sum(question.get("type") == kind for question in questions)
+              for kind in ("ordinary", "version", "exact", "abstain", "injection")}
+    if counts["abstain"] < 5:
+        sys.exit("JSONL golden set requires at least 5 unanswerable questions")
+    if sum(question.get("source") is not None for question in questions if not question["must_abstain"]) < 15:
+        sys.exit("JSONL golden set requires at least 15 answerable questions with sources")
+    hard_count = sum(question.get("original_type") == "hard" for question in questions)
+    if hard_count < 5:
+        sys.exit("JSONL golden set requires at least 5 hard questions")
+    if sum(question["label"] == "human" for question in questions) < 8:
+        sys.exit("JSONL golden set requires at least 8 human-written questions")
+    if sum(question["label"] == "synthetic" and question["reviewed"] for question in questions) < 8:
+        sys.exit("JSONL golden set requires at least 8 reviewed synthetic questions")
     return questions
 
 
@@ -238,7 +304,8 @@ def main() -> int:
         args.golden = HERE / "fixtures" / "golden.fixture.yaml"
         args.baseline = args.baseline or HERE / "fixtures" / "baseline.json"
     else:
-        args.golden = args.golden or HERE / "golden.yaml"
+        args.golden = args.golden or (HERE / "golden.jsonl" if (HERE / "golden.jsonl").exists()
+                                      else HERE / "golden.yaml")
         args.baseline = args.baseline or HERE / "baseline.json"
     assert args.golden is not None
     assert args.baseline is not None
