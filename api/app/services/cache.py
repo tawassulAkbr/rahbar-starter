@@ -23,6 +23,11 @@ class SemanticCache:
         self.settings = settings
         self._redis = redis_client
         self._embedder = embedder
+        self.scope = hashlib.sha256(json.dumps({
+            'collection':settings.collection, 'embedding':settings.embed_model,
+            'embedding_version':settings.embed_model_version, 'model':settings.llm_model,
+            'top_k':settings.top_k, 'temperature':settings.temperature, 'seed':settings.seed,
+        }, sort_keys=True).encode()).hexdigest()
 
     @property
     def enabled(self) -> bool:
@@ -59,6 +64,8 @@ class SemanticCache:
                 if not raw:
                     continue
                 item = json.loads(raw)
+                if item.get('scope') != self.scope:
+                    continue
                 if str(item.get("generation", "0")) != str(generation):
                     continue
                 similarity = cosine_similarity(vector, item.get("vector", []))
@@ -90,8 +97,8 @@ class SemanticCache:
             generation = redis_client.get(self.settings.redis_generation_key) or "0"
             digest = hashlib.sha256(question.strip().lower().encode()).hexdigest()
             payload = {"question": question, "vector": vector, "response": response.model_dump(),
-                       "timestamp": time.time(), "generation": generation}
-            redis_client.setex(f"rahbar:cache:{digest}", self.settings.cache_ttl, json.dumps(payload))
+                       "timestamp": time.time(), "generation": generation, 'scope':self.scope}
+            redis_client.setex(f"rahbar:cache:{self.scope}:{digest}", self.settings.cache_ttl, json.dumps(payload))
         except Exception:
             return
 

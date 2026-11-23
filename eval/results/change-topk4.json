@@ -653,5 +653,6 @@
     "embed_model": "nomic-embed-text",
     "embed_dimension": 768,
     "change": "TOP_K=4"
-  }
+  },
+  "evidence_status": "superseded-reference-harness-not-valid-for-release"
 }

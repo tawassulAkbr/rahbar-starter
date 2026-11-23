@@ -31,3 +31,5 @@ tmp_pytest/
 # Local scratch
 *.log
 .DS_Store
+.audit-data/
+/tmp-k8s-audit.yaml

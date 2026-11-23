@@ -23,6 +23,17 @@ spec:
             runAsNonRoot: true
             runAsUser: 10002
             runAsGroup: 10002
+            fsGroup: 10002
+          initContainers:
+            - name: seed-data-lake
+              image: rahbar-indexer:dev
+              command: ["python", "/app/seed_corpus.py"]
+              envFrom:
+                - configMapRef:
+                    name: rahbar-config
+              volumeMounts:
+                - name: data-lake
+                  mountPath: /data
           containers:
             - name: indexer
               image: rahbar-indexer:dev

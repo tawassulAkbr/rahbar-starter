@@ -6,6 +6,7 @@ import argparse
 import hashlib
 import json
 import math
+import os
 import time
 import urllib.request
 from pathlib import Path
@@ -77,9 +78,9 @@ class OllamaEmbedder:
         self.model = model
 
     def __call__(self, texts: list[str]) -> list[list[float]]:
-        payload = json.dumps({"model": self.model, "input": texts}).encode()
+        payload = json.dumps({"model": self.model, "input": texts, 'keep_alive':os.environ.get('OLLAMA_KEEP_ALIVE', '0')}).encode()
         request = urllib.request.Request(self.endpoint, data=payload, headers={"Content-Type": "application/json"})
-        with urllib.request.urlopen(request, timeout=60) as response:
+        with urllib.request.urlopen(request, timeout=float(os.environ.get('EMBED_TIMEOUT', '300'))) as response:
             data = json.loads(response.read().decode("utf-8"))
         embeddings = data.get("embeddings")
         if not isinstance(embeddings, list) or len(embeddings) != len(texts):
@@ -89,7 +90,7 @@ class OllamaEmbedder:
 
 def run_module_level(embedder: object | None = None, seed: int = 2026) -> dict[str, object]:
     # The module fixture order is fixed; retain the seed in the result contract.
-    embed = embedder or DeterministicEmbedder()
+    embed = embedder or OllamaEmbedder(os.environ.get("OLLAMA_URL", "http://localhost:11434"), os.environ.get("EMBED_MODEL", "nomic-embed-text"))
     paraphrases = [pair for pair in PARAPHRASE_PAIRS]
     unrelated = [pair for pair in UNRELATED_PAIRS]
     texts = [text for pair in paraphrases + unrelated for text in pair]
@@ -101,16 +102,34 @@ def run_module_level(embedder: object | None = None, seed: int = 2026) -> dict[s
     unrelated_scores = [cosine(vectors[offset + index], vectors[offset + index + 1]) for index in range(0, len(unrelated) * 2, 2)]
     repeated = embed([paraphrases[0][0], paraphrases[0][0]])
     largest_difference = max(abs(a - b) for a, b in zip(repeated[0], repeated[1]))
+    chunk_time = None
+    chunk_count = 0
+    if os.environ.get('CHROMA_HOST') and embedder is None:
+        from runtime import settings_for
+        from app.retrieval.chroma import ChromaRetriever
+        settings = settings_for(5, seed)
+        collection = ChromaRetriever(settings).client.get_collection(name=settings.collection)
+        chunks = collection.get(limit=15, where={'superseded': False}, include=['documents'])['documents']
+        if not chunks:
+            raise RuntimeError('Module test requires indexed chunks')
+        chunk_count = len(chunks)
+        chunk_start = time.perf_counter()
+        embed(chunks)
+        chunk_time = (time.perf_counter() - chunk_start) * 1000 / chunk_count
     return {
         "level": "module_embedding",
         "seed": seed,
         "provider": getattr(embed, "provider", type(embed).__name__),
+        "model": getattr(embed, 'model', 'deterministic-test-double'),
+        "model_version": settings.embed_model_version if chunk_count else None,
         "paraphrase_pairs": len(paraphrases),
         "unrelated_pairs": len(unrelated),
         "mean_paraphrase_cosine": average(paraphrase_scores),
         "mean_unrelated_cosine": average(unrelated_scores),
         "paraphrase_unrelated_gap": (average(paraphrase_scores) or 0.0) - (average(unrelated_scores) or 0.0),
         "embedding_time_ms_per_text": (elapsed * 1000 / len(texts)) if texts else 0.0,
+        "embedding_time_ms_per_chunk": chunk_time,
+        "measured_chunks": chunk_count,
         "determinism_largest_abs_difference": largest_difference,
         "determinism_pass": largest_difference <= 1e-12,
     }

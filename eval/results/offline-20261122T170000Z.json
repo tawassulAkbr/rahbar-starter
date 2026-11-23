@@ -684,5 +684,6 @@
         "latency_ms_p95": 0.8806799945887176
       }
     }
-  ]
+  ],
+  "evidence_status": "superseded-reference-harness-not-valid-for-release"
 }

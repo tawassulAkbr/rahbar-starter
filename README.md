@@ -6,6 +6,9 @@ RAHBAR is a grounded question-answering service for university policy documents.
 
 ## Runtime architecture
 
+For Assignment 03 Parts A–D, see the [Phase 0–4 re-audit and commands](docs/PHASE_0_TO_4_REAUDIT.md).
+Historical reference-harness results are superseded and cannot authorize release.
+
 The live stack is composed of:
 
 - **UI**: static chat page served by unprivileged Nginx on port `8081`.

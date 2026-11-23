@@ -34,6 +34,10 @@ class HostedProvider:
         for retry in range(2):
             correction = str(last_error) if retry and last_error else ""
             try:
+                from ...tracing import record_generation
+                actual_prompt = build_grounded_prompt(question, passages, correction)
+                record_generation(actual_prompt, self.settings.llm_model,
+                                  {"temperature": self.settings.temperature, "seed": self.settings.seed})
                 response = httpx.post(
                     self.settings.hosted_base_url.rstrip("/") + "/chat/completions",
                     headers={"Authorization": f"Bearer {self.settings.llm_api_key}"},
@@ -41,8 +45,7 @@ class HostedProvider:
                         "model": self.settings.llm_model,
                         "temperature": self.settings.temperature,
                         "response_format": {"type": "json_object"},
-                        "messages": [{"role": "user", "content": build_grounded_prompt(
-                            question, passages, correction)}],
+                        "messages": [{"role": "user", "content": actual_prompt}],
                     },
                     timeout=self.settings.embed_timeout,
                 )

@@ -1,15 +1,15 @@
 {
   "version": 1,
   "justification": {
-    "recall_at_5_max_drop": "0.05 matches the frozen Phase 0 contract and permits the measured TOP_K=4 candidate drop of about 3.7 percentage points.",
-    "faithfulness_min": "0.90 preserves at least 90% of the Phase 2 reference faithfulness while allowing deterministic corpus variation.",
-    "p95_latency_max_ms": "2.0 is above the Phase 2 local reference p95 and leaves room for a small candidate change.",
-    "abstention_correctness_min": "1.0 preserves the Phase 2 requirement that every unanswerable question abstains."
+    "recall_at_5_max_drop": "At most five percentage points loss relative to the real baseline; chosen before rerunning candidates.",
+    "faithfulness_min": "At least 90% of generated answers must pass the documented lexical-support proxy; semantic limitations must be reported.",
+    "p95_latency_max_ms": "Local CPU demo latency budget is three minutes per query; a deployment policy, not a claim of measured latency.",
+    "abstention_correctness_min": "All unanswerable questions must abstain and must not regress against baseline."
   },
   "thresholds": {
     "recall_at_5_max_drop": 0.05,
-    "faithfulness_min": 0.90,
-    "p95_latency_max_ms": 2.0,
+    "faithfulness_min": 0.9,
+    "p95_latency_max_ms": 180000,
     "abstention_correctness_min": 1.0
   }
 }

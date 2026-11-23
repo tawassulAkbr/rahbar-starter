@@ -74,6 +74,10 @@ class FakeCollection:
     def count(self) -> int:
         return len(self.rows)
 
+    def update(self, *, ids, metadatas):
+        for key, metadata in zip(ids, metadatas):
+            self.rows[key]['metadata'].update(metadata)
+
 
 def _settings(tmp_path: Path):
     from pipeline.config import get_settings
@@ -125,6 +129,20 @@ def test_newer_version_archives_old_source_and_replaces_its_chunks(tmp_path: Pat
     new_item = [{"source": new.name, "sha256": "new", "doc_version": "2026", "path": str(new)}]
     store_incremental([Chunk("old-1", "old", old.name, "S", 1, "2023", False)], [[1.0, 0.0]], settings, old_item)
     store_incremental([Chunk("new-1", "new", new.name, "S", 1, "2026", False)], [[0.0, 1.0]], settings, new_item)
-    assert (Path(settings.archive_dir) / "rules" / old.name).exists()
-    assert "old-1" not in collection.rows
+    assert list((Path(settings.archive_dir) / "rules").rglob(old.name))
+    assert collection.rows['old-1']['metadata']['superseded'] is True
     assert "new-1" in collection.rows
+    restore_document(old.name, settings)
+    assert collection.rows['old-1']['metadata']['superseded'] is False
+    assert collection.rows['new-1']['metadata']['superseded'] is True
+
+
+def test_new_version_not_rejected_as_duplicate_of_rejected_old(tmp_path):
+    paths = [tmp_path/'rules-2023.md', tmp_path/'rules-2026.md']
+    for path in paths:
+        path.write_text(path.name)
+    docs = [(p, _document(p.name, version), sha256_file(p), version, False)
+            for p, version in zip(paths, ['2023', '2026'])]
+    _, accepted = verify_documents(docs, run_id='test', quarantine_dir=str(tmp_path/'q'),
+                                  report_dir=str(tmp_path/'r'), embedder=lambda texts: [[1, 0]] * len(texts))
+    assert [item[0].name for item in accepted] == ['rules-2026.md']

@@ -89,10 +89,10 @@ eval-offline: ## run the Phase 2 three-level offline suite twice with a fixed se
 	$(PY) eval/run_offline_suite.py --corpus corpus --golden eval/golden.jsonl
 
 phase3-experiment: ## compare baseline TOP_K=5 with candidate TOP_K=4
-	$(PY) eval/change_experiment.py --candidate-top-k 4 --out eval/results/change-topk4.json
+	$(PY) eval/change_experiment.py --candidate-top-k 4 --out eval/results/change-real-topk4.json
 
-phase3-gate: ## apply the Phase 3 release gate to the passing candidate
-	$(PY) eval/gate.py --experiment eval/results/change-topk4.json --config eval/gate.json --out eval/results/gate-pass.json
+phase3-gate: ## apply the Phase 3 release gate to the measured candidate
+	$(PY) eval/gate.py --experiment eval/results/change-real-topk4.json --config eval/gate.json --out eval/results/gate-real-topk4.json
 
 eval-fixtures: ## score the CI fixture golden set against a local `make dev`
 	$(BIN)/python eval/run_eval.py --api http://localhost:8000 --golden eval/fixtures/golden.fixture.yaml --out /tmp/rahbar-fixture-results.json

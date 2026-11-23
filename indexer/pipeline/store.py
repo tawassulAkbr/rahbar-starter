@@ -119,8 +119,8 @@ def _collection_ids(collection: Any, source: str) -> list[str]:
     """Get all ids owned by a source; old Chroma versions may omit include."""
     try:
         result = collection.get(where={"source": source})
-    except Exception:
-        return []
+    except Exception as exc:
+        raise RuntimeError(f"cannot verify chunks for {source}") from exc
     ids = result.get("ids", []) if isinstance(result, dict) else []
     return [value for value in ids if isinstance(value, str)]
 
@@ -162,36 +162,41 @@ def store_incremental(
     changed_sources = {
         source for source, item in current.items()
         if previous.get(source, {}).get("sha256") != item.get("sha256")
+        or previous.get(source, {}).get('doc_version') != item.get('doc_version')
+        or previous.get(source, {}).get('superseded', False) != item.get('superseded', False)
     }
     deleted_sources = set(previous) - set(current)
-    superseded_sources: set[str] = set()
+    archives = state.setdefault("archives", {})
+    superseded_sources = {
+        old_source for old_source in deleted_sources
+        if any(logical_document_id(old_source) == logical_document_id(source)
+               and _version_key(str(previous[old_source].get("doc_version", "")))
+                   < _version_key(str(item.get("doc_version", "")))
+               for source, item in current.items())
+    }
     orphan_chunks_removed = 0
+    orphan_counts = {}
     for source in sorted(changed_sources | deleted_sources):
         old = previous.get(source, {})
-        ids = [value for value in old.get("chunk_ids", []) if isinstance(value, str)]
-        if not ids:
-            ids = _collection_ids(collection, source)
-        if ids:
-            collection.delete(ids=ids)
-        if source in deleted_sources:
-            logger.info("removed deleted document source=%s orphan_chunks=%d", source, len(ids))
-            orphan_chunks_removed += len(ids)
-
-    # A newly discovered version supersedes older logical siblings. Remove
-    # their chunks from retrieval and archive their source bytes for restore.
-    for source, item in current.items():
-        for old_source, old in previous.items():
-            if old_source in current or logical_document_id(old_source) != logical_document_id(source):
-                continue
-            if _version_key(str(old.get("doc_version", "unknown"))) >= _version_key(str(item.get("doc_version", "unknown"))):
-                continue
-            ids = [value for value in old.get("chunk_ids", []) if isinstance(value, str)] or _collection_ids(collection, old_source)
+        ids = _collection_ids(collection, source)
+        if source in superseded_sources:
+            if ids:
+                collection.update(ids=ids, metadatas=[{"superseded": True}] * len(ids))
+            archived = old.get("snapshot")
+            if not archived or not Path(str(archived)).exists():
+                original = Path(str(old.get("path", "")))
+                if not original.is_file():
+                    original = Path(settings.quarantine_dir) / source
+                archived = _archive_file(str(original), settings) if original.is_file() else None
+            if not archived:
+                raise RuntimeError(f"Cannot archive superseded source {source}")
+            archives[source] = {**old, "path": archived, "original_path": old.get('path'), "chunk_ids": ids, "superseded": True}
+        else:
             if ids:
                 collection.delete(ids=ids)
-            archived = _archive_file(str(old.get("path", "")), settings) if old.get("path") else None
-            if archived:
-                logger.info("archived superseded document source=%s path=%s", old_source, archived)
-            superseded_sources.add(old_source)
+            if source in deleted_sources:
+                orphan_chunks_removed += len(ids)
+                orphan_counts[source] = len(_collection_ids(collection, source))
 
     by_source: dict[str, list[tuple[Chunk, list[float]]]] = {}
     for chunk, vector in zip(chunks, vectors):
@@ -212,6 +217,16 @@ def store_incremental(
     for source, item in next_documents.items():
         if source not in changed_sources:
             item["chunk_ids"] = previous.get(source, {}).get("chunk_ids", [])
+            if previous.get(source, {}).get('restored'):
+                item['restored'] = True
+    for source, item in next_documents.items():
+        path = Path(str(item.get("path", "")))
+        if path.is_file():
+            snapshot = Path(settings.archive_dir) / logical_document_id(source) / str(item["sha256"]) / source
+            snapshot.parent.mkdir(parents=True, exist_ok=True)
+            if not snapshot.exists():
+                shutil.copy2(path, snapshot)
+            item["snapshot"] = str(snapshot)
     state["documents"] = next_documents
     state["updated_at"] = datetime.now(timezone.utc).isoformat()
     state["last_run"] = {
@@ -219,6 +234,9 @@ def store_incremental(
         "changed_documents": len(changed_sources),
         "deleted_documents": len(deleted_sources),
         "orphan_chunks_removed": orphan_chunks_removed,
+        "orphan_counts_by_document": orphan_counts,
+        "embedded_chunks_by_document": {source: len(pairs) for source, pairs in by_source.items()},
+        "superseded_documents": sorted(superseded_sources),
     }
     _save_state(settings.state_file, state)
     _invalidate_cache(settings)
@@ -227,18 +245,40 @@ def store_incremental(
 
 def restore_document(source: str, settings: IndexerSettings) -> str:
     """Restore an archived source file into the configured corpus directory."""
+    if Path(source).name != source:
+        raise ValueError('restore requires a document filename, not a path')
+    state = load_state(settings.state_file)
+    archived = state.get("archives", {}).get(source)
+    if archived:
+        collection = get_client(settings).get_collection(name=settings.collection)
+        for sibling, item in list(state["documents"].items()):
+            if logical_document_id(sibling) != logical_document_id(source):
+                continue
+            ids = _collection_ids(collection, sibling)
+            if ids:
+                collection.update(ids=ids, metadatas=[{"superseded": True}] * len(ids))
+            moved = _archive_file(str(item["path"]), settings)
+            state["archives"][sibling] = {**item, "path": moved or item["snapshot"], "original_path": item['path'], "superseded": True}
+            del state["documents"][sibling]
+        destination = Path(str(archived.get('original_path') or Path(settings.corpus_dir) / source))
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(str(archived["path"]), destination)
+        ids = _collection_ids(collection, source)
+        if not ids:
+            raise RuntimeError("Archived chunks are missing; restore requires reindexing")
+        collection.update(ids=ids, metadatas=[{"superseded": False}] * len(ids))
+        state["documents"][source] = {**archived, "path": str(destination), "superseded": False, "restored": True}
+        del state["archives"][source]
+        _save_state(settings.state_file, state)
+        _invalidate_cache(settings)
+        return str(destination)
     archive_root = Path(settings.archive_dir) / logical_document_id(source)
-    original = Path(source)
-    matches = sorted(archive_root.glob(original.name))
-    if not matches:
-        matches = sorted(archive_root.glob(f"{original.stem}-*{original.suffix}"))
+    matches = sorted(archive_root.rglob(Path(source).name))
     if not matches:
         raise FileNotFoundError(f"no archived copy found for {source}")
-    corpus_root = Path(settings.corpus_dir)
-    corpus_root.mkdir(parents=True, exist_ok=True)
-    destination = corpus_root / matches[-1].name
-    shutil.move(str(matches[-1]), str(destination))
-    logger.info("restored document source=%s path=%s", source, destination)
+    destination = Path(settings.corpus_dir) / source
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(matches[-1], destination)
     return str(destination)
 
 

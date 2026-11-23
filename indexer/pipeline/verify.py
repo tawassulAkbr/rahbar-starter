@@ -92,7 +92,7 @@ def _completeness(document: Document) -> dict[str, object]:
     if not document.pages or any(not isinstance(page.page, int) or page.page < 1 for page in document.pages):
         return _check(False, "page count or page numbering is missing")
     text = "\n".join(page.text for page in document.pages).lower()
-    if re.search(r"(?:\[\s*truncated\s*\]|\.{3}\s*truncated|content truncated)$", text):
+    if re.search(r"(?:\[\s*truncated\s*\]|\.{3}\s*truncated|content truncated)", text):
         return _check(False, "text is marked truncated")
     return _check(True, "source, title, version, page count, and text completeness present")
 
@@ -133,7 +133,8 @@ def _uniqueness(
         return _check(False, f"exact duplicate of {exact[0]}")
     if embeddings and source in embeddings:
         for other_source, vector in embeddings.items():
-            if other_source in prior_sources and _cosine(embeddings[source], vector) >= threshold:
+            if (logical_document_id(other_source) != logical_document_id(source)
+                    and other_source in prior_sources) and _cosine(embeddings[source], vector) >= threshold:
                 return _check(False, f"near-duplicate of {other_source} (cosine >= {threshold:.2f})")
     return _check(True, "no exact or near duplicate")
 
@@ -158,29 +159,39 @@ def verify_documents(
     report_dir: str,
     near_duplicate_threshold: float = 0.97,
     embedder: EmbeddingFn | None = None,
+    archive_dir: str | None = None,
 ) -> tuple[list[VerificationReport], list[tuple[Path, Document, str, str, bool]]]:
     """Verify documents and return reports plus only documents safe to index."""
     records = [(path, path.name, digest, version) for path, _, digest, version, _ in documents]
     embeddings: dict[str, list[float]] | None = None
     if embedder and documents:
-        vectors = embedder(["\n".join(page.text for page in document.pages) for _, document, *_ in documents])
-        embeddings = {path.name: vector for (path, *_), vector in zip(documents, vectors)}
+        eligible = [item for item in documents if _quality(item[1])["passed"] and _completeness(item[1])["passed"]]
+        vectors = embedder(["\n".join(page.text for page in document.pages) for _, document, *_ in eligible]) if eligible else []
+        if len(vectors) != len(eligible):
+            raise RuntimeError("verification embedding count mismatch")
+        embeddings = {path.name: vector for (path, *_), vector in zip(eligible, vectors)}
     reports: list[VerificationReport] = []
     accepted: list[tuple[Path, Document, str, str, bool]] = []
     quarantine_root = Path(quarantine_dir)
     for path, document, digest, version, superseded in documents:
+        # Rejected documents must never suppress an otherwise valid successor.
+        comparison_records = [record for record in records if record[1] in {item[0].name for item in accepted} or record[1] == path.name]
         checks = {
             "quality": _quality(document),
             "completeness": _completeness(document),
             "recency": _recency(path.name, version, [(item[0], item[3], item[4]) for item in documents]),
             "uniqueness": _uniqueness(
-                path.name, digest, "\n".join(page.text for page in document.pages), records,
+                path.name, digest, "\n".join(page.text for page in document.pages), comparison_records,
                 embeddings, near_duplicate_threshold,
             ),
         }
         passed = all(bool(check["passed"]) for check in checks.values())
         quarantined = False
         if not passed:
+            if archive_dir and not checks['recency']['passed'] and checks['quality']['passed'] and checks['completeness']['passed']:
+                archive = Path(archive_dir) / logical_document_id(path.name) / digest / path.name
+                archive.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(path, archive)
             quarantined = _quarantine(path, quarantine_root)
         else:
             accepted.append((path, document, digest, version, superseded))

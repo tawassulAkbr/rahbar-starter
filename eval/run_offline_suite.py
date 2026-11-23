@@ -4,6 +4,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import hashlib
+import random
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -22,12 +25,16 @@ def _metric_delta(first: dict[str, object], second: dict[str, object], metrics: 
 
 
 def run_suite(corpus_dir: Path, golden_path: Path, seed: int = 2026) -> dict[str, object]:
+    random.seed(seed)
     golden = load_golden(golden_path)
     first = {
         "module": run_module_level(seed=seed),
         "component": run_component_level(corpus_dir, golden_path, seed=seed),
         "end_to_end": run_e2e_level(corpus_dir, golden_path, seed=seed),
     }
+    progress = Path('eval/results/offline-progress.json')
+    progress.parent.mkdir(parents=True, exist_ok=True)
+    progress.write_text(json.dumps({'status':'run_1_complete', 'run_1':first}, indent=2))
     second = {
         "module": run_module_level(seed=seed),
         "component": run_component_level(corpus_dir, golden_path, seed=seed),
@@ -39,19 +46,25 @@ def run_suite(corpus_dir: Path, golden_path: Path, seed: int = 2026) -> dict[str
         "seed": seed,
         "golden": str(golden_path),
         "golden_questions": len(golden),
+        "golden_sha256": hashlib.sha256(golden_path.read_bytes()).hexdigest(),
+        "configuration": {"collection": os.environ.get('CHROMA_COLLECTION', 'rahbar'),
+                          "embedding_model": os.environ.get('EMBED_MODEL', 'nomic-embed-text'),
+                          "generator": os.environ.get('LLM_MODEL', 'llama3.2:3b'), "top_k": 5},
         "runs": {"run_1": first, "run_2": second},
         "stochasticity": {
             "same_seed": True,
             "metric_deltas_run_2_minus_run_1": {
                 "module": _metric_delta(first["module"], second["module"], (
                     "mean_paraphrase_cosine", "mean_unrelated_cosine", "paraphrase_unrelated_gap",
-                    "embedding_time_ms_per_text")),
+                    "embedding_time_ms_per_text", "embedding_time_ms_per_chunk", "determinism_largest_abs_difference")),
                 "component": _metric_delta(first["component"]["baseline"], second["component"]["baseline"], (
                     "recall_at_3", "recall_at_5", "mrr", "ndcg_at_5")),
+                "component_noise": _metric_delta(first['component']['noise_test']['metrics'], second['component']['noise_test']['metrics'],
+                                                 ('recall_at_3', 'recall_at_5', 'mrr', 'ndcg_at_5')),
                 "end_to_end": _metric_delta(first["end_to_end"], second["end_to_end"], (
                     "faithfulness", "abstention_correctness", "citation_validity", "latency_ms_p50", "latency_ms_p95")),
             },
-            "explanation": "The deterministic local reference harness uses a fixed fixture order and seed; timing may vary slightly on different machines.",
+            "explanation": "Serving implementation uses a fixed seed and question order; model runtime, scheduling, and warm-up can still vary latency.",
         },
         "summary_table": [
             {"level": "module", "metrics": first["module"]},

@@ -16,7 +16,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 
-from .config import get_settings
+from .config import get_settings, resolve_embedding_version
 from .logjson import configure_logging, request_id_var
 from .providers.llm import get_provider
 from .retrieval import get_retriever
@@ -28,7 +28,7 @@ log = logging.getLogger("rahbar.api")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    settings = get_settings()
+    settings = resolve_embedding_version(get_settings())
     configure_logging(settings.log_level)
     app.state.settings = settings
     app.state.retriever = get_retriever(settings)

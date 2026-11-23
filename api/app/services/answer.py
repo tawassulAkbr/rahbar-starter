@@ -305,18 +305,27 @@ def _exact_policy_answer(question: str, passages: list[Passage]) -> Answer | Non
 def answer_question(
     question: str, retriever: Retriever, provider: LLMProvider, settings: Settings
 ) -> AskResponse:
+    from ..tracing import generation_attempts, retrieval_details
+    generation_token = generation_attempts.set([])
+    retrieval_token = retrieval_details.set({})
     trace_id = new_trace_id()
+    events = []
     total_start = time.perf_counter()
     retrieval_start = time.perf_counter()
     try:
         passages = retriever.retrieve(question, k=settings.top_k)
     except RetrievalError as exc:
         log.warning("retrieval failed", extra={"error": str(exc)})
+        events.append({'stage': 'retrieval', 'error_type': type(exc).__name__})
         passages = []
     retrieval_seconds = time.perf_counter() - retrieval_start
     metrics.RETRIEVAL_LATENCY.observe(retrieval_seconds)
     prompt = build_grounded_prompt(question, passages)
+    retrieved_before_rail = list(passages)
     guardrail_actions = detect_guardrail_actions(passages)
+    blocked = {action["chunk_id"] for action in guardrail_actions}
+    passages = [p for p in passages if p.chunk_id not in blocked]
+    prompt = build_grounded_prompt(question, passages)
     if not passages or max(passage.score for passage in passages) < settings.relevance_floor:
         metrics.ABSTENTIONS.inc()
         answer = _fallback("no retrieved passage cleared the relevance floor")
@@ -330,6 +339,7 @@ def answer_question(
                 answer = _validated_answer(provider.generate(question, passages))
         except Exception as exc:
             log.warning("provider output rejected", extra={"error": str(exc)})
+            events.append({'stage': 'generation', 'error_type': type(exc).__name__})
             answer = _fallback("provider output failed schema or citation validation")
         generation_seconds = time.perf_counter() - generation_start
         metrics.GENERATION_LATENCY.observe(generation_seconds)
@@ -342,13 +352,14 @@ def answer_question(
 
     result = AskResponse(
         request_id=request_id_var.get(),
+        trace_id=trace_id,
         answer=answer.answer,
         citations=answer.citations,
         answered_from_context=answer.answered_from_context,
         confidence=answer.confidence,
         retrieved=[
             RetrievedRef(
-                chunk_id=p.chunk_id, source=p.source, section=p.section, page=p.page, score=p.score
+                chunk_id=p.chunk_id, source=p.source, section=p.section, page=p.page, score=p.score, doc_version=p.doc_version
             )
             for p in passages
         ],
@@ -362,13 +373,13 @@ def answer_question(
         retrieved=[{
             "chunk_id": p.chunk_id, "document_id": p.source,
             "doc_version": getattr(p, "doc_version", "unknown"), "score": p.score,
-        } for p in passages],
+        } for p in retrieved_before_rail],
         filters={"relevance_floor": settings.relevance_floor, "superseded": False},
         reranked_order=[p.chunk_id for p in passages],
         prompt=prompt,
         context=[p.text for p in passages],
-        model=provider.name,
-        parameters={"top_k": settings.top_k, "temperature": settings.temperature},
+        model=settings.llm_model,
+        parameters={"top_k": settings.top_k, "temperature": settings.temperature, "seed": settings.seed},
         response={"answer": result.answer, "answered_from_context": result.answered_from_context,
                   "confidence": result.confidence},
         citations=[citation.model_dump() for citation in result.citations],
@@ -378,6 +389,24 @@ def answer_question(
                            "total_ms": round((time.perf_counter() - total_start) * 1000, 3)},
         cache_hit=False,
     )
+    attempts = generation_attempts.get() or []
+    details = retrieval_details.get() or {}
+    trace["generation_attempts"] = attempts
+    trace['pipeline_events'] = events
+    if attempts:
+        trace['context'] = [_focused_text(question, p.text) for p in passages]
+    trace["generation_path"] = "provider" if attempts else "extractive_or_abstention"
+    trace["prompt"] = attempts[-1]["prompt"] if attempts else ""
+    from ..tracing import prompt_hash
+    trace["prompt_hash"] = prompt_hash(trace["prompt"])
+    trace["filters"] = details.get("filters", trace["filters"])
+    trace["query_embeddings"] = details.get("queries", [])
+    trace['retrieval_candidates'] = details.get('candidates', [])
+    trace["rewritten_query"] = details.get("rewritten_query", question)
+    trace["latency_per_stage"].update(details.get("latencies", {}))
+    trace["latency_per_stage"]["retrieve_ms"] = max(0, retrieval_seconds * 1000 - details.get("latencies", {}).get("embed_ms", 0) - details.get("latencies", {}).get("rerank_ms", 0))
+    generation_attempts.reset(generation_token)
+    retrieval_details.reset(retrieval_token)
     emit_trace(trace, settings.trace_dir)
     metrics.record_trace_metrics(trace)
     log.info(

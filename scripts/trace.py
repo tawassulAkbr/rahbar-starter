@@ -23,11 +23,19 @@ def main() -> int:
     parser.add_argument("--path", default="traces/traces.jsonl")
     args = parser.parse_args()
     record = find_trace(args.path, args.trace_id)
+    visited = set()
+    while record.get("origin_trace_id"):
+        if record["trace_id"] in visited:
+            raise SystemExit("cyclic trace provenance")
+        visited.add(record["trace_id"])
+        record = find_trace(args.path, record["origin_trace_id"])
     print(json.dumps({
         "trace_id": record["trace_id"],
         "context": record.get("context", []),
         "prompt": record.get("prompt", ""),
         "prompt_hash": record.get("prompt_hash", ""),
+        "generation_path": record.get("generation_path"),
+        "generation_attempts": record.get("generation_attempts", []),
         "response": record.get("response", {}),
         "citations": record.get("citations", []),
     }, indent=2, ensure_ascii=False))

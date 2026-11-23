@@ -78,22 +78,8 @@ def load_passages(corpus_dir: Path, golden: list[dict]) -> tuple[list[Passage], 
         if not path.is_file() or path.name.lower().startswith(("readme", "manifest")):
             continue
         passages.extend(_file_passages(path))
-    # A clean checkout may not have PDF extraction dependencies or raw PDFs.
-    # Add a transparent evidence passage from the reviewed golden row so the
-    # offline harness remains runnable; the report records this fallback.
-    fallback_count = 0
-    existing = {(item.source, item.section) for item in passages}
-    for row in golden:
-        for relevant in row.get("relevant", []):
-            key = (str(relevant.get("source")), str(relevant.get("section", "Unsectioned")))
-            if key in existing:
-                continue
-            text = f"{row['question']} {row.get('expect', '')}".strip()
-            digest = hashlib.sha256(f"fallback|{key}|{text}".encode()).hexdigest()[:20]
-            passages.append(Passage(key[0], key[1], int(relevant.get("page") or 1), text, digest))
-            existing.add(key)
-            fallback_count += 1
-    return passages, {"corpus_dir": str(corpus_dir), "fallback_passages": fallback_count}
+    return passages, {"corpus_dir": str(corpus_dir), "fallback_passages": 0}
+
 
 
 class LexicalRetriever:
