@@ -1,5 +1,6 @@
 """Evaluate the serving implementation; golden labels never enter inference."""
 from dataclasses import replace
+import json
 import os
 import time
 import re
@@ -58,7 +59,6 @@ def end_to_end(golden_path, seed, top_k):
         elapsed = (time.perf_counter() - start) * 1000
         latencies.append(elapsed)
         trace_path = Path(settings.trace_dir) / 'traces.jsonl'
-        import json
         trace = next(json.loads(line) for line in trace_path.read_text().splitlines()
                      if json.loads(line).get('trace_id') == result.trace_id)
         context = ' '.join(trace['context'])
@@ -75,6 +75,12 @@ def end_to_end(golden_path, seed, top_k):
             citations.append(validity)
         rows.append({'id': question['id'], 'trace_id': result.trace_id, 'response': result.model_dump(),
                      'latency_ms': elapsed, 'lexical_support': support})
+        checkpoint = os.environ.get('EVAL_ANSWER_CHECKPOINT')
+        if checkpoint:
+            destination = Path(checkpoint)
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_text(json.dumps({'status': 'in_progress', 'top_k': top_k,
+                                               'answers': rows}, indent=2), encoding='utf-8')
         print(f"evaluated {question['id']} trace={result.trace_id} latency_ms={elapsed:.1f}", flush=True)
     return {'level': 'end_to_end_answers', 'mode': 'serving-pipeline',
             'faithfulness': average(faithful) if faithful else 0.0,

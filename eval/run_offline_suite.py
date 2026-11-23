@@ -24,22 +24,37 @@ def _metric_delta(first: dict[str, object], second: dict[str, object], metrics: 
     }
 
 
-def run_suite(corpus_dir: Path, golden_path: Path, seed: int = 2026) -> dict[str, object]:
+def run_suite(corpus_dir: Path, golden_path: Path, seed: int = 2026,
+              top_k: int = 5, checkpoint_dir: Path | None = None) -> dict[str, object]:
     random.seed(seed)
     golden = load_golden(golden_path)
-    first = {
-        "module": run_module_level(seed=seed),
-        "component": run_component_level(corpus_dir, golden_path, seed=seed),
-        "end_to_end": run_e2e_level(corpus_dir, golden_path, seed=seed),
-    }
-    progress = Path('eval/results/offline-progress.json')
-    progress.parent.mkdir(parents=True, exist_ok=True)
-    progress.write_text(json.dumps({'status':'run_1_complete', 'run_1':first}, indent=2))
-    second = {
-        "module": run_module_level(seed=seed),
-        "component": run_component_level(corpus_dir, golden_path, seed=seed),
-        "end_to_end": run_e2e_level(corpus_dir, golden_path, seed=seed),
-    }
+    def run_once(number):
+        random.seed(seed)
+        result = {}
+        stages = {
+            'module': lambda: run_module_level(seed=seed),
+            'component': lambda: run_component_level(corpus_dir, golden_path, seed=seed, top_k=top_k),
+            'end_to_end': lambda: run_e2e_level(corpus_dir, golden_path, seed=seed, top_k=top_k),
+        }
+        previous = os.environ.get('EVAL_ANSWER_CHECKPOINT')
+        try:
+            if checkpoint_dir:
+                checkpoint_dir.mkdir(parents=True, exist_ok=True)
+                os.environ['EVAL_ANSWER_CHECKPOINT'] = str(checkpoint_dir / f'answers-run-{number}.json')
+            for stage, execute in stages.items():
+                print(f'run={number} top_k={top_k} stage={stage}', flush=True)
+                result[stage] = execute()
+                if checkpoint_dir:
+                    (checkpoint_dir / f'run-{number}-{stage}.json').write_text(
+                        json.dumps(result[stage], indent=2), encoding='utf-8')
+        finally:
+            if previous is None:
+                os.environ.pop('EVAL_ANSWER_CHECKPOINT', None)
+            else:
+                os.environ['EVAL_ANSWER_CHECKPOINT'] = previous
+        return result
+    first = run_once(1)
+    second = run_once(2)
     return {
         "suite": "rahbar-phase-2-offline",
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -49,7 +64,11 @@ def run_suite(corpus_dir: Path, golden_path: Path, seed: int = 2026) -> dict[str
         "golden_sha256": hashlib.sha256(golden_path.read_bytes()).hexdigest(),
         "configuration": {"collection": os.environ.get('CHROMA_COLLECTION', 'rahbar'),
                           "embedding_model": os.environ.get('EMBED_MODEL', 'nomic-embed-text'),
-                          "generator": os.environ.get('LLM_MODEL', 'llama3.2:3b'), "top_k": 5},
+                          "generator": os.environ.get('LLM_MODEL', 'llama3.2:3b'), "top_k": top_k,
+                          "temperature": float(os.environ.get('TEMPERATURE', '0.2')),
+                          "max_output_tokens": int(os.environ.get('MAX_OUTPUT_TOKENS', '384')),
+                          "embedding_version": first['module'].get('model_version'),
+                          "cache": "disabled; direct serving answer function"},
         "runs": {"run_1": first, "run_2": second},
         "stochasticity": {
             "same_seed": True,
@@ -81,9 +100,12 @@ def main() -> int:
     parser.add_argument("--golden", type=Path, default=Path("eval/golden.jsonl"))
     parser.add_argument("--out", type=Path)
     parser.add_argument("--seed", type=int, default=2026)
+    parser.add_argument('--top-k', type=int, default=5)
     args = parser.parse_args()
     output = args.out or Path("eval/results") / f"offline-{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}.json"
-    result = run_suite(args.corpus, args.golden, args.seed)
+    if args.top_k < 1:
+        parser.error('--top-k must be positive')
+    result = run_suite(args.corpus, args.golden, args.seed, args.top_k, output.with_suffix(''))
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     print(f"offline suite result: {output}")
