@@ -97,7 +97,7 @@ reproducibility, guardrail auditing, and latency analysis.
   "prompt_hash": "<lowercase SHA-256 hex digest>",
   "model": "llama3.2:3b",
   "parameters": {"temperature": 0.2, "top_k": 5},
-  "response": "Students must maintain 100% attendance.",
+  "response": {"answer": "Students must maintain 100% attendance.", "answered_from_context": true, "confidence": "high"},
   "citations": [{"document_id": "doc-03", "page": 9}],
   "guardrail_actions": [],
   "latency_per_stage": {"rewrite_ms": 3, "embed_ms": 12, "retrieve_ms": 8, "generate_ms": 220},
@@ -107,12 +107,21 @@ reproducibility, guardrail auditing, and latency analysis.
 
 Required fields and types: `trace_id`, `timestamp`, `query`,
 `rewritten_query`, `embed_model`, `embed_model_version`, `collection`,
-`prompt_hash`, `model`, `response` are strings; `retrieved`, `reranked_order`,
+`prompt_hash`, `model` are strings; `response` is an object with `answer`,
+`answered_from_context`, and `confidence`; `retrieved`, `reranked_order`,
 `citations`, and `guardrail_actions` are arrays; `filters`, `parameters`, and
 `latency_per_stage` are objects; `cache_hit` is boolean. Each `retrieved`
 entry requires string `chunk_id`, `document_id`, `doc_version`, and numeric
 `score`. `timestamp` is RFC 3339 UTC. `prompt_hash` is a SHA-256 digest and
 `latency_per_stage` values are non-negative milliseconds.
+
+Phase 4 adds `generation_attempts` containing each exact provider prompt,
+`generation_path` distinguishing provider calls from extractive/abstention
+paths, and `origin_trace_id` on cache hits. Replay follows that reference to
+the generating query. Empty prompts are hashed normally and mean no provider
+prompt was sent for that path. `embed_model_version` is the resolved model
+digest, not an assignment label. `retrieval_ms` includes embedding and reranking;
+`retrieve_ms` excludes them. These durations must not be summed together.
 
 ## 4. Evaluation golden set schema
 
