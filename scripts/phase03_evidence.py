@@ -37,7 +37,8 @@ def main():
                                      for label in ('batch-a-unchanged', 'batch-b-unchanged')},
         'suites': {},
     }
-    for path in [args.results / 'baseline.json', *sorted(args.results.glob('topk*.json'))]:
+    candidates = sorted(p for p in args.results.glob('topk*.json') if p.stem[4:].isdigit())
+    for path in [args.results / 'baseline.json', *candidates]:
         if not path.exists():
             continue
         suite = read(path)

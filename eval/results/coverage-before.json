@@ -1,0 +1,359 @@
+{
+  "method": "cosine of normalized content-word counts",
+  "similarity_min": 0.4,
+  "coverage_min": 0.85,
+  "golden_count": 33,
+  "share": 0.65,
+  "uncovered_by_topic": {
+    "Established policy topics": [
+      "live-4",
+      "live-6"
+    ],
+    "Makerspace": [
+      "live-29",
+      "live-30"
+    ],
+    "Scooter charging": [
+      "live-31",
+      "live-32"
+    ],
+    "Observatory": [
+      "live-33",
+      "live-34"
+    ],
+    "Recycling": [
+      "live-35",
+      "live-36"
+    ],
+    "Instrument rental": [
+      "live-37",
+      "live-38"
+    ],
+    "Parcel lockers": [
+      "live-39",
+      "live-40"
+    ]
+  },
+  "matches": [
+    {
+      "id": "live-1",
+      "question": "What attendance does rule 1.21 require?",
+      "topic": "Established policy topics",
+      "nearest_id": "q001",
+      "nearest_question": "What attendance must students maintain under rule 1.21?",
+      "cosine": 0.6761234037828132
+    },
+    {
+      "id": "live-2",
+      "question": "If I miss the attendance requirement can I sit my final?",
+      "topic": "Established policy topics",
+      "nearest_id": "human-q01",
+      "nearest_question": "Sir, if my attendance is under 80 percent, what approval do I need before I can sit the final exam?",
+      "cosine": 0.492365963917331
+    },
+    {
+      "id": "live-3",
+      "question": "Minimum duration of a bachelor's degree in semesters?",
+      "topic": "Established policy topics",
+      "nearest_id": "q003",
+      "nearest_question": "What is the minimum duration of a Bachelor's degree?",
+      "cosine": 0.9128709291752769
+    },
+    {
+      "id": "live-4",
+      "question": "How does repeating a course affect CGPA?",
+      "topic": "Established policy topics",
+      "nearest_id": "q004",
+      "nearest_question": "How is CGPA calculated for a course that has been repeated?",
+      "cosine": 0.3779644730092272
+    },
+    {
+      "id": "live-5",
+      "question": "Normal course load for a regular semester?",
+      "topic": "Established policy topics",
+      "nearest_id": "q005",
+      "nearest_question": "What is the normal course load in a regular semester?",
+      "cosine": 0.9999999999999999
+    },
+    {
+      "id": "live-6",
+      "question": "What do I need to complete before registering for FYP-I?",
+      "topic": "Established policy topics",
+      "nearest_id": "human-q01",
+      "nearest_question": "Sir, if my attendance is under 80 percent, what approval do I need before I can sit the final exam?",
+      "cosine": 0.26967994498529685
+    },
+    {
+      "id": "live-7",
+      "question": "Is my fee refunded if I withdraw from a course?",
+      "topic": "Established policy topics",
+      "nearest_id": "q007",
+      "nearest_question": "Is the fee refunded when a student withdraws from a course?",
+      "cosine": 0.7302967433402215
+    },
+    {
+      "id": "live-8",
+      "question": "What if my CGPA stays below 2.00 for three semesters?",
+      "topic": "Established policy topics",
+      "nearest_id": "q008",
+      "nearest_question": "What happens when a student's CGPA remains below 2.00 for three consecutive semesters?",
+      "cosine": 0.6123724356957945
+    },
+    {
+      "id": "live-9",
+      "question": "What CGPA avoids academic warning?",
+      "topic": "Established policy topics",
+      "nearest_id": "q009",
+      "nearest_question": "What minimum CGPA is required to avoid academic warning under the current handbook?",
+      "cosine": 0.7071067811865475
+    },
+    {
+      "id": "live-10",
+      "question": "Which handbook version applies to academic warning today?",
+      "topic": "Established policy topics",
+      "nearest_id": "q009",
+      "nearest_question": "What minimum CGPA is required to avoid academic warning under the current handbook?",
+      "cosine": 0.4330127018922194
+    },
+    {
+      "id": "live-11",
+      "question": "What does clause 4.2 say about Fall and Spring registration?",
+      "topic": "Established policy topics",
+      "nearest_id": "q011",
+      "nearest_question": "What does exact clause 4.2 say about course registration in Fall and Spring?",
+      "cosine": 0.8944271909999159
+    },
+    {
+      "id": "live-12",
+      "question": "Tuition fee per credit hour for BS in 2026-27?",
+      "topic": "Established policy topics",
+      "nearest_id": "q012",
+      "nearest_question": "What is the 2026-27 tuition fee per credit hour for BBA and BS?",
+      "cosine": 0.9428090415820632
+    },
+    {
+      "id": "live-13",
+      "question": "How much attendance is required under rule 1.21 for my class?",
+      "topic": "Established policy topics",
+      "nearest_id": "q001",
+      "nearest_question": "What attendance must students maintain under rule 1.21?",
+      "cosine": 0.5714285714285713
+    },
+    {
+      "id": "live-14",
+      "question": "How is my CGPA calculated if I repeat a passed course for grade improvement?",
+      "topic": "Established policy topics",
+      "nearest_id": "q015",
+      "nearest_question": "From Fall 2026, how is CGPA calculated when a student repeats a passed course for grade improvement?",
+      "cosine": 0.7462025072446364
+    },
+    {
+      "id": "live-15",
+      "question": "Hostel room allotment application deadline please?",
+      "topic": "Established policy topics",
+      "nearest_id": "q016",
+      "nearest_question": "What are the hostel room allotment rules and application deadline?",
+      "cosine": 0.8333333333333336
+    },
+    {
+      "id": "live-16",
+      "question": "Can I get a mess-fee refund?",
+      "topic": "Established policy topics",
+      "nearest_id": "q017",
+      "nearest_question": "What is the procedure for obtaining a mess-fee refund?",
+      "cosine": 0.6708203932499369
+    },
+    {
+      "id": "live-17",
+      "question": "Where is the on-campus childcare service?",
+      "topic": "Established policy topics",
+      "nearest_id": "q018",
+      "nearest_question": "Which building provides the university's on-campus childcare service?",
+      "cosine": 0.5669467095138407
+    },
+    {
+      "id": "live-18",
+      "question": "When is the visitor parking permit lottery deadline?",
+      "topic": "Established policy topics",
+      "nearest_id": "q019",
+      "nearest_question": "What is the official parking permit lottery deadline for visitors?",
+      "cosine": 0.8333333333333336
+    },
+    {
+      "id": "live-19",
+      "question": "Does perfect attendance guarantee me a scholarship?",
+      "topic": "Established policy topics",
+      "nearest_id": "q020",
+      "nearest_question": "What scholarship percentage is guaranteed to every student with a perfect attendance record?",
+      "cosine": 0.5
+    },
+    {
+      "id": "live-20",
+      "question": "Which attendance policy copy contains the operative threshold?",
+      "topic": "Established policy topics",
+      "nearest_id": "q021",
+      "nearest_question": "Which of the two near-identical policy copies contains the operative attendance threshold, and what is it?",
+      "cosine": 0.6804138174397717
+    },
+    {
+      "id": "live-21",
+      "question": "Which semester is named in the newer policy version?",
+      "topic": "Established policy topics",
+      "nearest_id": "q022",
+      "nearest_question": "A newer policy version supersedes an older one: what is the effective semester named by the newer version?",
+      "cosine": 0.7826237921249264
+    },
+    {
+      "id": "live-22",
+      "question": "How long is the retention period in the Batch B records policy?",
+      "topic": "Established policy topics",
+      "nearest_id": "q023",
+      "nearest_question": "What exact retention period is stated in the Batch B records policy?",
+      "cosine": 0.8017837257372731
+    },
+    {
+      "id": "live-23",
+      "question": "Which clauses determine eligibility for grade improvement?",
+      "topic": "Established policy topics",
+      "nearest_id": "q025",
+      "nearest_question": "Which two clauses must be combined to determine eligibility for the Batch B grade-improvement request?",
+      "cosine": 0.6454972243679029
+    },
+    {
+      "id": "live-24",
+      "question": "Who approves final exam attendance below 80 percent?",
+      "topic": "Established policy topics",
+      "nearest_id": "human-q01",
+      "nearest_question": "Sir, if my attendance is under 80 percent, what approval do I need before I can sit the final exam?",
+      "cosine": 0.533001790889026
+    },
+    {
+      "id": "live-25",
+      "question": "How often is access reviewed under the information-security policy?",
+      "topic": "Established policy topics",
+      "nearest_id": "human-q02",
+      "nearest_question": "How often does the information-security policy say that an access review should be done?",
+      "cosine": 0.6154574548966638
+    },
+    {
+      "id": "live-26",
+      "question": "What records process applies during a legal hold?",
+      "topic": "Established policy topics",
+      "nearest_id": "human-q03",
+      "nearest_question": "If records are covered by a legal hold, what process does the records policy say should be followed?",
+      "cosine": 0.5270462766947299
+    },
+    {
+      "id": "live-27",
+      "question": "What department approves grade improvement registration?",
+      "topic": "Established policy topics",
+      "nearest_id": "human-q04",
+      "nearest_question": "Before I register for grade improvement, which department has to approve my request?",
+      "cosine": 0.6324555320336758
+    },
+    {
+      "id": "live-28",
+      "question": "Which reporting period does the 2023-24 annual report cover?",
+      "topic": "Established policy topics",
+      "nearest_id": "human-q06",
+      "nearest_question": "The annual report file is named 2023-24, but what reporting period does it actually cover?",
+      "cosine": 0.7977240352174656
+    },
+    {
+      "id": "live-29",
+      "question": "Can I borrow a soldering iron from the makerspace?",
+      "topic": "Makerspace",
+      "nearest_id": "q001",
+      "nearest_question": "What attendance must students maintain under rule 1.21?",
+      "cosine": 0.0
+    },
+    {
+      "id": "live-30",
+      "question": "How late does the makerspace lend soldering irons?",
+      "topic": "Makerspace",
+      "nearest_id": "q001",
+      "nearest_question": "What attendance must students maintain under rule 1.21?",
+      "cosine": 0.0
+    },
+    {
+      "id": "live-31",
+      "question": "Where do I charge an electric scooter?",
+      "topic": "Scooter charging",
+      "nearest_id": "q001",
+      "nearest_question": "What attendance must students maintain under rule 1.21?",
+      "cosine": 0.0
+    },
+    {
+      "id": "live-32",
+      "question": "Which electric scooter charging points open at night?",
+      "topic": "Scooter charging",
+      "nearest_id": "q001",
+      "nearest_question": "What attendance must students maintain under rule 1.21?",
+      "cosine": 0.0
+    },
+    {
+      "id": "live-33",
+      "question": "Is a telescope available to book at the observatory?",
+      "topic": "Observatory",
+      "nearest_id": "q001",
+      "nearest_question": "What attendance must students maintain under rule 1.21?",
+      "cosine": 0.0
+    },
+    {
+      "id": "live-34",
+      "question": "How far ahead can I book an observatory telescope?",
+      "topic": "Observatory",
+      "nearest_id": "q001",
+      "nearest_question": "What attendance must students maintain under rule 1.21?",
+      "cosine": 0.0
+    },
+    {
+      "id": "live-35",
+      "question": "Who accepts broken batteries for recycling?",
+      "topic": "Recycling",
+      "nearest_id": "q001",
+      "nearest_question": "What attendance must students maintain under rule 1.21?",
+      "cosine": 0.0
+    },
+    {
+      "id": "live-36",
+      "question": "Where is the battery recycling drop-off?",
+      "topic": "Recycling",
+      "nearest_id": "q001",
+      "nearest_question": "What attendance must students maintain under rule 1.21?",
+      "cosine": 0.0
+    },
+    {
+      "id": "live-37",
+      "question": "Can I rent a violin for orchestra practice?",
+      "topic": "Instrument rental",
+      "nearest_id": "q001",
+      "nearest_question": "What attendance must students maintain under rule 1.21?",
+      "cosine": 0.0
+    },
+    {
+      "id": "live-38",
+      "question": "How much is violin rental for orchestra rehearsal?",
+      "topic": "Instrument rental",
+      "nearest_id": "q001",
+      "nearest_question": "What attendance must students maintain under rule 1.21?",
+      "cosine": 0.0
+    },
+    {
+      "id": "live-39",
+      "question": "How do I retrieve a parcel from the locker?",
+      "topic": "Parcel lockers",
+      "nearest_id": "q001",
+      "nearest_question": "What attendance must students maintain under rule 1.21?",
+      "cosine": 0.0
+    },
+    {
+      "id": "live-40",
+      "question": "When does my parcel locker pickup code expire?",
+      "topic": "Parcel lockers",
+      "nearest_id": "q007",
+      "nearest_question": "Is the fee refunded when a student withdraws from a course?",
+      "cosine": 0.1666666666666667
+    }
+  ]
+}

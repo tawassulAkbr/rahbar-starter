@@ -9,6 +9,29 @@ RAHBAR is a grounded question-answering service for university policy documents.
 For Assignment 03 Parts A–D, see the [Phase 0–4 re-audit and commands](docs/PHASE_0_TO_4_REAUDIT.md).
 Historical reference-harness results are superseded and cannot authorize release.
 
+For Part E, run the following commands from the repository root:
+
+```bash
+python eval/query_coverage.py --out eval/results/coverage-before.json
+python eval/query_coverage.py --expanded --out eval/results/coverage-after.json
+```
+
+The simulated log contains 28 questions on established topics and 12 on topics
+outside the original test set. A cosine score of 0.40 requires several shared
+content words for typical short questions while allowing differences in wording.
+This lexical measure can miss paraphrases or match questions with different
+intent. The coverage gate requires 85% so at most six of 40 queries lack a
+match. The original 33 questions cover 26 queries (exit 1). Adding six
+synthetic abstention questions covers 37 (exit 0). These figures measure test
+coverage on this log. The six additions are stored separately to reproduce
+both measurements against the same original golden set.
+
+For the Part E data-drift experiment, run `python scripts/audit_docker.py --measure-drift`
+inside the audit image with the real services and configuration documented in
+`docs/PHASE_0_TO_3_ACCEPTANCE.md`. It creates a fresh collection, evaluates
+Batch A twice, ingests Batch B, then repeats the same evaluation twice and
+writes the paired metric differences to `batch-b-drift.json` in the run directory.
+
 The live stack is composed of:
 
 - **UI**: static chat page served by unprivileged Nginx on port `8081`.
