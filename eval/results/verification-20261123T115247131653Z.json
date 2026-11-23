@@ -1,0 +1,30 @@
+{
+  "run_id": "20261123T115247131653Z",
+  "documents": [
+    {
+      "run_id": "20261123T115247131653Z",
+      "document": "access-2026.md",
+      "sha256": "d3d6c2546c3dfb207435e5bd0fd86157e425f1874b5c5cd5a1af07298f78ab92",
+      "checks": {
+        "quality": {
+          "passed": true,
+          "reason": "extracted text is non-empty and readable"
+        },
+        "completeness": {
+          "passed": true,
+          "reason": "source, title, version, page count, and text completeness present"
+        },
+        "recency": {
+          "passed": true,
+          "reason": "latest known version"
+        },
+        "uniqueness": {
+          "passed": true,
+          "reason": "no exact or near duplicate"
+        }
+      },
+      "verdict": "pass",
+      "quarantined": false
+    }
+  ]
+}

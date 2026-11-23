@@ -1,0 +1,19 @@
+{
+  "label": "batch-b",
+  "collection_count": 6,
+  "changed_documents": 5,
+  "deleted_documents": 1,
+  "embedded_chunks": 5,
+  "embedded_chunks_by_document": {
+    "batch-b-clean-policy-2026.md": 1,
+    "batch-b-grade-improvement.md": 1,
+    "batch-b-injected-instruction.md": 1,
+    "batch-b-policy-2027.md": 1,
+    "batch-b-records-policy.md": 1
+  },
+  "orphan_chunks_removed": 0,
+  "orphan_counts_by_document": {},
+  "superseded_documents": [
+    "batch-b-policy-2026.md"
+  ]
+}

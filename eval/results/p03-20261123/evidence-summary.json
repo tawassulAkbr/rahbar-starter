@@ -1,0 +1,35 @@
+{
+  "golden": {
+    "questions": 33,
+    "types": {
+      "answerable": 22,
+      "unanswerable": 6,
+      "hard": 5
+    },
+    "human_labelled": 19,
+    "reviewed_synthetic_labelled": 14,
+    "authorship_status": "Existing labels; member confirmation must be supplied by the group"
+  },
+  "batch_b": {
+    "documents": 12,
+    "verdicts": {
+      "pass": 5,
+      "fail": 7
+    },
+    "failures_per_check": {
+      "quality": 1,
+      "completeness": 3,
+      "uniqueness": 3,
+      "recency": 1
+    },
+    "source_report": "eval\\results\\20261122T181002Z\\verification-20261122T182951Z.json"
+  },
+  "unchanged_embedded_chunks": {
+    "batch-a-unchanged": 0,
+    "batch-b-unchanged": 0
+  },
+  "suites": {},
+  "release_decision": {
+    "status": "pending measured candidates"
+  }
+}
