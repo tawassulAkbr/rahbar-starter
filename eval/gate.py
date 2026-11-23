@@ -5,12 +5,20 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import os
+import math
 from datetime import datetime, timezone
 from pathlib import Path
 
 
 def evaluate(experiment: dict[str, object], config: dict[str, object]) -> dict[str, object]:
-    thresholds = config["thresholds"]
+    thresholds = dict(config["thresholds"])
+    for key, environment in {"recall_at_5_max_drop": "GATE_RECALL5_MAX_DROP",
+                             "faithfulness_min": "GATE_FAITHFULNESS_MIN",
+                             "p95_latency_max_ms": "GATE_P95_MAX_MS",
+                             "abstention_correctness_min": "GATE_ABSTENTION_MIN"}.items():
+        if environment in os.environ:
+            thresholds[key] = float(os.environ[environment])
     baseline = experiment["baseline"]
     candidate = experiment["candidate"]
     baseline_component = baseline["component"]["baseline"]
@@ -29,6 +37,12 @@ def evaluate(experiment: dict[str, object], config: dict[str, object]) -> dict[s
         "candidate_abstention_correctness": float(candidate_e2e["abstention_correctness"]),
     }
     failures: list[str] = []
+    if any(v["end_to_end"].get("mode") != "serving-pipeline" for v in (baseline, candidate)):
+        failures.append("Reference/synthetic results cannot authorize release; run the serving pipeline")
+    if not all(math.isfinite(float(value)) for value in [*observed.values(), *thresholds.values()]):
+        failures.append("Non-finite metrics or thresholds")
+    if baseline["configuration"]["embed_model"] != candidate["configuration"]["embed_model"]:
+        failures.append("Top-k experiment must use the same embedding model")
     if observed["recall_at_5_drop"] > float(thresholds["recall_at_5_max_drop"]):
         failures.append(
             f"recall@5 drop {observed['recall_at_5_drop']:.4f} exceeds {thresholds['recall_at_5_max_drop']:.4f}"

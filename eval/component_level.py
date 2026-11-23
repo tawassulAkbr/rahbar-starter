@@ -34,25 +34,8 @@ def _deltas(base: dict[str, object], noisy: dict[str, object]) -> dict[str, floa
 
 
 def run_component_level(corpus_dir: Path, golden_path: Path, seed: int = 2026, top_k: int = 5) -> dict[str, object]:
-    golden = load_golden(golden_path)
-    passages, corpus_info = load_passages(corpus_dir, golden)
-    baseline = retrieval_metrics(golden, LexicalRetriever(passages), k=top_k)
-    noisy_passages = passages + _noise_passages()
-    noisy = retrieval_metrics(golden, LexicalRetriever(noisy_passages), k=top_k)
-    return {
-        "level": "component_retrieval",
-        "seed": seed,
-        "retriever": "offline-lexical-reference",
-        "top_k": top_k,
-        "corpus": corpus_info,
-        "passages": len(passages),
-        "baseline": baseline,
-        "noise_test": {
-            "irrelevant_documents_added": 3,
-            "metrics": noisy,
-            "deltas": _deltas(baseline, noisy),
-        },
-    }
+    from runtime import component
+    return component(golden_path, seed, top_k)
 
 
 def main() -> int:
