@@ -14,7 +14,6 @@ concurrency:
 
 env:
   PYTHON_VERSION: "3.12"
-  IMAGE_PREFIX: ${{ secrets.DOCKERHUB_USERNAME }}
 
 jobs:
   test:
@@ -53,46 +52,71 @@ jobs:
       - uses: actions/checkout@v4.2.2
       - uses: docker/setup-qemu-action@v3.6.0
       - uses: docker/setup-buildx-action@v3.10.0
+      - name: Sanitize and validate Docker Hub credentials
+        id: docker_creds
+        env:
+          RAW_USER: ${{ secrets.DOCKERHUB_USERNAME }}
+          RAW_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: python3 scripts/sanitize_docker_creds.py
       - name: Log in to Docker Hub
-        uses: docker/login-action@v3.4.0
+        if: ${{ steps.docker_creds.outputs.can_publish == 'true' }}
+        id: docker_login
         continue-on-error: true
+        uses: docker/login-action@v3.4.0
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME || 'rahbar' }}
-          password: ${{ secrets.DOCKERHUB_TOKEN || 'placeholder' }}
+          username: ${{ steps.docker_creds.outputs.username }}
+          password: ${{ steps.docker_creds.outputs.token }}
+      - name: Report image publication mode
+        id: pub_mode
+        run: |
+          if [ "${{ steps.docker_creds.outputs.can_publish }}" = "true" ] && [ "${{ steps.docker_login.outcome }}" = "success" ]; then
+            echo "SHOULD_PUSH=true" >> "$GITHUB_OUTPUT"
+            echo "Authenticated to Docker Hub as ${{ steps.docker_creds.outputs.username }}; images will be published."
+          else
+            echo "SHOULD_PUSH=false" >> "$GITHUB_OUTPUT"
+            if [ "${{ steps.docker_creds.outputs.can_publish }}" = "true" ]; then
+              echo "::warning::Docker Hub login failed (verify DOCKERHUB_USERNAME is your Docker ID, not email, and DOCKERHUB_TOKEN is a valid PAT). Proceeding with local verification build without publishing."
+            else
+              echo "Docker Hub credentials are not configured; building without publishing."
+            fi
+          fi
       - name: Build and publish API image
         uses: docker/build-push-action@v6.15.0
-        continue-on-error: true
         with:
           context: api
           platforms: linux/amd64
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME || 'rahbar' }}/rahbar-api:${{ github.sha }}
+          push: ${{ steps.pub_mode.outputs.SHOULD_PUSH == 'true' }}
+          tags: ${{ steps.docker_creds.outputs.prefix }}/rahbar-api:${{ github.sha }}
       - name: Build and publish indexer image
         uses: docker/build-push-action@v6.15.0
-        continue-on-error: true
         with:
           context: .
           file: indexer/Dockerfile
           platforms: linux/amd64
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME || 'rahbar' }}/rahbar-indexer:${{ github.sha }}
+          push: ${{ steps.pub_mode.outputs.SHOULD_PUSH == 'true' }}
+          tags: ${{ steps.docker_creds.outputs.prefix }}/rahbar-indexer:${{ github.sha }}
       - name: Build and publish UI image
         uses: docker/build-push-action@v6.15.0
-        continue-on-error: true
         with:
           context: ui
           platforms: linux/amd64
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME || 'rahbar' }}/rahbar-ui:${{ github.sha }}
+          push: ${{ steps.pub_mode.outputs.SHOULD_PUSH == 'true' }}
+          tags: ${{ steps.docker_creds.outputs.prefix }}/rahbar-ui:${{ github.sha }}
 
   deploy:
     needs: [build-push]
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 30
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v4.2.2
+      - name: Determine image prefix
+        id: docker_creds
+        env:
+          RAW_USER: ${{ secrets.DOCKERHUB_USERNAME }}
+          RAW_TOKEN: ""
+        run: python3 scripts/sanitize_docker_creds.py
       - uses: azure/setup-kubectl@v4.0.0
         with:
           version: v1.31.4
@@ -102,7 +126,7 @@ jobs:
           cluster_name: rahbar-cd
       - name: Build and load images into ephemeral Kind cluster
         env:
-          PREFIX: ${{ secrets.DOCKERHUB_USERNAME || 'rahbar' }}
+          PREFIX: ${{ steps.docker_creds.outputs.prefix }}
           SHA: ${{ github.sha }}
         run: |
           docker pull chromadb/chroma:1.0.12
@@ -130,12 +154,17 @@ jobs:
           kind load docker-image rahbar-indexer:dev --name rahbar-cd
       - name: Deploy manifests to cluster
         env:
-          PREFIX: ${{ secrets.DOCKERHUB_USERNAME || 'rahbar' }}
+          PREFIX: ${{ steps.docker_creds.outputs.prefix }}
           SHA: ${{ github.sha }}
         run: |
           kubectl create namespace rahbar --dry-run=client -o yaml | kubectl apply -f -
           kubectl create configmap embedding-stub-code -n rahbar \
             --from-file=ci_embedding_stub.py=scripts/ci_embedding_stub.py \
+            --dry-run=client -o yaml | kubectl apply -f -
+          kubectl create configmap corpus-fixtures -n rahbar \
+            --from-file=academic-rules-2023.md=eval/fixtures/academic-rules-2023.md \
+            --from-file=academic-rules-2026.md=eval/fixtures/academic-rules-2026.md \
+            --from-file=fees-2026.md=eval/fixtures/fees-2026.md \
             --dry-run=client -o yaml | kubectl apply -f -
           kubectl apply -k k8s/overlays/cd
           kubectl set image deployment/api api="$PREFIX/rahbar-api:$SHA" -n rahbar

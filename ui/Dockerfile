@@ -9,5 +9,5 @@ RUN apk upgrade --no-cache
 COPY --from=builder /out/ /usr/share/nginx/html/
 COPY nginx.conf /etc/nginx/nginx.conf
 USER 101:101
-EXPOSE 8080
+EXPOSE 8081
 CMD ["nginx", "-g", "daemon off;"]

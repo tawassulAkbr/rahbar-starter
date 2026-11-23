@@ -218,6 +218,8 @@ def _dataset_sha256(path: Path) -> str:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Evaluate RAHBAR against a golden set.")
     parser.add_argument("--api", required=True, help="base URL, e.g. http://192.168.49.2")
+    parser.add_argument("--request-timeout", type=float, default=120.0,
+                        help="per-question HTTP timeout in seconds (default: 120)")
     parser.add_argument("--host", help="Host header, when your Ingress rule names a host")
     parser.add_argument("--fixtures", action="store_true", help="use the CI fixture golden set")
     parser.add_argument(
@@ -245,7 +247,7 @@ def main() -> int:
     rows = []
     headers = {"Host": args.host} if args.host else {}
     try:
-        with httpx.Client(timeout=120.0, headers=headers) as client:
+        with httpx.Client(timeout=args.request_timeout, headers=headers) as client:
             for q in questions:
                 started = time.perf_counter()
                 response = ask(client, args.api, q["question"])

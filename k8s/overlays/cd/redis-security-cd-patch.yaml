@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: rahbar
+spec:
+  template:
+    spec:
+      securityContext:
+        fsGroup: 999
+      containers:
+        - name: redis
+          # The ephemeral Kind cluster has no PVC provisioner; use emptyDir
+          # and invoke Redis directly with the pod fsGroup (mirrors CI overlay).
+          command: ["redis-server"]
+          args: ["--appendonly", "yes"]

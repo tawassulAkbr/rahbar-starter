@@ -128,7 +128,7 @@ evaluation and the CI/CD gate.
 | --- | --- | --- | --- |
 | api | 8000 | `uvicorn app.main:app --host 0.0.0.0 --port 8000` | Build context `api/` |
 | indexer | none | `python -m pipeline.run` | Build context `indexer/`; a Job, so it exits |
-| ui | 8080 | nginx with `ui/nginx.conf` as `/etc/nginx/nginx.conf` | Static files only |
+| ui | 8081 | nginx with `ui/nginx.conf` as `/etc/nginx/nginx.conf` | Static files only |
 | chroma | 8000 | `chromadb/chroma` | Data in `/data`; heartbeat `GET /api/v2/heartbeat` |
 | redis | 6379 | `redis` | If you choose Redis for the cache |
 
@@ -136,7 +136,7 @@ evaluation and the CI/CD gate.
   same server version: `chromadb/chroma:1.0.12`. Pull it once before you rely on it; if you
   change one version, change the other.
 - **The UI container runs as non-root with a read-only root filesystem.** `nginx.conf`
-  listens on 8080 and writes only under `/tmp`, so mount an `emptyDir` at `/tmp`. Either
+  listens on 8081 and writes only under `/tmp`, so mount an `emptyDir` at `/tmp`. Either
   start from `nginxinc/nginx-unprivileged` or set a non-root `USER` yourself.
 - **The UI calls `/api/ask` on its own origin**, so your Ingress must route `/api` to the
   api Service and `/` to the ui Service. nginx does not proxy the API. For local testing

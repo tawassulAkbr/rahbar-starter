@@ -71,7 +71,10 @@ version, and superseded metadata. The logger reports storage amplification as
 `stored_tokens / original_tokens`; overlap intentionally makes this ratio greater
 than one.
 
-The shipped defaults are 400 tokens and 50-token overlap. The following
+The current defaults are 250 tokens and 40-token overlap, selected to keep
+policy clauses and version-specific statements in smaller retrieval units after
+the 2026-11-11 live evaluation reported recall@5 of 0.20. This change has not
+yet been confirmed by a fresh live evaluation. The following
 reproducible offline measurement uses the three committed CI Markdown fixtures
 plus `corpus/raw/fee-structure-page.html` (1,722 source tokens). Recall@5 is
 measured against the six fixture questions; the PDF corpus is intentionally not
@@ -81,13 +84,12 @@ the offline measurement environment.
 | Size (tokens) | Overlap (tokens) | recall@5 | Chunks stored |
 | ------------- | ---------------- | -------- | ------------- |
 | 200           | 25               | 1.00     | 11            |
-| 400 (shipped) | 50               | 1.00     | 8             |
+| 400 (historical) | 50             | 1.00     | 8             |
 | 800           | 100              | 1.00     | 6             |
 
 The corresponding storage amplification values are 1.087, 1.087, and 1.058.
-The 400/50 setting is retained because it preserves the measured recall while
-reducing chunk count substantially versus 200/25, without the larger boundary
-loss risk of 800/100 on longer policy sections. `eval/run_eval.py` remains the
+The historical fixture comparison does not measure live corpus retrieval.
+`eval/run_eval.py` remains the
 authoritative service-backed evaluation harness; these offline figures do not
 claim production retrieval quality.
 
@@ -129,7 +131,7 @@ The indexer reads these environment variables through `indexer/pipeline/config.p
 | Variable                          | Default                               | Meaning                                          |
 | --------------------------------- | ------------------------------------- | ------------------------------------------------ |
 | `CORPUS_DIR`                      | `/corpus`                             | Input directory                                  |
-| `CHUNK_SIZE` / `CHUNK_OVERLAP`    | `400` / `50`                          | Token target and overlap                         |
+| `CHUNK_SIZE` / `CHUNK_OVERLAP`    | `250` / `40`                          | Token target and overlap                         |
 | `EMBED_MODEL`                     | `nomic-embed-text`                    | Ollama model pin                                 |
 | `EMBED_DIMENSION`                 | `768`                                 | Expected vector length (`EMBED_DIM` is an alias) |
 | `EMBED_BATCH_SIZE`                | `32`                                  | Texts per Ollama request                         |
@@ -175,10 +177,13 @@ failed invalidation is always logged.
 The evaluation fixtures identify expected passages by source and section. Recall@k
 is a hit when a retrieved passage matches an expected source/section pair within the
 top k; chunk IDs are not used because chunking settings can legitimately change.
-`eval/results.json` is currently marked `evaluation_mode: offline-stub-smoke`: it
-verifies the 17-question contract, grounding, citation membership, and abstentions
-without claiming a live Chroma/LLM result. Production evidence must be generated
-without `--allow-stub` after the indexer Job and real provider are running.
+`eval/results.json` records the 17-question live Compose evaluation generated on
+2026-11-11 with Chroma retrieval and Ollama generation, without `--allow-stub`. It
+reported recall@3 `0.20`, recall@5 `0.20`, citation validity `1.00`, and correct
+abstention on both unsupported questions. The retrieval gate failed against the
+`1.00` recall@5 baseline. Rerun after retrieval and indexing changes. Deterministic
+CI fixture results are stored separately under `eval/fixtures/` and do not represent
+live corpus quality. A separate live retrieval-only diagnostic is recorded in `eval/retrieval-results.json`; it scored recall@5 `0.40` across the 17 golden questions after the clean 250/40 reindex. It uses the production Chroma retriever and Ollama query embeddings but skips answer generation, so it does not replace `eval/run_eval.py` or pass the full evaluation gate.
 
 ## Phase 5 operational measurements
 

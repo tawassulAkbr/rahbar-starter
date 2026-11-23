@@ -4,4 +4,7 @@ metadata:
   name: rahbar-config
   namespace: rahbar
 data:
+  RETRIEVER: chroma
+  LLM_PROVIDER: stub
   OLLAMA_URL: http://embedding-stub:11434
+  RELEVANCE_FLOOR: "0.2"

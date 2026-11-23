@@ -50,4 +50,4 @@ even if a pub/sub notification is missed.
 so the UI can be run without Kubernetes, Ollama, or Chroma. It reads the fetched
 PDF/HTML/Markdown files through `CORPUS_DIR` and is intended for transparent
 local inspection; it is not used by the production overlay, which selects
-Chroma and `ollama-host`.
+Chroma and `ollama-incluster`.

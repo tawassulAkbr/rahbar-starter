@@ -88,19 +88,18 @@ def _window_section(sec_text: str, size: int, overlap: int) -> list[str]:
 
     pieces: list[str] = []
     current: list[str] = []
-    current_len = 0
     for unit in units:
-        unit_len = len(unit.split())
-        if current and current_len + unit_len > size:
+        words_in_unit = unit.split()
+        # Flush before adding a whole sentence so clause boundaries are kept
+        # whenever possible. Long sentences were split into size-sized units.
+        if current and len(current) + len(words_in_unit) > size:
             pieces.append(" ".join(current))
-            overlap_words = (" ".join(current).split()[-overlap:]) if overlap else []
-            current = list(overlap_words)
-            current_len = len(current)
-            if current_len + unit_len > size:
-                current = []
-                current_len = 0
-        current.extend(unit.split())
-        current_len += unit_len
+            current = current[-overlap:] if overlap else []
+        # A carried overlap can only exceed the budget for invalid settings,
+        # but keep the helper robust if called directly.
+        if len(current) + len(words_in_unit) > size:
+            current = []
+        current.extend(words_in_unit)
 
     if current:
         pieces.append(" ".join(current))

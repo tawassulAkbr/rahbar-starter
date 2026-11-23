@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: rahbar
 resources:
   - ../../base
+  - ollama.yaml
 patches:
   - path: prod-config.yaml
 images:
