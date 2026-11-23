@@ -39,10 +39,26 @@ def evaluate(experiment: dict[str, object], config: dict[str, object]) -> dict[s
     failures: list[str] = []
     if any(v["end_to_end"].get("mode") != "serving-pipeline" for v in (baseline, candidate)):
         failures.append("Reference/synthetic results cannot authorize release; run the serving pipeline")
+    for label, measured in (('baseline', baseline), ('candidate', candidate)):
+        if measured['module'].get('provider') != 'ollama':
+            failures.append(f'{label}: module measurements must use real Ollama embeddings')
+        if measured['component'].get('retriever') != 'chroma':
+            failures.append(f'{label}: component measurements must use Chroma')
+        if not measured['end_to_end'].get('answers'):
+            failures.append(f'{label}: per-question answers and trace IDs are required')
+    for key in ('collection', 'generator', 'embedding_version', 'temperature', 'max_output_tokens'):
+        if baseline['configuration'].get(key) != candidate['configuration'].get(key):
+            failures.append(f'Top-k experiment must keep {key} fixed')
     if not all(math.isfinite(float(value)) for value in [*observed.values(), *thresholds.values()]):
         failures.append("Non-finite metrics or thresholds")
     if baseline["configuration"]["embed_model"] != candidate["configuration"]["embed_model"]:
         failures.append("Top-k experiment must use the same embedding model")
+    for key in ('baseline_recall_at_5', 'candidate_recall_at_5', 'candidate_faithfulness',
+                'baseline_abstention_correctness', 'candidate_abstention_correctness'):
+        if not 0 <= observed[key] <= 1:
+            failures.append(f'{key} must be between zero and one')
+    if observed['candidate_p95_latency_ms'] < 0:
+        failures.append('Latency must not be negative')
     if observed["recall_at_5_drop"] > float(thresholds["recall_at_5_max_drop"]):
         failures.append(
             f"recall@5 drop {observed['recall_at_5_drop']:.4f} exceeds {thresholds['recall_at_5_max_drop']:.4f}"
