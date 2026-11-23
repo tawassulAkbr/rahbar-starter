@@ -24,10 +24,12 @@ data:
   # Assignment 03 Phase 0 contract placeholders. Values are strings by design.
   QUARANTINE_DIR: /data/quarantine
   ARCHIVE_DIR: /data/archive
-  VERIFY_ENABLED: "false"
+  VERIFY_ENABLED: "true"
   GATE_RECALL5_MAX_DROP: "0.05"
   GATE_FAITHFULNESS_MIN: "0.95"
   GATE_P95_MAX_MS: "2000"
   GATE_ABSTENTION_MIN: "1.0"
   COVERAGE_THRESHOLD: "0.80"
   TRACE_VOLUME: "1.0"
+  VERIFY_REPORT_DIR: /data/reports
+  INDEX_STATE_FILE: /data/index-state.json
