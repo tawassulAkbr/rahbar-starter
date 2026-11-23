@@ -1,0 +1,205 @@
+{
+  "run_id": "20261122T182845Z",
+  "documents": [
+    {
+      "run_id": "20261122T182845Z",
+      "document": "academic-rules-handbook-jun-2026.pdf",
+      "sha256": "4cfee3e191b84aeb9168f17656c7642212ff52b90f2780d028b33c154aa74b62",
+      "checks": {
+        "quality": {
+          "passed": true,
+          "reason": "extracted text is non-empty and readable"
+        },
+        "completeness": {
+          "passed": true,
+          "reason": "source, title, version, page count, and text completeness present"
+        },
+        "recency": {
+          "passed": true,
+          "reason": "latest known version"
+        },
+        "uniqueness": {
+          "passed": true,
+          "reason": "no exact or near duplicate"
+        }
+      },
+      "verdict": "pass",
+      "quarantined": false
+    },
+    {
+      "run_id": "20261122T182845Z",
+      "document": "prospectus-2026-academic-rules-and-regulations.pdf",
+      "sha256": "a7e7f6896a59eb9413c9e8826e6c4c018ebe52045d10cebfcba92ded10a3174a",
+      "checks": {
+        "quality": {
+          "passed": true,
+          "reason": "extracted text is non-empty and readable"
+        },
+        "completeness": {
+          "passed": true,
+          "reason": "source, title, version, page count, and text completeness present"
+        },
+        "recency": {
+          "passed": true,
+          "reason": "latest known version"
+        },
+        "uniqueness": {
+          "passed": true,
+          "reason": "no exact or near duplicate"
+        }
+      },
+      "verdict": "pass",
+      "quarantined": false
+    },
+    {
+      "run_id": "20261122T182845Z",
+      "document": "student-handbook-jun-2026.pdf",
+      "sha256": "717eb4b8d37e50185ffe952735c08ef19edd16074d547f10ebd22cf23da67c4d",
+      "checks": {
+        "quality": {
+          "passed": true,
+          "reason": "extracted text is non-empty and readable"
+        },
+        "completeness": {
+          "passed": true,
+          "reason": "source, title, version, page count, and text completeness present"
+        },
+        "recency": {
+          "passed": true,
+          "reason": "latest known version"
+        },
+        "uniqueness": {
+          "passed": true,
+          "reason": "no exact or near duplicate"
+        }
+      },
+      "verdict": "pass",
+      "quarantined": false
+    },
+    {
+      "run_id": "20261122T182845Z",
+      "document": "annual-report-2023-24.pdf",
+      "sha256": "3c9d89e84af24df4b939f10e32c620a3877b276acea1db52f1aae4098e5c057a",
+      "checks": {
+        "quality": {
+          "passed": true,
+          "reason": "extracted text is non-empty and readable"
+        },
+        "completeness": {
+          "passed": true,
+          "reason": "source, title, version, page count, and text completeness present"
+        },
+        "recency": {
+          "passed": true,
+          "reason": "latest known version"
+        },
+        "uniqueness": {
+          "passed": true,
+          "reason": "no exact or near duplicate"
+        }
+      },
+      "verdict": "pass",
+      "quarantined": false
+    },
+    {
+      "run_id": "20261122T182845Z",
+      "document": "fee-structure-page.html",
+      "sha256": "ec8872ae77cac7e96e20e6979933f36b00aaeb0ab3f668a2116e521c655e7b90",
+      "checks": {
+        "quality": {
+          "passed": true,
+          "reason": "extracted text is non-empty and readable"
+        },
+        "completeness": {
+          "passed": true,
+          "reason": "source, title, version, page count, and text completeness present"
+        },
+        "recency": {
+          "passed": true,
+          "reason": "latest known version"
+        },
+        "uniqueness": {
+          "passed": true,
+          "reason": "no exact or near duplicate"
+        }
+      },
+      "verdict": "pass",
+      "quarantined": false
+    },
+    {
+      "run_id": "20261122T182845Z",
+      "document": "grading-page.html",
+      "sha256": "66a995b4d8474e914d37bfa14755a5361f47327d5a7314f9b7ec15d9b6176e6e",
+      "checks": {
+        "quality": {
+          "passed": true,
+          "reason": "extracted text is non-empty and readable"
+        },
+        "completeness": {
+          "passed": true,
+          "reason": "source, title, version, page count, and text completeness present"
+        },
+        "recency": {
+          "passed": true,
+          "reason": "latest known version"
+        },
+        "uniqueness": {
+          "passed": true,
+          "reason": "no exact or near duplicate"
+        }
+      },
+      "verdict": "pass",
+      "quarantined": false
+    },
+    {
+      "run_id": "20261122T182845Z",
+      "document": "faculty-entrepreneurship-and-technical-start-ups-policy.pdf",
+      "sha256": "c2d5c7648d1593daf34d5c0596ede476e8984b0551830cc1690017e6e22f1359",
+      "checks": {
+        "quality": {
+          "passed": true,
+          "reason": "extracted text is non-empty and readable"
+        },
+        "completeness": {
+          "passed": true,
+          "reason": "source, title, version, page count, and text completeness present"
+        },
+        "recency": {
+          "passed": true,
+          "reason": "latest known version"
+        },
+        "uniqueness": {
+          "passed": true,
+          "reason": "no exact or near duplicate"
+        }
+      },
+      "verdict": "pass",
+      "quarantined": false
+    },
+    {
+      "run_id": "20261122T182845Z",
+      "document": "academic-rules-fall-2026-grade-improvement.md",
+      "sha256": "2e4d82254f754120f1e2a4d5cb9b151dd937d2614c0562ac2c2be65afbc85384",
+      "checks": {
+        "quality": {
+          "passed": true,
+          "reason": "extracted text is non-empty and readable"
+        },
+        "completeness": {
+          "passed": true,
+          "reason": "source, title, version, page count, and text completeness present"
+        },
+        "recency": {
+          "passed": true,
+          "reason": "latest known version"
+        },
+        "uniqueness": {
+          "passed": true,
+          "reason": "no exact or near duplicate"
+        }
+      },
+      "verdict": "pass",
+      "quarantined": false
+    }
+  ]
+}

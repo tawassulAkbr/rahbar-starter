@@ -1,0 +1,8 @@
+FROM rahbar-api:dev AS api
+FROM rahbar-indexer:dev
+USER root
+COPY --from=api /usr/local/lib/python3.12/site-packages/ /usr/local/lib/python3.12/site-packages/
+RUN pip install --no-cache-dir --retries 5 pytest==8.3.5
+WORKDIR /workspace
+ENV PYTHONPATH=/workspace/api:/workspace/indexer:/workspace/eval PYTHONDONTWRITEBYTECODE=1
+ENTRYPOINT ["python"]
