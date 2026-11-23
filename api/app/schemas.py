@@ -22,6 +22,7 @@ class Passage(BaseModel):
     """One retrieved chunk, as the retriever hands it to the generator."""
 
     chunk_id: str
+    doc_version: str = "unknown"
     text: str
     source: str
     section: str
@@ -49,6 +50,7 @@ class RetrievedRef(BaseModel):
     """What the response says was retrieved. eval/run_eval.py scores against this."""
 
     chunk_id: str
+    doc_version: str = "unknown"
     source: str
     section: str
     page: int | None = None
@@ -57,6 +59,7 @@ class RetrievedRef(BaseModel):
 
 class AskResponse(BaseModel):
     request_id: str
+    trace_id: str = ""
     answer: str
     citations: list[Citation]
     answered_from_context: bool
