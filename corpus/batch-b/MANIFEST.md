@@ -1,6 +1,6 @@
 # Batch B planted-problem manifest
 
-Batch B is an 11-document adversarial update set for Assignment 03 Part A.
+Batch B is a 12-document adversarial update set for Assignment 03 Part A.
 Run the indexer with `CORPUS_DIR=corpus/batch-b`; the verification report must
 record the result for every document. The expected quarantine directory is the
 configured `QUARANTINE_DIR` (Kubernetes: `/data/quarantine`). The injected
@@ -10,6 +10,7 @@ document ID is `batch-b-injected-instruction.md`.
 | --- | --- | --- |
 | `batch-b-clean-policy-2026.md` | Clean canonical source | Pass and index |
 | `batch-b-exact-duplicate.md` | Byte-for-byte duplicate of clean source | Fail uniqueness and quarantine |
+| `batch-b-exact-duplicate-2.md` | Second byte-for-byte duplicate of clean source | Fail uniqueness and quarantine |
 | `batch-b-near-duplicate.md` | Same policy with small wording changes | Fail embedding cosine uniqueness and quarantine |
 | `batch-b-truncated.md` | Explicit `[TRUNCATED]` marker | Fail completeness and quarantine |
 | `batch-b-missing-metadata.md` | No `doc_version` front matter | Fail completeness and quarantine |

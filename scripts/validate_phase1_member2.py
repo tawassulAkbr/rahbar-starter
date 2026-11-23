@@ -60,6 +60,8 @@ def main() -> int:
     for path in documents:
         hashes[hashlib.sha256(path.read_bytes()).hexdigest()].append(path.name)
     duplicate_groups = [names for names in hashes.values() if len(names) > 1]
+    if sum(len(names) - 1 for names in duplicate_groups) < 2:
+        fail('Assignment 03 requires at least two exact duplicate documents')
     if not any({"batch-b-clean-policy-2026.md", "batch-b-exact-duplicate.md"} <= set(names)
                for names in duplicate_groups):
         fail("expected exact duplicate pair is missing")
