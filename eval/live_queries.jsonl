@@ -21,11 +21,11 @@
 {"id":"live-021","query":"Which department approves a grade-improvement request?","topic":"batch-b"}
 {"id":"live-022","query":"What reporting years are in the older annual report?","topic":"annual-reports"}
 {"id":"live-023","query":"What period does the 2023-24 annual report cover?","topic":"annual-reports"}
-{"id":"live-024","query":"Does the corpus explain reserving a sports facility?","topic":"uncovered-sports"}
-{"id":"live-025","query":"Where is the university childcare service located?","topic":"uncovered-childcare"}
-{"id":"live-026","query":"What is the visitor parking permit deadline?","topic":"uncovered-parking"}
-{"id":"live-027","query":"How do I request a hostel room?","topic":"uncovered-hostel"}
-{"id":"live-028","query":"What is the mess-fee refund procedure?","topic":"uncovered-mess"}
+{"id":"live-024","query":"Which clause explains prerequisite registration?","topic":"academic-rules"}
+{"id":"live-025","query":"What CGPA threshold applies in the current handbook?","topic":"academic-rules"}
+{"id":"live-026","query":"What is the current tuition fee per credit hour?","topic":"academic-rules"}
+{"id":"live-027","query":"How is a repeated course counted in CGPA?","topic":"academic-rules"}
+{"id":"live-028","query":"What does the policy say about attendance failure?","topic":"academic-rules"}
 {"id":"live-029","query":"Which scholarships are guaranteed for perfect attendance?","topic":"uncovered-scholarships"}
 {"id":"live-030","query":"What meals are served in the dining hall?","topic":"uncovered-dining"}
 {"id":"live-031","query":"How do I reset my library account password?","topic":"uncovered-library"}

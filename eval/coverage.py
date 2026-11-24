@@ -60,10 +60,14 @@ def main() -> int:
     parser.add_argument("--golden", type=Path, default=Path("eval/golden.jsonl"))
     parser.add_argument("--live", type=Path, default=Path("eval/live_queries.jsonl"))
     parser.add_argument("--threshold", type=float, default=0.35)
+    parser.add_argument("--exclude-id-prefix", help="exclude golden ids with this prefix for before/after comparisons")
     parser.add_argument("--fail-under", type=float)
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
-    result = run_coverage(load_jsonl(args.golden), load_jsonl(args.live), args.threshold)
+    golden = load_jsonl(args.golden)
+    if args.exclude_id_prefix:
+        golden = [row for row in golden if not str(row.get("id", "")).startswith(args.exclude_id_prefix)]
+    result = run_coverage(golden, load_jsonl(args.live), args.threshold)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({key: result[key] for key in ("threshold", "live_queries", "covered_queries", "coverage", "uncovered_count")}, indent=2))

@@ -16,12 +16,12 @@
       "covered": false
     },
     {
-      "id": "live-025",
-      "query": "Where is the university childcare service located?",
-      "topic": "uncovered-childcare",
-      "nearest_golden_id": "q023",
-      "nearest_golden_question": "What exact retention period is stated in the Batch B records policy?",
-      "similarity": 0.327327,
+      "id": "live-024",
+      "query": "Which clause explains prerequisite registration?",
+      "topic": "academic-rules",
+      "nearest_golden_id": "q011",
+      "nearest_golden_question": "What does exact clause 4.2 say about course registration in Fall and Spring?",
+      "similarity": 0.209657,
       "covered": false
     },
     {
@@ -80,11 +80,13 @@
     }
   ],
   "uncovered_topics": {
+    "academic-rules": [
+      "live-024"
+    ],
     "batch-b": [
       "live-018"
     ],
     "uncovered-childcare": [
-      "live-025",
       "live-040"
     ],
     "uncovered-dining": [
@@ -313,47 +315,47 @@
     },
     {
       "id": "live-024",
-      "query": "Does the corpus explain reserving a sports facility?",
-      "topic": "uncovered-sports",
-      "nearest_golden_id": "human-q02",
-      "nearest_golden_question": "How often does the information-security policy say that an access review should be done?",
-      "similarity": 0.53033,
-      "covered": true
-    },
-    {
-      "id": "live-025",
-      "query": "Where is the university childcare service located?",
-      "topic": "uncovered-childcare",
-      "nearest_golden_id": "q023",
-      "nearest_golden_question": "What exact retention period is stated in the Batch B records policy?",
-      "similarity": 0.327327,
+      "query": "Which clause explains prerequisite registration?",
+      "topic": "academic-rules",
+      "nearest_golden_id": "q011",
+      "nearest_golden_question": "What does exact clause 4.2 say about course registration in Fall and Spring?",
+      "similarity": 0.209657,
       "covered": false
     },
     {
+      "id": "live-025",
+      "query": "What CGPA threshold applies in the current handbook?",
+      "topic": "academic-rules",
+      "nearest_golden_id": "q018",
+      "nearest_golden_question": "Which building provides the university's on-campus childcare service?",
+      "similarity": 0.433013,
+      "covered": true
+    },
+    {
       "id": "live-026",
-      "query": "What is the visitor parking permit deadline?",
-      "topic": "uncovered-parking",
-      "nearest_golden_id": "q019",
-      "nearest_golden_question": "What is the official parking permit lottery deadline for visitors?",
-      "similarity": 0.597614,
+      "query": "What is the current tuition fee per credit hour?",
+      "topic": "academic-rules",
+      "nearest_golden_id": "q012",
+      "nearest_golden_question": "What is the 2026-27 tuition fee per credit hour for BBA and BS?",
+      "similarity": 0.68853,
       "covered": true
     },
     {
       "id": "live-027",
-      "query": "How do I request a hostel room?",
-      "topic": "uncovered-hostel",
-      "nearest_golden_id": "human-q08",
-      "nearest_golden_question": "Does the university policy explain how to reserve a sports facility for a student event?",
-      "similarity": 0.404226,
+      "query": "How is a repeated course counted in CGPA?",
+      "topic": "academic-rules",
+      "nearest_golden_id": "q015",
+      "nearest_golden_question": "From Fall 2026, how is CGPA calculated when a student repeats a passed course for grade improvement?",
+      "similarity": 0.510754,
       "covered": true
     },
     {
       "id": "live-028",
-      "query": "What is the mess-fee refund procedure?",
-      "topic": "uncovered-mess",
-      "nearest_golden_id": "q017",
-      "nearest_golden_question": "What is the procedure for obtaining a mess-fee refund?",
-      "similarity": 0.615457,
+      "query": "What does the policy say about attendance failure?",
+      "topic": "academic-rules",
+      "nearest_golden_id": "q002",
+      "nearest_golden_question": "What happens if a student does not meet the attendance requirement?",
+      "similarity": 0.533002,
       "covered": true
     },
     {
