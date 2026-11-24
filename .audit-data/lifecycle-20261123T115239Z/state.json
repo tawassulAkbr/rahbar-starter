@@ -1,0 +1,30 @@
+{
+  "archives": {
+    "access-2027.md": {
+      "chunk_ids": [
+        "531435600e5d61d4c8959f2d"
+      ],
+      "doc_version": "2027",
+      "original_path": ".audit-data/lifecycle-20261123T115239Z/corpus/access-2027.md",
+      "path": ".audit-data/lifecycle-20261123T115239Z/archive/access/access-2027.md",
+      "sha256": "3a028bb4838f58738c62657ff9fcbc5973a10c006c7a6c4ba6aae04859c3fa99",
+      "snapshot": ".audit-data/lifecycle-20261123T115239Z/archive/access/3a028bb4838f58738c62657ff9fcbc5973a10c006c7a6c4ba6aae04859c3fa99/access-2027.md",
+      "source": "access-2027.md",
+      "superseded": true
+    }
+  },
+  "documents": {},
+  "last_run": {
+    "changed_documents": 0,
+    "deleted_documents": 1,
+    "embedded_chunks": 0,
+    "embedded_chunks_by_document": {},
+    "orphan_chunks_removed": 1,
+    "orphan_counts_by_document": {
+      "access-2026.md": 0
+    },
+    "superseded_documents": []
+  },
+  "updated_at": "2026-11-23T11:52:47.433005+00:00",
+  "version": 1
+}
