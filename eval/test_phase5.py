@@ -3,12 +3,16 @@
 from __future__ import annotations
 
 import json
+import importlib.util
 from pathlib import Path
 
-from coverage import load_jsonl, run_coverage
-
-
 ROOT = Path(__file__).resolve().parents[1]
+_SPEC = importlib.util.spec_from_file_location("phase5_coverage", ROOT / "eval" / "coverage.py")
+assert _SPEC and _SPEC.loader
+_MODULE = importlib.util.module_from_spec(_SPEC)
+_SPEC.loader.exec_module(_MODULE)
+load_jsonl = _MODULE.load_jsonl
+run_coverage = _MODULE.run_coverage
 
 
 def test_before_and_after_coverage_evidence_is_monotonic() -> None:
