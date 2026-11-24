@@ -2,7 +2,7 @@
 
 The before corpus is the committed corpus with ``corpus/batch-b`` excluded;
 the after corpus is the full corpus. The script copies only the files needed
-for the deterministic reference harness into a temporary directory, so the
+for the deterministic reference harness into a disposable repository-local directory, so the
 working tree is never mutated during the comparison.
 """
 
@@ -11,16 +11,18 @@ from __future__ import annotations
 import argparse
 import json
 import shutil
-import tempfile
 from pathlib import Path
 
 from run_offline_suite import run_suite
 
 
 def run_drift(corpus: Path, golden: Path) -> dict:
-    with tempfile.TemporaryDirectory(prefix="rahbar-drift-") as temporary:
-        before = Path(temporary) / "before"
-        before.mkdir()
+    workspace = Path(".phase5-drift-work")
+    if workspace.exists():
+        shutil.rmtree(workspace)
+    before = workspace / "before"
+    before.mkdir(parents=True)
+    try:
         for source in corpus.iterdir():
             if source.name == "batch-b":
                 continue
@@ -30,7 +32,9 @@ def run_drift(corpus: Path, golden: Path) -> dict:
             else:
                 shutil.copy2(source, target)
         baseline = run_suite(before, golden)
-    after = run_suite(corpus, golden)
+        after = run_suite(corpus, golden)
+    finally:
+        shutil.rmtree(workspace, ignore_errors=True)
     baseline_component = baseline["summary_table"][1]["metrics"]
     after_component = after["summary_table"][1]["metrics"]
     baseline_e2e = baseline["summary_table"][2]["metrics"]
