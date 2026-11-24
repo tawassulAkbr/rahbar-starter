@@ -81,3 +81,10 @@ def test_discover_prefers_downloaded_raw_index(tmp_path: Path) -> None:
         encoding="utf-8",
     )
     assert discover(str(tmp_path)) == [(raw / "downloaded.pdf", "2026-06", False)]
+
+
+def test_discover_ignores_batch_manifest(tmp_path: Path) -> None:
+    (tmp_path / "MANIFEST.md").write_text("control metadata", encoding="utf-8")
+    document = tmp_path / "policy.md"
+    document.write_text("---\ndoc_version: 2026\n---\n\n# Policy\nText", encoding="utf-8")
+    assert [path.name for path, _, _ in discover(str(tmp_path))] == ["policy.md"]

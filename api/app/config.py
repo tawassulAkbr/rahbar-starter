@@ -48,6 +48,8 @@ class Settings:
     hosted_base_url: str = ""        # e.g. an OpenAI-compatible endpoint
     llm_api_key: str = field(default="", repr=False)   # from the Secret; never log it
     corpus_dir: str = ""                  # optional local corpus for offline development
+    trace_dir: str = "traces"
+    embed_model_version: str = "unknown"
 
     log_level: str = "INFO"
 
@@ -74,5 +76,7 @@ def get_settings() -> Settings:
         hosted_base_url=os.environ.get("HOSTED_BASE_URL", ""),
         llm_api_key=os.environ.get("LLM_API_KEY", ""),
         corpus_dir=os.environ.get("CORPUS_DIR", ""),
+        trace_dir=os.environ.get("TRACE_DIR", "traces"),
+        embed_model_version=os.environ.get("EMBED_MODEL_VERSION", "unknown"),
         log_level=os.environ.get("LOG_LEVEL", "INFO"),
     )

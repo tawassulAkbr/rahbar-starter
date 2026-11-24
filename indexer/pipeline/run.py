@@ -60,7 +60,7 @@ def discover(corpus_dir: str) -> list[tuple[Path, str, bool]]:
         # index is present. These are owned policy updates, not downloaded
         # files, so they are intentionally outside corpus/raw/_index.json.
         for path in sorted(root.glob("*.md")):
-            if path.name.lower().startswith("readme") or path.name in known:
+            if path.name.lower().startswith(("readme", "manifest")) or path.name in known:
                 continue
             metadata = _front_matter(path)
             if metadata:
@@ -79,7 +79,7 @@ def discover(corpus_dir: str) -> list[tuple[Path, str, bool]]:
     for path in sorted(root.glob("*")):
         if path.suffix.lower() not in {".pdf", ".md", ".html", ".txt"}:
             continue
-        if path.name.lower().startswith("readme"):
+        if path.name.lower().startswith(("readme", "manifest")):
             continue
         meta = _front_matter(path) if path.suffix.lower() == ".md" else {}
         found.append((path, meta.get("doc_version", "unknown"),
@@ -92,25 +92,72 @@ def run_pipeline(settings: IndexerSettings) -> int:
     from .clean import clean
     from .embed import embed
     from .extract import extract
-    from .store import store
+    from .store import load_state, store_incremental
+    from .verify import sha256_file, verify_documents
 
     documents = discover(settings.corpus_dir)
     if not documents:
         raise SystemExit(f"no documents found in {settings.corpus_dir}")
-    all_chunks: list[Chunk] = []
+    extracted: list[tuple[Path, object, str, str, bool]] = []
     for path, doc_version, superseded in documents:
         log("extracting", source=path.name, doc_version=doc_version, superseded=superseded)
-        doc = clean(extract(str(path), doc_version, superseded))
+        try:
+            doc = clean(extract(str(path), doc_version, superseded))
+            extracted.append((path, doc, sha256_file(path), doc_version, superseded))
+        except Exception as exc:
+            log("extraction failed", source=path.name, error=str(exc), error_type=type(exc).__name__)
+            # Keep extraction failures in the same verification report and
+            # quarantine path as quality failures.
+            from .models import Document, Page
+            extracted.append((path, Document(path.name, doc_version, superseded,
+                                              [Page(path.name, 1, "")]),
+                              sha256_file(path), doc_version, superseded))
+    if not extracted:
+        raise RuntimeError("documents were discovered but none could be extracted")
+
+    state = load_state(settings.state_file)
+    changed_sources_before_verify = {
+        path.name for path, _, digest, _, _ in extracted
+        if state.get("documents", {}).get(path.name, {}).get("sha256") != digest
+    }
+    if settings.verify_enabled:
+        run_id = time.strftime("verification-%Y%m%dT%H%M%SZ", time.gmtime())
+        reports, verified = verify_documents(
+            extracted, run_id=run_id.removeprefix("verification-"),
+            quarantine_dir=settings.quarantine_dir,
+            report_dir=settings.verification_report_dir,
+            near_duplicate_threshold=settings.near_duplicate_threshold,
+            # A fully unchanged corpus was already near-duplicate checked on
+            # its first ingestion, so do not make embedding calls on reruns.
+            embedder=(lambda texts: embed(texts, settings)) if changed_sources_before_verify else None,
+        )
+        log("verified", run_id=run_id, passed=sum(report.verdict == "pass" for report in reports),
+            failed=sum(report.verdict == "fail" for report in reports))
+        extracted = verified
+    if not extracted:
+        raise RuntimeError("all documents failed verification")
+
+    changed_sources = {
+        path.name for path, _, digest, _, _ in extracted
+        if state.get("documents", {}).get(path.name, {}).get("sha256") != digest
+    }
+    all_chunks: list[Chunk] = []
+    current_documents: list[dict[str, object]] = []
+    for path, doc, digest, doc_version, superseded in extracted:
+        current_documents.append({"source": path.name, "sha256": digest, "doc_version": doc_version,
+                                  "superseded": superseded, "path": str(path)})
+        if path.name not in changed_sources:
+            log("unchanged; skipping chunks", source=path.name)
+            continue
         pieces = chunk(doc, settings.chunk_size, settings.chunk_overlap)
         log("chunked", source=path.name, chunks=len(pieces))
         all_chunks.extend(pieces)
-    if not all_chunks:
-        raise RuntimeError("documents were discovered but produced no non-empty chunks")
     log("embedding", chunks=len(all_chunks), batch_size=settings.embed_batch_size)
-    vectors = embed([c.text for c in all_chunks], settings)
-    log("storing", chunks=len(all_chunks), dimension=len(vectors[0]) if vectors else 0)
-    count = store(all_chunks, vectors, settings)
-    log("stored", collection=settings.collection, records=count)
+    vectors = embed([c.text for c in all_chunks], settings) if all_chunks else []
+    log("storing", chunks=len(all_chunks), dimension=len(vectors[0]) if vectors else 0,
+        changed_documents=len(changed_sources))
+    count = store_incremental(all_chunks, vectors, settings, current_documents)
+    log("stored", collection=settings.collection, records=count, embedded_chunks=len(all_chunks))
     return count
 
 

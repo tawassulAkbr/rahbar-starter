@@ -66,6 +66,8 @@ spec:
           volumeMounts:
             - name: tmp
               mountPath: /tmp
+            - name: traces
+              mountPath: /data/traces
           startupProbe:
             httpGet:
               path: /healthz
@@ -98,3 +100,6 @@ spec:
       volumes:
         - name: tmp
           emptyDir: {}
+        - name: traces
+          persistentVolumeClaim:
+            claimName: rahbar-traces
