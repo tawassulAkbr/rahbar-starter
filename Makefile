@@ -13,7 +13,7 @@ INGRESS_IP ?= $(shell minikube ip 2>/dev/null)
 HOST ?= rahbar.local
 
 .DEFAULT_GOAL := help
-.PHONY: help install test lint dev live-up live-down live-status live-ask cluster images apply secret index ask fetch eval eval-offline phase3-experiment phase3-gate eval-fixtures check
+.PHONY: help install test lint dev live-up live-down live-status live-ask cluster images apply secret index ask fetch eval eval-offline phase3-experiment phase3-gate phase5-coverage phase5-drift phase5-test eval-fixtures check
 
 help: ## list the targets
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  make %-14s %s\n", $$1, $$2}'
@@ -93,6 +93,15 @@ phase3-experiment: ## compare baseline TOP_K=5 with candidate TOP_K=4
 
 phase3-gate: ## apply the Phase 3 release gate to the measured candidate
 	$(PY) eval/gate.py --experiment eval/results/change-real-topk4.json --config eval/gate.json --out eval/results/gate-real-topk4.json
+
+phase5-coverage: ## measure Phase 5 live-query coverage and enforce the 85% floor
+	$(PY) eval/coverage.py --golden eval/golden.jsonl --live eval/live_queries.jsonl --threshold 0.35 --fail-under 0.85 --out eval/results/coverage-after.json
+
+phase5-drift: ## compare the Phase 2 suite before and after Batch B
+	$(PY) eval/drift.py --corpus corpus --golden eval/golden.jsonl --out eval/results/drift.json
+
+phase5-test: ## run the dependency-free Phase 5 evidence tests
+	$(PY) -m pytest eval/test_phase5.py -q -p no:cacheprovider
 
 eval-fixtures: ## score the CI fixture golden set against a local `make dev`
 	$(BIN)/python eval/run_eval.py --api http://localhost:8000 --golden eval/fixtures/golden.fixture.yaml --out /tmp/rahbar-fixture-results.json

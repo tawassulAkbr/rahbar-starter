@@ -31,3 +31,9 @@
 {"id":"human-q06","question":"The annual report file is named 2023-24, but what reporting period does it actually cover?","type":"answerable","source":"Annual-Report-2023-24.pdf","page":1,"section":"Unsectioned","label":"human","reviewed":true,"category":"exact","expect":"2023-24"}
 {"id":"human-q07","question":"Can you tell me which years are covered by the older annual report in the corpus?","type":"answerable","source":"Annual Report 2019-20.pdf","page":1,"section":"Unsectioned","label":"human","reviewed":true,"category":"exact","expect":"2019-20"}
 {"id":"human-q08","question":"Does the university policy explain how to reserve a sports facility for a student event?","type":"unanswerable","source":null,"page":null,"label":"human","reviewed":true,"category":"abstain"}
+{"id":"phase5-q01","question":"Where is the university childcare service located?","type":"unanswerable","source":null,"page":null,"label":"human","reviewed":true,"category":"abstain"}
+{"id":"phase5-q02","question":"Which scholarships are guaranteed for perfect attendance?","type":"unanswerable","source":null,"page":null,"label":"synthetic","reviewed":true,"category":"abstain"}
+{"id":"phase5-q03","question":"How do I reset my library account password?","type":"unanswerable","source":null,"page":null,"label":"human","reviewed":true,"category":"abstain"}
+{"id":"phase5-q04","question":"What documents are needed for hostel allocation?","type":"unanswerable","source":null,"page":null,"label":"human","reviewed":true,"category":"abstain"}
+{"id":"phase5-q05","question":"Is there a sports ground booking form?","type":"unanswerable","source":null,"page":null,"label":"synthetic","reviewed":true,"category":"abstain"}
+{"id":"phase5-q06","question":"Can students get a refund for dining fees?","type":"unanswerable","source":null,"page":null,"label":"synthetic","reviewed":true,"category":"abstain"}
