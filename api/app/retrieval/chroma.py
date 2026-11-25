@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import re
 import time
+from typing import Any
 from ..tracing import retrieval_details
 
 import httpx
@@ -87,7 +88,10 @@ class ChromaRetriever:
         if k <= 0:
             return []
         try:
-            collection = self.client.get_collection(name=self.settings.collection)
+            # Chroma's generated SDK types disagree with its runtime query
+            # result contract. Keep the dynamic boundary here, then validate
+            # every returned field before constructing Passage objects below.
+            collection: Any = self.client.get_collection(name=self.settings.collection)
             if collection.count() == 0:
                 return []
             embedding = _query_embedding(question, self.settings)
@@ -96,10 +100,11 @@ class ChromaRetriever:
             # An explicit version request must include that version even when
             # superseded. General queries stay on current documents. The wider
             # candidate pool gives clause and exact-term reranking room to work.
+            where: Any = ({"doc_version": requested_version} if requested_version
+                          else {"superseded": False})
             query: dict[str, object] = {
                 "query_embeddings": [embedding], "n_results": max(k, 50),
-                "where": ({"doc_version": requested_version} if requested_version
-                          else {"superseded": False}),
+                "where": where,
             }
             details = retrieval_details.get()
             if details is not None:
