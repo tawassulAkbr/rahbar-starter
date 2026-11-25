@@ -13,7 +13,7 @@ from pathlib import Path
 from component_level import run_component_level
 from e2e_level import run_e2e_level
 from module_level import run_module_level
-from offline_common import load_golden
+from run_eval import load_golden
 
 
 def _metric_delta(first: dict[str, object], second: dict[str, object], metrics: tuple[str, ...]) -> dict[str, float | None]:

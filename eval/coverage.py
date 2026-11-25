@@ -8,8 +8,8 @@ from __future__ import annotations
 
 import argparse
 import json
-import sys
-from collections import Counter, defaultdict
+import os
+from collections import defaultdict
 from pathlib import Path
 
 from metrics import cosine
@@ -59,9 +59,11 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--golden", type=Path, default=Path("eval/golden.jsonl"))
     parser.add_argument("--live", type=Path, default=Path("eval/live_queries.jsonl"))
-    parser.add_argument("--threshold", type=float, default=0.35)
+    parser.add_argument("--threshold", type=float,
+                        default=float(os.environ.get("COVERAGE_SIMILARITY_THRESHOLD", "0.35")))
     parser.add_argument("--exclude-id-prefix", help="exclude golden ids with this prefix for before/after comparisons")
-    parser.add_argument("--fail-under", type=float)
+    parser.add_argument("--fail-under", type=float,
+                        default=float(os.environ.get("COVERAGE_THRESHOLD", "0.85")))
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
     golden = load_jsonl(args.golden)

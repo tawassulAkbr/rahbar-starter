@@ -4,12 +4,9 @@ from __future__ import annotations
 
 import argparse
 import json
-import time
 from pathlib import Path
 
-from metrics import average, percentile, tokens
-from offline_common import LexicalRetriever, load_passages
-from run_eval import load_golden
+from metrics import tokens
 
 
 def _faithful(answer: str, context: str) -> bool:
