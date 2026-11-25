@@ -1,5 +1,5 @@
 {
-  "status": "pending-real-gate-and-phase6-candidate-evaluation",
+  "status": "not-authorized-real-model-gate-and-phase6-acceptance-incomplete",
   "candidate_image": "rahbar-api:phase3-topk4",
   "collection": "rahbar-candidate",
   "top_k": 4,
@@ -11,5 +11,5 @@
     "docker build -f api/Dockerfile -t rahbar-api:phase3-topk4 api",
     "minikube image load rahbar-api:phase3-topk4"
   ],
-  "rollout_note": "Phase 6 must index and evaluate the isolated candidate Deployment, Service and collection. Historical reference PASS files cannot authorize release."
+  "rollout_note": "Promotion is denied until a measured real-model serving-pipeline gate passes and Phase 6 records candidate handling, rollback, and a post-rollback trace. Historical reference PASS files and dev stub results cannot authorize release. See docs/PHASE_6_ACCEPTANCE_STATUS.md."
 }

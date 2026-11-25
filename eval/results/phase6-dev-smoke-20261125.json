@@ -1,0 +1,28 @@
+{
+  "status": "PASS_WITH_DEV_ONLY_SCOPE",
+  "captured_at": "2026-11-25T12:50:59.471777+00:00",
+  "context": "minikube",
+  "namespace": "rahbar",
+  "api_service_port_forward": "127.0.0.1:8000",
+  "checks": {
+    "ask_http_status": 200,
+    "metrics_http_status": 200,
+    "metrics_request_counter": "rahbar_requests_total{path=\"/api/ask\",status=\"200\"} 1.0",
+    "trace_id": "abd81aa6a92d448abebd2f4ef6807b28",
+    "trace_found_in_api_logs": true,
+    "trace_found_on_mounted_trace_pvc": true,
+    "trace_records_on_pvc": 1
+  },
+  "runtime": {
+    "provider": "stub",
+    "embed_model": "dummy-768",
+    "collection": "rahbar"
+  },
+  "release_quality_evidence": false,
+  "candidate_action_after_release_gate": {
+    "replicas": 0,
+    "reason": "Gate rejected the only available candidate evidence; the dev candidate Deployment was stopped.",
+    "release_authorization": false
+  },
+  "limitation": "Dev overlay uses dummy embeddings and the stub provider; this proves Kubernetes wiring, trace persistence, and metrics only."
+}
