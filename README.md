@@ -116,7 +116,7 @@ Open <http://localhost:8000>. The live Compose commands above are the required p
 The manifests use Kustomize. Start Minikube with a CNI that enforces network policies, build the images, load them, and apply the dev overlay:
 
 ```bash
-minikube start --driver=docker --cni=calico --memory=6144 --cpus=4
+minikube start --driver=docker --cni=calico --memory=2048 --cpus=2
 minikube addons enable metrics-server
 minikube addons enable ingress
 
@@ -133,7 +133,18 @@ kubectl rollout status deployment/api -n rahbar --timeout=180s
 kubectl rollout status deployment/ui -n rahbar --timeout=180s
 ```
 
-The `dev` overlay is a cluster smoke-test configuration. The `prod` overlay deploys Ollama in-cluster as a single Deployment with a 20Gi PVC mounted at `/root/.ollama`. On first startup it downloads `nomic-embed-text` and `llama3.2:3b`; the Ollama startup probe allows up to ten minutes for server startup and model initialization. The API and indexer use the in-cluster `http://ollama:11434` Service. Build and load the API, indexer, and UI images with the `prod` tag before applying this overlay. Do not use the CI embedding stub as a production model.
+The `dev` overlay is a cluster smoke-test configuration. Phase 6 adds an evaluation Job and persistent results PVC, a separately addressed candidate API, externally configurable evaluation thresholds, and network policy access for the evaluator/candidate. Build the evaluation image along with the application images:
+
+```bash
+docker build -t rahbar-eval:dev -f Dockerfile.eval .
+minikube image load rahbar-eval:dev
+```
+
+The `prod` overlay deploys Ollama in-cluster as a single Deployment with a 20Gi PVC mounted at `/root/.ollama` and a 6Gi memory limit. On first startup it downloads `nomic-embed-text` and `llama3.2:3b`; the Ollama startup probe allows up to ten minutes for server startup and model initialization. The API and indexer use the in-cluster `http://ollama:11434` Service. Build and load the API, indexer, and UI images with the `prod` tag before applying this overlay. The standalone evaluation Job manifest uses the `rahbar-eval:dev` tag, so build and load that evaluator tag with the same source revision before applying evaluation Jobs. Do not use the CI embedding stub as a production model.
+
+For the complete Phase 6 apply order, evaluation, candidate collection setup, gated rollout, undo, and trace checks, see [`k8s/README.md`](k8s/README.md). Run the full three-level Part B suite with `kubectl apply -f k8s/eval-job.yaml`; it writes `/results/eval-results.json` on the `rahbar-evaluation` PVC. ConfigMap keys `GATE_RECALL5_MAX_DROP`, `GATE_CITATION_MIN`, `GATE_ABSTENTION_MIN`, `GATE_FAITHFULNESS_MIN`, and `GATE_P95_MAX_MS` control the thresholds without an image rebuild. Evaluation result files contain full query/answer rows, so treat the PVC as report data and restrict cluster access accordingly.
+
+The cluster evaluation Job runs the full Part B suite twice against the selected API Service: module-level real embedding checks, component-level Chroma recall@3/5, MRR, nDCG@5 plus typo noise, and end-to-end citation validity, trace-context faithfulness proxy, abstention correctness, and p50/p95 latency. The baseline Job records the measured baseline on the evaluation PVC; the candidate Job runs the same suite twice and compares its result with that baseline. Thresholds, including `GATE_FAITHFULNESS_MIN` and `GATE_P95_MAX_MS`, come from the ConfigMap; faithfulness is a lexical and numeric support check over captured trace context, not a semantic judge. The dev overlay is a stubbed wiring smoke test and cannot be used as Part B quality evidence. The current Docker environment has about 2.8 GiB total memory, below the Ollama container's 6Gi limit, so a valid real-model Kubernetes evaluation has not yet completed. The evaluator rejects stubbed runs.
 
 ## Corpus and indexing
 
@@ -219,13 +230,13 @@ The main runtime settings are supplied through environment variables and are def
 
 ## Assignment verification status
 
-The repository includes `scripts/check_submission.py` as a static submission check. Its result is separate from CI and from the live retrieval evaluation below; a clean static check does not establish answer quality or replace deployment evidence.
+Phases 1–6 code and Kubernetes setup are implemented. The checked verification run passed all 81 API, indexer, evaluator, and Phase 5 tests, Ruff, API and indexer mypy, and `scripts/check_submission.py`. Production Kustomize rendered successfully, and both evaluation Job manifests passed client dry runs. In Minikube, a fresh dev indexer Job completed; the API answered a query, emitted a trace, and exposed `/metrics` through port-forwarding. The dev models are stubs, so these checks establish wiring and runtime behavior only.
 
-The committed `eval/results.json` is a live Ollama/Chroma run, not a stub report. It contains 17 questions and was generated on 2026-11-11. Recall@3 and recall@5 were both `0.20`; citation validity was `1.00`, and both must-abstain questions were correct. The run failed the `1.00` recall@5 baseline, so it records a retrieval quality gap rather than a passing quality result. Rerun the evaluation after retrieval changes.
+A valid real-model Kubernetes Part B evaluation is still outstanding. The production Ollama container has a 6Gi memory limit, while the available Docker environment has about 2.8 GiB total memory. The evaluator correctly rejects the stubbed dev run, so no current Kubernetes quality result is claimed. The committed `eval/results.json` is an older live Ollama/Chroma run from 2026-11-11 (17 questions; recall@3 and recall@5 `0.20`, citation validity `1.00`, and abstention correctness `2/2`). It records historical retrieval quality and does not replace the pending Phase 6 evaluation.
 
-### Remaining submission checks
+### Remaining submission work
 
-- Capture genuine GitHub branch-protection and failed/passing evaluation-gate evidence; the evidence README documents the missing branch-protection screenshot.
+- Run the Part B Kubernetes evaluation with real Ollama models on a host with enough memory, then retain its measured baseline and candidate results.
+- Complete the assignment's remaining evidence and report work using genuine results; do not present the stubbed dev smoke test as quality evidence.
 - Confirm a successful `cd.yml` run has published the commit-SHA images when Docker Hub credentials are configured, and completed its ephemeral Kind deployment.
 - Recheck source downloads and OCR on the deployment environment; the old 2023 policy PDF is scanned, and host OCR availability is environment-dependent.
-- Review any warnings from the current submission check and confirm the protected-branch rules are active on GitHub.
