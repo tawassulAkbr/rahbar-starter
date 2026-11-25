@@ -4,6 +4,9 @@ import os
 import time
 from pathlib import Path
 from datetime import datetime, timezone
+from run_offline_suite import run_suite
+from change_experiment import _run_variant, _metric_delta
+from gate import evaluate
 
 marker = Path('eval/results/latest-audit.json')
 while not marker.exists():
@@ -12,9 +15,6 @@ config = json.loads(marker.read_text())
 os.environ['CHROMA_COLLECTION'] = config['collection']
 stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
 os.environ['TRACE_DIR'] = 'traces/real-' + stamp
-from run_offline_suite import run_suite
-from change_experiment import _run_variant, _metric_delta
-from gate import evaluate
 golden = Path('eval/golden.jsonl')
 results = Path(config['results'])
 suite = run_suite(Path(config['work'])/'corpus', golden)

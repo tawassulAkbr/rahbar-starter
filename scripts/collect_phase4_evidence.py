@@ -2,7 +2,6 @@
 import json
 from pathlib import Path
 from summarize_traces import summarize
-from trace import find_trace
 
 config = json.loads(Path('eval/results/latest-audit.json').read_text())
 results = Path(config['results'])
