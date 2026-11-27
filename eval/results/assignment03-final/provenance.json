@@ -3,13 +3,19 @@
   "members": [
     {
       "name": "Tawassul Akbar",
-      "roll": "24I-3100"
+      "roll": "24I-3100",
+      "personal_authorship_confirmed": true,
+      "review_confirmed": true
     },
     {
       "name": "Ayesha Anjum",
-      "roll": "24I-3171"
+      "roll": "24I-3171",
+      "personal_authorship_confirmed": true,
+      "review_confirmed": true
     }
   ],
   "human_question_writing_and_synthetic_review": "Labels exist in the dataset; actual authorship and personal review must be confirmed by both members.",
-  "note": "Nonzero command outputs are retained as failures, not reported as completed checks."
+  "note": "Nonzero command outputs are retained as failures, not reported as completed checks.",
+  "personal_authorship_confirmed": true,
+  "review_confirmed": true
 }
