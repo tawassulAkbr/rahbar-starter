@@ -1,0 +1,22 @@
+{
+  "status": "NOT_AUTHORIZED",
+  "decided_at": "2026-11-25T12:51:46.379953+00:00",
+  "candidate": "retrieval top-k 4",
+  "gate_result": "eval/results/gate-real-topk4.json",
+  "decision": "Do not promote. The candidate has no valid serving-pipeline measurements.",
+  "evidence": {
+    "gate_status": "FAIL",
+    "baseline_measurements": "eval/results/p03-20261123/baseline",
+    "baseline_generator": "llama3.2:1b",
+    "required_generator": "llama3.2:3b",
+    "candidate_measurement": "eval/results/change-topk4.json",
+    "candidate_evidence_status": "superseded-reference-harness-not-valid-for-release"
+  },
+  "failed_requirements": [
+    "The candidate and baseline use deterministic-hash embeddings rather than Ollama embeddings.",
+    "The candidate and baseline use the reference retriever rather than the serving Chroma retriever.",
+    "The candidate and baseline end-to-end results are not produced by the serving pipeline.",
+    "The measured baseline generator is llama3.2:1b; the frozen contract requires llama3.2:3b."
+  ],
+  "next_required_run": "Run baseline and TOP_K=4 candidate against the isolated real-model Chroma collections using llama3.2:3b, then rerun eval/gate.py."
+}

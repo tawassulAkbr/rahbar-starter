@@ -21,7 +21,7 @@ def summarize(path: str, since: str | None = None, until: str | None = None) -> 
     start = datetime.fromisoformat(since) if since else None
     end = datetime.fromisoformat(until) if until else None
     rows = []
-    for line in Path(path).read_text(encoding="utf-8").splitlines():
+    for line in Path(path).read_text(encoding="utf-8-sig").splitlines():
         if not line.strip():
             continue
         row = json.loads(line)

@@ -18,7 +18,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from .config import IndexerSettings, get_settings
-from .models import Chunk
+from .models import Chunk, Document
 
 
 def log(msg: str, **fields: object) -> None:
@@ -105,7 +105,7 @@ def run_pipeline(settings: IndexerSettings) -> int:
     documents = [item for item in documents if item[0].exists()]
     if not documents:
         return store_incremental([], [], settings, [])
-    extracted: list[tuple[Path, object, str, str, bool]] = []
+    extracted: list[tuple[Path, Document, str, str, bool]] = []
     for path, doc_version, superseded in documents:
         log("extracting", source=path.name, doc_version=doc_version, superseded=superseded)
         try:

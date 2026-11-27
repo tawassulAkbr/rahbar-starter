@@ -105,7 +105,6 @@ def test_incremental_store_skips_unchanged_and_removes_orphans(tmp_path: Path, m
 
 
 def test_restore_moves_archived_document_back_to_corpus(tmp_path: Path) -> None:
-    from pipeline.config import get_settings
     settings = _settings(tmp_path)
     archived = Path(settings.archive_dir) / "rules" / "rules-2023.md"
     archived.parent.mkdir(parents=True)

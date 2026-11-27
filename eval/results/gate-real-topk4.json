@@ -1,0 +1,40 @@
+{
+  "gate": "phase3-release-gate",
+  "generated_at": "2026-11-25T12:51:46.379953+00:00",
+  "status": "FAIL",
+  "thresholds": {
+    "recall_at_5_max_drop": 0.05,
+    "faithfulness_min": 0.9,
+    "p95_latency_max_ms": 180000,
+    "abstention_correctness_min": 1.0
+  },
+  "observed": {
+    "baseline_recall_at_5": 0.9629629629629629,
+    "candidate_recall_at_5": 0.9259259259259259,
+    "recall_at_5_drop": 0.03703703703703698,
+    "candidate_faithfulness": 0.9259259259259259,
+    "candidate_p95_latency_ms": 1.0152799950446931,
+    "baseline_abstention_correctness": 1.0,
+    "candidate_abstention_correctness": 1.0
+  },
+  "failures": [
+    "Reference/synthetic results cannot authorize release; run the serving pipeline",
+    "baseline: module measurements must use real Ollama embeddings",
+    "baseline: component measurements must use Chroma",
+    "candidate: module measurements must use real Ollama embeddings",
+    "candidate: component measurements must use Chroma"
+  ],
+  "candidate_configuration": {
+    "change": "retrieval_top_k",
+    "top_k": 4,
+    "embed_model": "deterministic-hash-v1",
+    "collection": "rahbar"
+  },
+  "rollout_handoff": {
+    "candidate_image": "rahbar-indexer:phase3-topk4",
+    "collection": "rahbar",
+    "embed_model": "nomic-embed-text",
+    "embed_dimension": 768,
+    "change": "TOP_K=4"
+  }
+}

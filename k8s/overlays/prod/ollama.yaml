@@ -120,6 +120,12 @@ spec:
               app: api
         - podSelector:
             matchLabels:
+              app: api-candidate
+        - podSelector:
+            matchLabels:
+              app: evaluator
+        - podSelector:
+            matchLabels:
               app: indexer
       ports:
         - protocol: TCP

@@ -1,8 +1,6 @@
 import json
-from dataclasses import replace
-from pathlib import Path
 from app.config import Settings
-from app.schemas import Passage, Answer
+from app.schemas import Passage
 from app.services.answer import answer_question
 
 
@@ -51,3 +49,25 @@ def test_retry_trace_captures_the_prompt_actually_sent(monkeypatch):
         assert calls[-1]['options']['seed'] == 2026
     finally:
         generation_attempts.reset(token)
+
+
+def test_extractive_trace_retains_the_grounded_prompt(tmp_path):
+    from app.tracing import prompt_hash
+
+    class Retriever:
+        name = 'test'
+        def retrieve(self, query, k):
+            return [Passage(chunk_id='attendance', source='rules.md', section='1.21', page=1,
+                            doc_version='2026', score=.99,
+                            text='Attendance requirement: Students must maintain 100% attendance.')]
+    class Provider:
+        name = 'test'
+        def generate(self, question, passages):
+            raise AssertionError('extractive answer should not invoke a provider')
+
+    answer_question('What attendance must students maintain under rule 1.21?',
+                    Retriever(), Provider(), Settings(trace_dir=str(tmp_path)))
+    trace = json.loads((tmp_path / 'traces.jsonl').read_text())
+    assert 'What attendance must students maintain' in trace['prompt']
+    assert '100% attendance' in trace['prompt']
+    assert trace['prompt_hash'] == prompt_hash(trace['prompt'])

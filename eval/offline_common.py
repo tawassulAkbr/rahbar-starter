@@ -9,7 +9,6 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from metrics import average, ndcg, reciprocal_rank, tokens
-from run_eval import load_golden
 
 
 @dataclass(frozen=True)

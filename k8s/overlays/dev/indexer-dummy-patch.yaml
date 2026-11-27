@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: indexer-job
+  namespace: rahbar
+spec:
+  template:
+    spec:
+      containers:
+        - name: indexer
+          command: ["python", "-m", "pipeline.run", "--dummy"]
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: reindex
+  namespace: rahbar
+spec:
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: indexer
+              command: ["python", "-m", "pipeline.run", "--dummy"]

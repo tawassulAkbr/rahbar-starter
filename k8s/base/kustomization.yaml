@@ -16,3 +16,4 @@ resources:
   - networkpolicy.yaml
   - indexer-job.yaml
   - reindex-cronjob.yaml
+  - evaluation-pvc.yaml

@@ -396,7 +396,10 @@ def answer_question(
     if attempts:
         trace['context'] = [_focused_text(question, p.text) for p in passages]
     trace["generation_path"] = "provider" if attempts else "extractive_or_abstention"
-    trace["prompt"] = attempts[-1]["prompt"] if attempts else ""
+    # Preserve the exact grounded prompt even when the deterministic/extractive
+    # answer path does not call an LLM provider. This keeps every trace
+    # reconstructable and gives the prompt hash a meaningful value.
+    trace["prompt"] = attempts[-1]["prompt"] if attempts else prompt
     from ..tracing import prompt_hash
     trace["prompt_hash"] = prompt_hash(trace["prompt"])
     trace["filters"] = details.get("filters", trace["filters"])

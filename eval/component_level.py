@@ -6,8 +6,7 @@ import argparse
 import json
 from pathlib import Path
 
-from offline_common import LexicalRetriever, Passage, load_passages, retrieval_metrics
-from run_eval import load_golden
+from offline_common import Passage
 
 
 def _noise_passages() -> list[Passage]:

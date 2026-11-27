@@ -8,8 +8,8 @@ from pathlib import Path
 from dataclasses import replace
 
 from pipeline.config import get_settings
-from pipeline.run import run_pipeline
-from pipeline.store import load_state, get_client, restore_document
+from pipeline.run import _front_matter, run_pipeline
+from pipeline.store import load_state
 
 root = Path('/workspace')
 run_id = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
@@ -46,7 +46,6 @@ measure_drift_stage('before')
 # Merge Batch B into the same authoritative data lake and discovery index.
 index = corpus/'raw/_index.json'
 entries = json.loads(index.read_text())
-from pipeline.run import _front_matter
 for source in (root/'corpus/batch-b').iterdir():
     if source.name == 'MANIFEST.md':
         continue

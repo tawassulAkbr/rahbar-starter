@@ -21,7 +21,7 @@ data:
   REDIS_URL: redis://redis:6379/0
   REDIS_INVALIDATION_CHANNEL: rahbar:index-updated
   CORPUS_DIR: /data/corpus
-  # Assignment 03 Phase 0 contract placeholders. Values are strings by design.
+  # RAGOps settings are strings because ConfigMap data is string-valued.
   QUARANTINE_DIR: /data/quarantine
   ARCHIVE_DIR: /data/archive
   VERIFY_ENABLED: "true"
@@ -29,12 +29,12 @@ data:
   GATE_FAITHFULNESS_MIN: "0.90"
   GATE_P95_MAX_MS: "180000"
   GATE_ABSTENTION_MIN: "1.0"
-  COVERAGE_THRESHOLD: "0.80"
-  TRACE_VOLUME: "1.0"
+  GATE_CITATION_MIN: "0.95"
+  EVAL_ALLOW_STUB: "false"
+  COVERAGE_THRESHOLD: "0.85"
   TRACE_DIR: /data/traces
   EMBED_MODEL_VERSION: unknown
   VERIFY_REPORT_DIR: /data/reports
   INDEX_STATE_FILE: /data/index-state.json
-  CANDIDATE_IMAGE: rahbar-api:phase3-topk4
-  CANDIDATE_COLLECTION: rahbar
+  CANDIDATE_COLLECTION: rahbar-candidate
   CANDIDATE_TOP_K: "4"

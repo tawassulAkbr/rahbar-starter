@@ -8,7 +8,9 @@ from pathlib import Path
 
 
 def find_trace(path: str, trace_id: str) -> dict:
-    for line in Path(path).read_text(encoding="utf-8").splitlines():
+    # PowerShell 5 writes UTF-8 JSONL with a BOM unless explicitly requested
+    # otherwise; accept that export format as well as plain UTF-8.
+    for line in Path(path).read_text(encoding="utf-8-sig").splitlines():
         if not line.strip():
             continue
         record = json.loads(line)
