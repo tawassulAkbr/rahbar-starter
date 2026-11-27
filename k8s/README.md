@@ -136,21 +136,21 @@ kubectl logs pod/eval-results-reader -n rahbar
 ```
 
 Read results from a temporary pod mounting the PVC, or inspect the Job logs.
-The initial baseline Job must pass before the candidate Job can compare with it.
-To demonstrate a changed threshold, patch the ConfigMap and recreate the Job:
+The candidate compares against the completed first baseline answer file on the PVC,
+`/results/eval-results-answers-run-1.json`. A baseline can supply measured recall
+and abstention even when its own faithfulness score falls below the release threshold.
+Use the same golden file, model, and corpus snapshot for the comparison.
+
+To reproduce the recorded ConfigMap outcome change after both first runs exist:
 
 ```bash
-kubectl patch configmap rahbar-config -n rahbar --type merge \
-  -p '{"data":{"GATE_RECALL5_MAX_DROP":"0.00","GATE_P95_MAX_MS":"1"}}'
-kubectl delete job eval-job -n rahbar
-kubectl apply -f k8s/eval-job.yaml
-kubectl logs -f job/eval-job -n rahbar
+python scripts/replay_assignment03_gate.py
 ```
 
-Restore the checked-in thresholds (`GATE_RECALL5_MAX_DROP=0.05`,
-`GATE_P95_MAX_MS=180000`) after the demonstration. The default
-golden set is `eval/golden.jsonl`, and the immutable baseline is
-`eval/baseline.json`, both copied into the evaluator image at build time.
+This experiment clones the release thresholds into a temporary ConfigMap,
+evaluates both retained files, then changes only the experimental faithfulness
+threshold to 65%. Each Job logs the input hashes and image ID. The live release
+minimum remains 90%.
 
 ## Candidate collection and gated rollout
 
