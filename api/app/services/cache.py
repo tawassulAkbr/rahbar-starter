@@ -27,6 +27,9 @@ class SemanticCache:
             'collection':settings.collection, 'embedding':settings.embed_model,
             'embedding_version':settings.embed_model_version, 'model':settings.llm_model,
             'top_k':settings.top_k, 'temperature':settings.temperature, 'seed':settings.seed,
+            'relevance_floor': settings.relevance_floor,
+            'max_output_tokens': settings.max_output_tokens,
+            'generation_timeout': settings.generation_timeout,
         }, sort_keys=True).encode()).hexdigest()
 
     @property

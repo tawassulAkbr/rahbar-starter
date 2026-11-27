@@ -1,0 +1,10 @@
+.venv\Scripts\python.exe eval/coverage.py --exclude-id-prefix phase5- --threshold 0.35 --fail-under 0.85 --out eval/results/assignment03-verification/coverage-before.json
+{
+  "threshold": 0.35,
+  "live_queries": 40,
+  "covered_queries": 32,
+  "coverage": 0.8,
+  "uncovered_count": 8
+}
+
+Exit 1

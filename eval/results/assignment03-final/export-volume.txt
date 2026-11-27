@@ -1,0 +1,4 @@
+$ kubectl cp -n rahbar assignment03-reader:/results/. eval/results/assignment03-final/volume
+tar: Removing leading `/' from member names
+
+Exit code: 0

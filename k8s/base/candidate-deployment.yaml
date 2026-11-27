@@ -70,12 +70,16 @@ spec:
             httpGet:
               path: /readyz
               port: http
-            periodSeconds: 10
+            periodSeconds: 15
+            timeoutSeconds: 10
+            failureThreshold: 20
           livenessProbe:
             httpGet:
               path: /healthz
               port: http
-            periodSeconds: 20
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 30
           resources:
             requests:
               cpu: 100m

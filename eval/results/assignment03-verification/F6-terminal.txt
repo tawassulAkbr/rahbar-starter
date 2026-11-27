@@ -1,0 +1,6 @@
+kubectl logs job/gate-replay-ceff5c72-experiment -n rahbar
+eval-results 9c0e551b9b48a96397a5789e619507cc3c2c56ff944a77dbe2c57d79501ce9c5
+eval-candidate-results ccde2dce58ded83cd06bc2dfca72c36630db08df335a91558fc81d148a920d22
+{"threshold": "0.65", "faithfulness": 0.6666666666666666, "failures": []}
+
+Exit 0

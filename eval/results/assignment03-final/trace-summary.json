@@ -1,0 +1,44 @@
+{
+  "abstention_rate": 0.38095238095238093,
+  "cache_hit_rate": 0.38095238095238093,
+  "count": 21,
+  "injection_attempts_flagged": 1,
+  "p95_latency_per_stage_ms": {
+    "cache_ms": 542.4215300008655,
+    "embed_ms": 32381.424944000057,
+    "generation_ms": 601164.546,
+    "rerank_ms": 46.26715099993817,
+    "retrieval_ms": 21580.115,
+    "retrieve_ms": 1184.80929999999,
+    "total_ms": 601417.758
+  },
+  "top1_similarity": {
+    "count": 19,
+    "mean": 0.6640733463157895,
+    "p50": 0.64960617,
+    "p95": 0.70646226
+  },
+  "trace_ids": [
+    "48399d79b880433a92582b768ec73617",
+    "cbcdd45b33184a3ba01d5f5324b17f7d",
+    "224a89e1eed64cbd86137f16a62ad79c",
+    "823e81e093ad42af9f5eaa9e77c97566",
+    "af2d5e79c9934480abe9acad4feefe6e",
+    "0d3a41c2b5e34db4a2ec2126488ccdad",
+    "98096e52ccc64e4283da9e88a13ede3a",
+    "0f0c432461c34e71a16417d24073437f",
+    "ddef902ddb0540cfaa785b9fadd2e9d3",
+    "c8e4de5359064cb2b4f628cb44795a52",
+    "4506b036afd14ae6bc24ee1c067f6bed",
+    "65de0247ebb54bf68fbaa240bd9166ff",
+    "ce7c7ff379ed4b02aa2ab36ae0cbb37f",
+    "644370b93eba46f18e4f42b8bc13f2ea",
+    "993d7bd6ae9441f4b34c463a7db371ca",
+    "36f86f0529434c4e8409399873f3b713",
+    "bfb4b83b29f4412fb98e51d7cd864e6c",
+    "bc77b74081534ef18629a95c4b348adf",
+    "d5e2cb156c3e48c38f094a3a3b14fe96",
+    "a7c43c03c2254c1cbfdf77ee580e57ff",
+    "f3165365119046f6a35891869cf5d8b2"
+  ]
+}

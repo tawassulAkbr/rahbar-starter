@@ -1,0 +1,75 @@
+NAME                                     READY   STATUS      RESTARTS        AGE
+pod/api-5c88dfc775-56s7z                 1/1     Running     6 (9m57s ago)   146m
+pod/assignment03-audit-final-7m6vx       0/1     Completed   0               6m50s
+pod/assignment03-audit-w4gv5             0/1     Completed   0               4h30m
+pod/assignment03-reader                  1/1     Running     0               8m7s
+pod/assignment03-seed-candidate-rhpr4    1/1     Running     0               8m7s
+pod/assignment03-unchanged-final-bkm6g   0/1     Completed   0               6m50s
+pod/assignment03-unchanged-pgdgj         0/1     Completed   0               4h30m
+pod/chroma-0                             1/1     Running     4 (10m ago)     7h3m
+pod/eval-job-kdq2r                       1/1     Running     0               8m7s
+pod/indexer-job-p4x5p                    0/1     Completed   0               3h9m
+pod/ollama-7f7bb48dcb-msxbq              1/1     Running     3 (10m ago)     162m
+pod/redis-6c96b7fcc6-blmtv               1/1     Running     3 (10m ago)     7h3m
+pod/ui-7c5c69dbf4-csngl                  1/1     Running     5 (9m55s ago)   161m
+
+NAME             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)     AGE
+service/api      ClusterIP   10.97.83.135     <none>        8000/TCP    7h3m
+service/chroma   ClusterIP   10.100.15.218    <none>        8000/TCP    7h3m
+service/ollama   ClusterIP   10.99.67.149     <none>        11434/TCP   7h3m
+service/redis    ClusterIP   10.108.155.248   <none>        6379/TCP    7h3m
+service/ui       ClusterIP   10.103.218.151   <none>        8081/TCP    7h3m
+
+NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/api      1/1     1            1           7h3m
+deployment.apps/ollama   1/1     1            1           7h3m
+deployment.apps/redis    1/1     1            1           7h3m
+deployment.apps/ui       1/1     1            1           7h3m
+
+NAME                                DESIRED   CURRENT   READY   AGE
+replicaset.apps/api-5994f7798c      0         0         0       162m
+replicaset.apps/api-5c88dfc775      1         1         1       146m
+replicaset.apps/api-5fcc879f9c      0         0         0       4h35m
+replicaset.apps/api-755879fff6      0         0         0       170m
+replicaset.apps/api-75777f8fdd      0         0         0       7h3m
+replicaset.apps/api-76d945b587      0         0         0       170m
+replicaset.apps/api-79858cfbc5      0         0         0       2m17s
+replicaset.apps/api-8f746dbf6       0         0         0       6h15m
+replicaset.apps/ollama-7654d4dbc6   0         0         0       4h42m
+replicaset.apps/ollama-7b4f7db6bb   0         0         0       7h3m
+replicaset.apps/ollama-7f7bb48dcb   1         1         1       162m
+replicaset.apps/redis-6c96b7fcc6    1         1         1       7h3m
+replicaset.apps/ui-69d5bfccfc       0         0         0       7h3m
+replicaset.apps/ui-7b8d47dccf       0         0         0       6h15m
+replicaset.apps/ui-7c5c69dbf4       1         1         1       4h34m
+
+NAME                      READY   AGE
+statefulset.apps/chroma   1/1     7h3m
+
+NAME                                      REFERENCE        TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+horizontalpodautoscaler.autoscaling/api   Deployment/api   cpu: 40%/70%   1         2         1          7h3m
+
+NAME                    SCHEDULE    TIMEZONE   SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+cronjob.batch/reindex   0 3 * * 0   <none>     False     0        <none>          7h3m
+
+NAME                                     STATUS     COMPLETIONS   DURATION   AGE
+job.batch/assignment03-audit             Complete   1/1           33s        4h30m
+job.batch/assignment03-audit-final       Complete   1/1           3m16s      6m51s
+job.batch/assignment03-seed-candidate    Running    0/1           8m7s       8m7s
+job.batch/assignment03-unchanged         Complete   1/1           19m        4h30m
+job.batch/assignment03-unchanged-final   Complete   1/1           2m4s       6m51s
+job.batch/eval-job                       Running    0/1           8m7s       8m7s
+job.batch/indexer-job                    Complete   1/1           78s        3h9m
+
+NAME                                         STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/chroma-data-chroma-0   Bound    pvc-3eec87e3-1320-4a64-97c9-ea6f44714e41   10Gi       RWO            standard       <unset>                 7h3m
+persistentvolumeclaim/ollama-models          Bound    pvc-a1432d57-38ba-48b1-b740-1a73d0a18850   20Gi       RWO            standard       <unset>                 7h3m
+persistentvolumeclaim/rahbar-data-lake       Bound    pvc-ee0b0a9d-416c-4037-a025-29d49d5ef696   10Gi       RWO            standard       <unset>                 7h3m
+persistentvolumeclaim/rahbar-evaluation      Bound    pvc-cde9d1d5-9d29-4daa-9ea8-32f3136ae04a   1Gi        RWO            standard       <unset>                 7h3m
+persistentvolumeclaim/rahbar-traces          Bound    pvc-6835f40d-2488-4db9-97f1-193990835a2c   1Gi        RWO            standard       <unset>                 7h3m
+persistentvolumeclaim/redis-data             Bound    pvc-8b3fe177-9714-48d5-90f6-8a9732b7626b   1Gi        RWO            standard       <unset>                 7h3m
+
+NAME                                   DATA   AGE
+configmap/assignment03-audit-scripts   2      4h30m
+configmap/kube-root-ca.crt             1      7h3m
+configmap/rahbar-config                37     7h3m

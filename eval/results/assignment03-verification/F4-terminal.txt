@@ -1,0 +1,18 @@
+.venv\Scripts\python.exe scripts/inspect_assignment03_evidence.py rollback
+rollout-undo (retained command output)
+deployment.apps/api rolled back
+rollout-status (retained command output)
+Waiting for deployment spec update to be observed...
+
+Waiting for deployment "api" rollout to finish: 1 old replicas are pending termination...
+
+deployment "api" successfully rolled out
+{
+  "trace_id": "d5e2cb156c3e48c38f094a3a3b14fe96",
+  "timestamp": "2026-11-26T18:32:16.612198+00:00",
+  "collection": "rahbar",
+  "embed_model": "nomic-embed-text",
+  "embed_model_version": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f"
+}
+
+Exit 0

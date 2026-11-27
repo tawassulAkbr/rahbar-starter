@@ -1,0 +1,57 @@
+docker : #0 building with "desktop-linux" instance using docker driver
+At line:2 char:1
++ docker build -t rahbar-api:assignment03 api > eval/results/assignment ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (#0 building wit...g docker driver:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 559B 0.0s done
+#1 DONE 0.1s
+
+#2 [internal] load metadata for docker.io/library/python:3.12.3-slim-bookworm
+#2 DONE 1.3s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 201B done
+#3 DONE 0.0s
+
+#4 [1/5] FROM 
+docker.io/library/python:3.12.3-slim-bookworm@sha256:afc139a0a640942491ec481ad8dda10f2c5b753f5c969393b12480155fe15a63
+#4 resolve 
+docker.io/library/python:3.12.3-slim-bookworm@sha256:afc139a0a640942491ec481ad8dda10f2c5b753f5c969393b12480155fe15a63 
+0.1s done
+#4 DONE 0.1s
+
+#5 [internal] load build context
+#5 transferring context: 18.51kB 0.1s done
+#5 DONE 0.1s
+
+#6 [2/5] WORKDIR /app
+#6 CACHED
+
+#7 [3/5] COPY requirements.txt .
+#7 CACHED
+
+#8 [4/5] RUN apt-get update     && apt-get upgrade -y     && rm -rf /var/lib/apt/lists/*     && pip install 
+--no-cache-dir -r requirements.txt     && groupadd --system --gid 10001 rahbarapi     && useradd --system --uid 10001 
+--gid 10001 --no-create-home rahbarapi
+#8 CACHED
+
+#9 [5/5] COPY app ./app
+#9 DONE 0.1s
+
+#10 exporting to image
+#10 exporting layers
+#10 exporting layers 0.2s done
+#10 exporting manifest sha256:8ceb354f8c0b22b66cf98d66978e75b33d750cebd8e5355bbd4ef254f0bc99d8 0.0s done
+#10 exporting config sha256:75be91563a9fb7f8edfb5b85d49ede6570287be05f5471fa8648f01d9d4b3cac 0.0s done
+#10 exporting attestation manifest sha256:9cbd82fc6df84c804cffc645b55cd733177b8e4c3dfb73b8d20c74863c4c7e4d
+#10 exporting attestation manifest sha256:9cbd82fc6df84c804cffc645b55cd733177b8e4c3dfb73b8d20c74863c4c7e4d 0.0s done
+#10 exporting manifest list sha256:89ed663f9ef5a40914ade951cc77242e7775cf3f673e97e90b37efda59c802b0 0.0s done
+#10 naming to docker.io/library/rahbar-api:assignment03 done
+#10 unpacking to docker.io/library/rahbar-api:assignment03 0.1s done
+#10 DONE 0.5s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/f3o3gwm7941gkd82gjrvg409v

@@ -198,10 +198,10 @@ def citation_validity(response: dict) -> float | None:
 
 
 def trace_for_id(path: Path, trace_id: str) -> dict | None:
-    """Find the trace emitted for a request; traces hold the exact retrieved context."""
+    """Resolve a request to the trace that generated its answer and context."""
     if not trace_id or not path.is_file():
         return None
-    for line in reversed(path.read_text(encoding="utf-8").splitlines()):
+    for line in reversed(path.read_text(encoding="utf-8-sig").splitlines()):
         if not line.strip():
             continue
         try:
@@ -209,6 +209,11 @@ def trace_for_id(path: Path, trace_id: str) -> dict | None:
         except json.JSONDecodeError:
             continue  # tolerate a partially written final line
         if record.get("trace_id") == trace_id:
+            if record.get("cache_hit"):
+                trace_id = record.get("origin_trace_id")
+                if not trace_id:
+                    return None
+                continue
             return record
     return None
 
@@ -413,6 +418,14 @@ def main() -> int:
                     "trace_found": trace is not None,
                     "seconds": round(time.perf_counter() - started, 2),
                 })
+                # Keep completed answers if a later request or the pod fails.
+                # A partial checkpoint is never a completed evaluation result.
+                checkpoint = args.out.with_suffix('.partial.json')
+                checkpoint.parent.mkdir(parents=True, exist_ok=True)
+                checkpoint.write_text(json.dumps({
+                    'evaluation_complete': False, 'completed_questions': len(rows),
+                    'expected_questions': len(questions), 'rows': rows,
+                }, indent=2), encoding='utf-8')
                 print(f"  {q['id']:<5} {rows[-1]['seconds']:>6.2f}s  {q['question'][:60]}")
     except httpx.HTTPError as exc:
         sys.exit(f"evaluation unavailable: could not reach API at {args.api}: {exc}")
@@ -428,6 +441,7 @@ def main() -> int:
                     if not failure.startswith("baseline recall_at_5 is required")]
 
     results["generated_at"] = datetime.now(timezone.utc).isoformat()
+    results['evaluation_complete'] = True
     results["dataset_sha256"] = _dataset_sha256(args.golden)
     results["golden"] = str(args.golden)
     results["questions"] = len(rows)

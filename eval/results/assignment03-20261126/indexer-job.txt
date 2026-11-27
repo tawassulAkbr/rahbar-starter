@@ -1,0 +1,4 @@
+$ kubectl logs job/indexer-job -n rahbar --all-containers=true --pod-running-timeout=5s
+error: timed out waiting for the condition
+
+Exit code: 1

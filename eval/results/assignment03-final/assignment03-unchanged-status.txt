@@ -1,0 +1,178 @@
+$ kubectl get job/assignment03-unchanged -n rahbar -o json
+{
+    "apiVersion": "batch/v1",
+    "kind": "Job",
+    "metadata": {
+        "annotations": {
+            "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"batch/v1\",\"kind\":\"Job\",\"metadata\":{\"annotations\":{},\"name\":\"assignment03-unchanged\",\"namespace\":\"rahbar\"},\"spec\":{\"backoffLimit\":2,\"template\":{\"metadata\":{\"labels\":{\"app\":\"indexer\"}},\"spec\":{\"automountServiceAccountToken\":false,\"containers\":[{\"command\":[\"python\",\"-m\",\"pipeline.run\"],\"env\":[{\"name\":\"CHROMA_COLLECTION\",\"value\":\"rahbar\"}],\"envFrom\":[{\"configMapRef\":{\"name\":\"rahbar-config\"}}],\"image\":\"rahbar-indexer:a03-20261126\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"indexer\",\"resources\":{\"limits\":{\"cpu\":1,\"memory\":\"2Gi\"},\"requests\":{\"cpu\":\"100m\",\"memory\":\"256Mi\"}},\"securityContext\":{\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]}},\"volumeMounts\":[{\"mountPath\":\"/data\",\"name\":\"data-lake\"}]}],\"initContainers\":[{\"command\":[\"python\",\"/app/seed_corpus.py\"],\"envFrom\":[{\"configMapRef\":{\"name\":\"rahbar-config\"}}],\"image\":\"rahbar-indexer:a03-20261126\",\"name\":\"seed-data-lake\",\"volumeMounts\":[{\"mountPath\":\"/data\",\"name\":\"data-lake\"}]}],\"restartPolicy\":\"OnFailure\",\"securityContext\":{\"fsGroup\":10002,\"runAsGroup\":10002,\"runAsNonRoot\":true,\"runAsUser\":10002},\"serviceAccountName\":\"rahbar-indexer\",\"volumes\":[{\"name\":\"data-lake\",\"persistentVolumeClaim\":{\"claimName\":\"rahbar-data-lake\"}}]}},\"ttlSecondsAfterFinished\":86400}}\n"
+        },
+        "creationTimestamp": "2026-11-26T14:02:31Z",
+        "generation": 1,
+        "labels": {
+            "app": "indexer",
+            "batch.kubernetes.io/controller-uid": "8c611e2f-69a9-4a40-9958-7ff57c42a60f",
+            "batch.kubernetes.io/job-name": "assignment03-unchanged",
+            "controller-uid": "8c611e2f-69a9-4a40-9958-7ff57c42a60f",
+            "job-name": "assignment03-unchanged"
+        },
+        "name": "assignment03-unchanged",
+        "namespace": "rahbar",
+        "resourceVersion": "9680",
+        "uid": "8c611e2f-69a9-4a40-9958-7ff57c42a60f"
+    },
+    "spec": {
+        "backoffLimit": 2,
+        "completionMode": "NonIndexed",
+        "completions": 1,
+        "manualSelector": false,
+        "parallelism": 1,
+        "podReplacementPolicy": "TerminatingOrFailed",
+        "selector": {
+            "matchLabels": {
+                "batch.kubernetes.io/controller-uid": "8c611e2f-69a9-4a40-9958-7ff57c42a60f"
+            }
+        },
+        "suspend": false,
+        "template": {
+            "metadata": {
+                "labels": {
+                    "app": "indexer",
+                    "batch.kubernetes.io/controller-uid": "8c611e2f-69a9-4a40-9958-7ff57c42a60f",
+                    "batch.kubernetes.io/job-name": "assignment03-unchanged",
+                    "controller-uid": "8c611e2f-69a9-4a40-9958-7ff57c42a60f",
+                    "job-name": "assignment03-unchanged"
+                }
+            },
+            "spec": {
+                "automountServiceAccountToken": false,
+                "containers": [
+                    {
+                        "command": [
+                            "python",
+                            "-m",
+                            "pipeline.run"
+                        ],
+                        "env": [
+                            {
+                                "name": "CHROMA_COLLECTION",
+                                "value": "rahbar"
+                            }
+                        ],
+                        "envFrom": [
+                            {
+                                "configMapRef": {
+                                    "name": "rahbar-config"
+                                }
+                            }
+                        ],
+                        "image": "rahbar-indexer:a03-20261126",
+                        "imagePullPolicy": "IfNotPresent",
+                        "name": "indexer",
+                        "resources": {
+                            "limits": {
+                                "cpu": "1",
+                                "memory": "2Gi"
+                            },
+                            "requests": {
+                                "cpu": "100m",
+                                "memory": "256Mi"
+                            }
+                        },
+                        "securityContext": {
+                            "allowPrivilegeEscalation": false,
+                            "capabilities": {
+                                "drop": [
+                                    "ALL"
+                                ]
+                            }
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/data",
+                                "name": "data-lake"
+                            }
+                        ]
+                    }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "initContainers": [
+                    {
+                        "command": [
+                            "python",
+                            "/app/seed_corpus.py"
+                        ],
+                        "envFrom": [
+                            {
+                                "configMapRef": {
+                                    "name": "rahbar-config"
+                                }
+                            }
+                        ],
+                        "image": "rahbar-indexer:a03-20261126",
+                        "imagePullPolicy": "IfNotPresent",
+                        "name": "seed-data-lake",
+                        "resources": {},
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/data",
+                                "name": "data-lake"
+                            }
+                        ]
+                    }
+                ],
+                "restartPolicy": "OnFailure",
+                "schedulerName": "default-scheduler",
+                "securityContext": {
+                    "fsGroup": 10002,
+                    "runAsGroup": 10002,
+                    "runAsNonRoot": true,
+                    "runAsUser": 10002
+                },
+                "serviceAccount": "rahbar-indexer",
+                "serviceAccountName": "rahbar-indexer",
+                "terminationGracePeriodSeconds": 30,
+                "volumes": [
+                    {
+                        "name": "data-lake",
+                        "persistentVolumeClaim": {
+                            "claimName": "rahbar-data-lake"
+                        }
+                    }
+                ]
+            }
+        },
+        "ttlSecondsAfterFinished": 86400
+    },
+    "status": {
+        "completionTime": "2026-11-26T14:22:27Z",
+        "conditions": [
+            {
+                "lastProbeTime": "2026-11-26T14:22:27Z",
+                "lastTransitionTime": "2026-11-26T14:22:27Z",
+                "message": "Reached expected number of succeeded pods",
+                "reason": "CompletionsReached",
+                "status": "True",
+                "type": "SuccessCriteriaMet"
+            },
+            {
+                "lastProbeTime": "2026-11-26T14:22:27Z",
+                "lastTransitionTime": "2026-11-26T14:22:27Z",
+                "message": "Reached expected number of succeeded pods",
+                "reason": "CompletionsReached",
+                "status": "True",
+                "type": "Complete"
+            }
+        ],
+        "ready": 0,
+        "startTime": "2026-11-26T14:02:31Z",
+        "succeeded": 1,
+        "terminating": 0,
+        "uncountedTerminatedPods": {}
+    }
+}
+
+Exit code: 0

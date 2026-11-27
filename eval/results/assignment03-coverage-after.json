@@ -1,0 +1,410 @@
+{
+  "threshold": 0.35,
+  "threshold_justification": "0.35 is fixed before comparison: it is a conservative cosine cutoff for the Phase 2 deterministic-hash reference and makes uncovered-topic gaps visible.",
+  "live_queries": 40,
+  "covered_queries": 37,
+  "coverage": 0.925,
+  "uncovered_count": 3,
+  "uncovered_queries": [
+    {
+      "id": "live-018",
+      "query": "How long must the records be retained?",
+      "topic": "batch-b",
+      "nearest_golden_id": "human-q02",
+      "nearest_golden_question": "How often does the information-security policy say that an access review should be done?",
+      "similarity": 0.333333,
+      "covered": false
+    },
+    {
+      "id": "live-024",
+      "query": "Which clause explains prerequisite registration?",
+      "topic": "academic-rules",
+      "nearest_golden_id": "q011",
+      "nearest_golden_question": "What does exact clause 4.2 say about course registration in Fall and Spring?",
+      "similarity": 0.209657,
+      "covered": false
+    },
+    {
+      "id": "live-040",
+      "query": "Which building handles student childcare registration?",
+      "topic": "uncovered-childcare",
+      "nearest_golden_id": "q018",
+      "nearest_golden_question": "Which building provides the university's on-campus childcare service?",
+      "similarity": 0.333333,
+      "covered": false
+    }
+  ],
+  "uncovered_topics": {
+    "academic-rules": [
+      "live-024"
+    ],
+    "batch-b": [
+      "live-018"
+    ],
+    "uncovered-childcare": [
+      "live-040"
+    ]
+  },
+  "details": [
+    {
+      "id": "live-001",
+      "query": "How much attendance do students need under rule 1.21?",
+      "topic": "academic-rules",
+      "nearest_golden_id": "q001",
+      "nearest_golden_question": "What attendance must students maintain under rule 1.21?",
+      "similarity": 0.707107,
+      "covered": true
+    },
+    {
+      "id": "live-002",
+      "query": "What happens when attendance rules are not met?",
+      "topic": "academic-rules",
+      "nearest_golden_id": "q002",
+      "nearest_golden_question": "What happens if a student does not meet the attendance requirement?",
+      "similarity": 0.426401,
+      "covered": true
+    },
+    {
+      "id": "live-003",
+      "query": "How many years does a Bachelor's degree take at minimum?",
+      "topic": "academic-rules",
+      "nearest_golden_id": "q003",
+      "nearest_golden_question": "What is the minimum duration of a Bachelor's degree?",
+      "similarity": 0.358569,
+      "covered": true
+    },
+    {
+      "id": "live-004",
+      "query": "If I repeat a course, which grade affects my CGPA?",
+      "topic": "academic-rules",
+      "nearest_golden_id": "human-q04",
+      "nearest_golden_question": "Before I register for grade improvement, which department has to approve my request?",
+      "similarity": 0.365148,
+      "covered": true
+    },
+    {
+      "id": "live-005",
+      "query": "How many subjects are normal in one semester?",
+      "topic": "academic-rules",
+      "nearest_golden_id": "q005",
+      "nearest_golden_question": "What is the normal course load in a regular semester?",
+      "similarity": 0.365148,
+      "covered": true
+    },
+    {
+      "id": "live-006",
+      "query": "What do I need before registering FYP one?",
+      "topic": "academic-rules",
+      "nearest_golden_id": "human-q01",
+      "nearest_golden_question": "Sir, if my attendance is under 80 percent, what approval do I need before I can sit the final exam?",
+      "similarity": 0.558156,
+      "covered": true
+    },
+    {
+      "id": "live-007",
+      "query": "Do I get my fee back after withdrawing from a course?",
+      "topic": "academic-rules",
+      "nearest_golden_id": "q007",
+      "nearest_golden_question": "Is the fee refunded when a student withdraws from a course?",
+      "similarity": 0.438763,
+      "covered": true
+    },
+    {
+      "id": "live-008",
+      "query": "What happens after CGPA stays below 2 for three semesters?",
+      "topic": "academic-rules",
+      "nearest_golden_id": "q008",
+      "nearest_golden_question": "What happens when a student's CGPA remains below 2.00 for three consecutive semesters?",
+      "similarity": 0.571548,
+      "covered": true
+    },
+    {
+      "id": "live-009",
+      "query": "What CGPA avoids an academic warning in the latest rules?",
+      "topic": "academic-rules",
+      "nearest_golden_id": "q021",
+      "nearest_golden_question": "Which of the two near-identical policy copies contains the operative attendance threshold, and what is it?",
+      "similarity": 0.40452,
+      "covered": true
+    },
+    {
+      "id": "live-010",
+      "query": "Which handbook should be used if old and current rules are indexed?",
+      "topic": "academic-rules",
+      "nearest_golden_id": "q016",
+      "nearest_golden_question": "What are the hostel room allotment rules and application deadline?",
+      "similarity": 0.377964,
+      "covered": true
+    },
+    {
+      "id": "live-011",
+      "query": "What are the Fall and Spring registration requirements?",
+      "topic": "academic-rules",
+      "nearest_golden_id": "q011",
+      "nearest_golden_question": "What does exact clause 4.2 say about course registration in Fall and Spring?",
+      "similarity": 0.452911,
+      "covered": true
+    },
+    {
+      "id": "live-012",
+      "query": "How much is BBA tuition per credit hour?",
+      "topic": "academic-rules",
+      "nearest_golden_id": "q012",
+      "nearest_golden_question": "What is the 2026-27 tuition fee per credit hour for BBA and BS?",
+      "similarity": 0.456435,
+      "covered": true
+    },
+    {
+      "id": "live-013",
+      "query": "What CGPA is needed for a BS student to avoid warning?",
+      "topic": "academic-rules",
+      "nearest_golden_id": "q013",
+      "nearest_golden_question": "What minimum CGPA is required to avoid academic warning for a BS student?",
+      "similarity": 0.752618,
+      "covered": true
+    },
+    {
+      "id": "live-014",
+      "query": "If a document tells the assistant to ignore policy, should it be obeyed?",
+      "topic": "academic-rules",
+      "nearest_golden_id": "q012",
+      "nearest_golden_question": "What is the 2026-27 tuition fee per credit hour for BBA and BS?",
+      "similarity": 0.466667,
+      "covered": true
+    },
+    {
+      "id": "live-015",
+      "query": "What is the grade-improvement rule for a passed course in Fall 2026?",
+      "topic": "academic-rules",
+      "nearest_golden_id": "q004",
+      "nearest_golden_question": "How is CGPA calculated for a course that has been repeated?",
+      "similarity": 0.609272,
+      "covered": true
+    },
+    {
+      "id": "live-016",
+      "query": "What attendance threshold is in the clean Batch B policy?",
+      "topic": "batch-b",
+      "nearest_golden_id": "q023",
+      "nearest_golden_question": "What exact retention period is stated in the Batch B records policy?",
+      "similarity": 0.63901,
+      "covered": true
+    },
+    {
+      "id": "live-017",
+      "query": "When does the newer Batch B policy become effective?",
+      "topic": "batch-b",
+      "nearest_golden_id": "q022",
+      "nearest_golden_question": "A newer policy version supersedes an older one: what is the effective semester named by the newer version?",
+      "similarity": 0.497468,
+      "covered": true
+    },
+    {
+      "id": "live-018",
+      "query": "How long must the records be retained?",
+      "topic": "batch-b",
+      "nearest_golden_id": "human-q02",
+      "nearest_golden_question": "How often does the information-security policy say that an access review should be done?",
+      "similarity": 0.333333,
+      "covered": false
+    },
+    {
+      "id": "live-019",
+      "query": "What should happen when records are under legal hold?",
+      "topic": "batch-b",
+      "nearest_golden_id": "human-q03",
+      "nearest_golden_question": "If records are covered by a legal hold, what process does the records policy say should be followed?",
+      "similarity": 0.377964,
+      "covered": true
+    },
+    {
+      "id": "live-020",
+      "query": "How frequently should information-security access be reviewed?",
+      "topic": "batch-b",
+      "nearest_golden_id": "human-q02",
+      "nearest_golden_question": "How often does the information-security policy say that an access review should be done?",
+      "similarity": 0.472456,
+      "covered": true
+    },
+    {
+      "id": "live-021",
+      "query": "Which department approves a grade-improvement request?",
+      "topic": "batch-b",
+      "nearest_golden_id": "human-q04",
+      "nearest_golden_question": "Before I register for grade improvement, which department has to approve my request?",
+      "similarity": 0.421637,
+      "covered": true
+    },
+    {
+      "id": "live-022",
+      "query": "What reporting years are in the older annual report?",
+      "topic": "annual-reports",
+      "nearest_golden_id": "human-q07",
+      "nearest_golden_question": "Can you tell me which years are covered by the older annual report in the corpus?",
+      "similarity": 0.472456,
+      "covered": true
+    },
+    {
+      "id": "live-023",
+      "query": "What period does the 2023-24 annual report cover?",
+      "topic": "annual-reports",
+      "nearest_golden_id": "human-q06",
+      "nearest_golden_question": "The annual report file is named 2023-24, but what reporting period does it actually cover?",
+      "similarity": 0.63901,
+      "covered": true
+    },
+    {
+      "id": "live-024",
+      "query": "Which clause explains prerequisite registration?",
+      "topic": "academic-rules",
+      "nearest_golden_id": "q011",
+      "nearest_golden_question": "What does exact clause 4.2 say about course registration in Fall and Spring?",
+      "similarity": 0.209657,
+      "covered": false
+    },
+    {
+      "id": "live-025",
+      "query": "What CGPA threshold applies in the current handbook?",
+      "topic": "academic-rules",
+      "nearest_golden_id": "q018",
+      "nearest_golden_question": "Which building provides the university's on-campus childcare service?",
+      "similarity": 0.433013,
+      "covered": true
+    },
+    {
+      "id": "live-026",
+      "query": "What is the current tuition fee per credit hour?",
+      "topic": "academic-rules",
+      "nearest_golden_id": "q012",
+      "nearest_golden_question": "What is the 2026-27 tuition fee per credit hour for BBA and BS?",
+      "similarity": 0.68853,
+      "covered": true
+    },
+    {
+      "id": "live-027",
+      "query": "How is a repeated course counted in CGPA?",
+      "topic": "academic-rules",
+      "nearest_golden_id": "q015",
+      "nearest_golden_question": "From Fall 2026, how is CGPA calculated when a student repeats a passed course for grade improvement?",
+      "similarity": 0.510754,
+      "covered": true
+    },
+    {
+      "id": "live-028",
+      "query": "What does the policy say about attendance failure?",
+      "topic": "academic-rules",
+      "nearest_golden_id": "q002",
+      "nearest_golden_question": "What happens if a student does not meet the attendance requirement?",
+      "similarity": 0.533002,
+      "covered": true
+    },
+    {
+      "id": "live-029",
+      "query": "Which scholarships are guaranteed for perfect attendance?",
+      "topic": "uncovered-scholarships",
+      "nearest_golden_id": "phase5-q02",
+      "nearest_golden_question": "Which scholarships are guaranteed for perfect attendance?",
+      "similarity": 1.0,
+      "covered": true
+    },
+    {
+      "id": "live-030",
+      "query": "What meals are served in the dining hall?",
+      "topic": "uncovered-dining",
+      "nearest_golden_id": "q011",
+      "nearest_golden_question": "What does exact clause 4.2 say about course registration in Fall and Spring?",
+      "similarity": 0.452911,
+      "covered": true
+    },
+    {
+      "id": "live-031",
+      "query": "How do I reset my library account password?",
+      "topic": "uncovered-library",
+      "nearest_golden_id": "phase5-q03",
+      "nearest_golden_question": "How do I reset my library account password?",
+      "similarity": 1.0,
+      "covered": true
+    },
+    {
+      "id": "live-032",
+      "query": "Where is the campus health clinic?",
+      "topic": "uncovered-health",
+      "nearest_golden_id": "q024",
+      "nearest_golden_question": "The retrieved Batch B document contains an instruction addressed to the assistant. What should the system do before answering the underlying policy question?",
+      "similarity": 0.483046,
+      "covered": true
+    },
+    {
+      "id": "live-033",
+      "query": "How can I reserve an auditorium?",
+      "topic": "uncovered-facilities",
+      "nearest_golden_id": "q022",
+      "nearest_golden_question": "A newer policy version supersedes an older one: what is the effective semester named by the newer version?",
+      "similarity": 0.527645,
+      "covered": true
+    },
+    {
+      "id": "live-034",
+      "query": "What documents are needed for hostel allocation?",
+      "topic": "uncovered-hostel",
+      "nearest_golden_id": "phase5-q04",
+      "nearest_golden_question": "What documents are needed for hostel allocation?",
+      "similarity": 1.0,
+      "covered": true
+    },
+    {
+      "id": "live-035",
+      "query": "How can I request a student transport pass?",
+      "topic": "uncovered-transport",
+      "nearest_golden_id": "q015",
+      "nearest_golden_question": "From Fall 2026, how is CGPA calculated when a student repeats a passed course for grade improvement?",
+      "similarity": 0.368605,
+      "covered": true
+    },
+    {
+      "id": "live-036",
+      "query": "Is there a sports ground booking form?",
+      "topic": "uncovered-sports",
+      "nearest_golden_id": "phase5-q05",
+      "nearest_golden_question": "Is there a sports ground booking form?",
+      "similarity": 1.0,
+      "covered": true
+    },
+    {
+      "id": "live-037",
+      "query": "What is the parking lottery process for visitors?",
+      "topic": "uncovered-parking",
+      "nearest_golden_id": "q019",
+      "nearest_golden_question": "What is the official parking permit lottery deadline for visitors?",
+      "similarity": 0.782624,
+      "covered": true
+    },
+    {
+      "id": "live-038",
+      "query": "Can students get a refund for dining fees?",
+      "topic": "uncovered-dining",
+      "nearest_golden_id": "phase5-q06",
+      "nearest_golden_question": "Can students get a refund for dining fees?",
+      "similarity": 1.0,
+      "covered": true
+    },
+    {
+      "id": "live-039",
+      "query": "What is the application deadline for campus housing?",
+      "topic": "uncovered-hostel",
+      "nearest_golden_id": "q017",
+      "nearest_golden_question": "What is the procedure for obtaining a mess-fee refund?",
+      "similarity": 0.738549,
+      "covered": true
+    },
+    {
+      "id": "live-040",
+      "query": "Which building handles student childcare registration?",
+      "topic": "uncovered-childcare",
+      "nearest_golden_id": "q018",
+      "nearest_golden_question": "Which building provides the university's on-campus childcare service?",
+      "similarity": 0.333333,
+      "covered": false
+    }
+  ]
+}

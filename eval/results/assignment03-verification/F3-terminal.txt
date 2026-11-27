@@ -1,0 +1,4 @@
+kubectl rollout status deployment/api -n rahbar --timeout=15s
+deployment "api" successfully rolled out
+
+Exit 0

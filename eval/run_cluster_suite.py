@@ -23,7 +23,7 @@ from module_level import run_module_level
 
 
 def run_suite(api: str, golden: Path, baseline: Path, trace_path: Path,
-              out: Path, seed: int = 2026) -> dict[str, object]:
+              out: Path, seed: int = 2026, *, bootstrap_baseline: bool = False) -> dict[str, object]:
     out.parent.mkdir(parents=True, exist_ok=True)
     golden_rows = [json.loads(line) for line in golden.read_text(encoding="utf-8").splitlines() if line.strip()]
     runs: list[dict[str, object]] = []
@@ -31,14 +31,22 @@ def run_suite(api: str, golden: Path, baseline: Path, trace_path: Path,
         print(f"Part B run {run_number}/2: module embeddings", flush=True)
         module = run_module_level(seed=seed)
         print(f"Part B run {run_number}/2: component retrieval", flush=True)
-        component = run_component_level(Path("/data/corpus"), golden, seed=seed)
+        component = run_component_level(Path("/data/corpus"), golden, seed=seed,
+                                        top_k=int(os.environ.get("TOP_K", "5")))
+        out.with_name(f'{out.stem}-levels-run-{run_number}.json').write_text(
+            json.dumps({'module': module, 'component': component}, indent=2) + '\n',
+            encoding='utf-8')
 
         answer_out = out.with_name(f"{out.stem}-answers-run-{run_number}.json")
-        command = [sys.executable, str(Path(__file__).with_name("run_eval.py")),
+        command = [sys.executable, '-u', str(Path(__file__).with_name("run_eval.py")),
                    "--api", api, "--golden", str(golden), "--baseline", str(baseline),
                    "--trace-path", str(trace_path), "--out", str(answer_out),
-                   "--request-timeout", os.environ.get("EVAL_REQUEST_TIMEOUT", "600")]
-        if not baseline.exists():
+                   # The provider can try twice. Include retrieval and HTTP
+                   # overhead instead of timing out at the retry boundary.
+                   "--request-timeout", os.environ.get(
+                       "EVAL_REQUEST_TIMEOUT",
+                       str(max(600, 2 * float(os.environ.get('EMBED_TIMEOUT', '300')) + 120)))]
+        if bootstrap_baseline and not baseline.exists():
             command.append("--update-baseline")
         completed = subprocess.run(command, check=False)
         if not answer_out.exists():
@@ -49,7 +57,7 @@ def run_suite(api: str, golden: Path, baseline: Path, trace_path: Path,
 
     first, second = runs
     metric_names = ("mean_paraphrase_cosine", "mean_unrelated_cosine", "paraphrase_unrelated_gap",
-                    "determinism_largest_abs_difference", "recall_at_3", "recall_at_5", "mrr",
+                    "embedding_time_ms_per_chunk", "determinism_largest_abs_difference", "recall_at_3", "recall_at_5", "mrr",
                     "ndcg_at_5", "faithfulness", "abstention_rate", "citation_validity",
                     "latency_ms_p50", "latency_ms_p95")
     def value(run: dict[str, object], name: str) -> object:
@@ -109,7 +117,8 @@ def main() -> int:
         return 2
     if args.bootstrap_baseline:
         args.baseline.unlink(missing_ok=True)
-    result = run_suite(args.api, args.golden, args.baseline, args.trace_path, args.out, args.seed)
+    result = run_suite(args.api, args.golden, args.baseline, args.trace_path, args.out, args.seed,
+                       bootstrap_baseline=args.bootstrap_baseline)
     print(json.dumps({"gate_status": result["gate_status"], "summary_table": result["summary_table"]}, indent=2))
     return 0 if result["gate_status"] == "PASS" else 1
 

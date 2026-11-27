@@ -1,0 +1,114 @@
+{
+  "apiVersion": "batch/v1",
+  "kind": "Job",
+  "metadata": {
+    "name": "assignment03-seed-candidate",
+    "namespace": "rahbar"
+  },
+  "spec": {
+    "backoffLimit": 2,
+    "ttlSecondsAfterFinished": 86400,
+    "template": {
+      "metadata": {
+        "labels": {
+          "app": "indexer"
+        }
+      },
+      "spec": {
+        "serviceAccountName": "rahbar-indexer",
+        "automountServiceAccountToken": false,
+        "restartPolicy": "OnFailure",
+        "securityContext": {
+          "runAsNonRoot": true,
+          "runAsUser": 10002,
+          "runAsGroup": 10002,
+          "fsGroup": 10002
+        },
+        "initContainers": [
+          {
+            "name": "seed-data-lake",
+            "image": "rahbar-indexer:a03-20261126",
+            "command": [
+              "python",
+              "/app/seed_corpus.py"
+            ],
+            "envFrom": [
+              {
+                "configMapRef": {
+                  "name": "rahbar-config"
+                }
+              }
+            ],
+            "volumeMounts": [
+              {
+                "name": "data-lake",
+                "mountPath": "/data"
+              }
+            ]
+          }
+        ],
+        "containers": [
+          {
+            "name": "indexer",
+            "image": "rahbar-indexer:a03-20261126",
+            "imagePullPolicy": "IfNotPresent",
+            "command": [
+              "python",
+              "-m",
+              "pipeline.run"
+            ],
+            "envFrom": [
+              {
+                "configMapRef": {
+                  "name": "rahbar-config"
+                }
+              }
+            ],
+            "volumeMounts": [
+              {
+                "name": "data-lake",
+                "mountPath": "/data"
+              }
+            ],
+            "securityContext": {
+              "allowPrivilegeEscalation": false,
+              "capabilities": {
+                "drop": [
+                  "ALL"
+                ]
+              }
+            },
+            "resources": {
+              "requests": {
+                "cpu": "100m",
+                "memory": "256Mi"
+              },
+              "limits": {
+                "cpu": 1,
+                "memory": "2Gi"
+              }
+            },
+            "env": [
+              {
+                "name": "CHROMA_COLLECTION",
+                "value": "rahbar-candidate"
+              },
+              {
+                "name": "INDEX_STATE_FILE",
+                "value": "/data/candidate-index-state.json"
+              }
+            ]
+          }
+        ],
+        "volumes": [
+          {
+            "name": "data-lake",
+            "persistentVolumeClaim": {
+              "claimName": "rahbar-data-lake"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

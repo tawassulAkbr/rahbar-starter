@@ -1,0 +1,4 @@
+$ kubectl get job/assignment03-batch-b -n rahbar -o json
+Error from server (NotFound): jobs.batch "assignment03-batch-b" not found
+
+Exit code: 1

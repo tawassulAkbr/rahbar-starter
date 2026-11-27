@@ -1,0 +1,7 @@
+{
+  "captured_at": "2026-11-26T19:25:39.512Z",
+  "url": "http://localhost:18081",
+  "question": "How do I bake a chocolate cake?",
+  "actual_page_text": "RAHBAR\n\nAnswers only from the indexed documents, with sources. If the documents do not cover it, it says so.\n\nHow do I bake a chocolate cake?\nNot covered by the documents\nconfidence: low\nprovider: ollama\ncache: miss\n\nThe provided university policy documents do not cover this topic.\n\nRetrieved passages (5)\nSource\tSection\tPage\tScore\nannual-report-2023-24.pdf\tI Q A E\t69\t0.429\nannual-report-2023-24.pdf\tI S B\t69\t0.418\nannual-report-2023-24.pdf\tI Q A E - L H R\t69\t0.404\nacademic-rules-handbook-jun-2026.pdf\t4.7\t21\t0.422\nacademic-rules-handbook-jun-2026.pdf\t3.21\t16\t0.422\nrequest id 65b9e62b23cc45d5beaa556c6aca8827\nAsk\nEnter to send, Shift+Enter for a new line. 3 to 500 characters.",
+  "note": "Actual browser captures. Website images do not replace required terminal evidence."
+}

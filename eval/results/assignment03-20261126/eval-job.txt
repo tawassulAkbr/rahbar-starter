@@ -1,0 +1,31 @@
+$ kubectl logs job/eval-job -n rahbar --all-containers=true --pod-running-timeout=5s
+Part B run 1/2: module embeddings
+Traceback (most recent call last):
+  File "/workspace/eval/run_cluster_suite.py", line 118, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/workspace/eval/run_cluster_suite.py", line 112, in main
+    result = run_suite(args.api, args.golden, args.baseline, args.trace_path, args.out, args.seed)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/eval/run_cluster_suite.py", line 32, in run_suite
+    module = run_module_level(seed=seed)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/eval/module_level.py", line 111, in run_module_level
+    collection = ChromaRetriever(settings).client.get_collection(name=settings.collection)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/chromadb/api/client.py", line 192, in get_collection
+    model = self._server.get_collection(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/chromadb/telemetry/opentelemetry/__init__.py", line 150, in wrapper
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/chromadb/api/fastapi.py", line 279, in get_collection
+    resp_json = self._make_request(
+                ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/chromadb/api/fastapi.py", line 107, in _make_request
+    BaseHTTPClient._raise_chroma_error(response)
+  File "/usr/local/lib/python3.12/site-packages/chromadb/api/base_http_client.py", line 97, in _raise_chroma_error
+    raise chroma_error
+chromadb.errors.NotFoundError: Collection [rahbar] does not exists
+
+Exit code: 0

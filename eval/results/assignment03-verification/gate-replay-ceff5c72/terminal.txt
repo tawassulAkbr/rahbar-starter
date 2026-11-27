@@ -1,0 +1,100 @@
+$ kubectl -n rahbar get configmap rahbar-config -o json
+{
+    "apiVersion": "v1",
+    "data": {
+        "ARCHIVE_DIR": "/data/archive",
+        "CACHE_THRESHOLD": "0.92",
+        "CANDIDATE_COLLECTION": "rahbar-candidate",
+        "CANDIDATE_TOP_K": "4",
+        "CHROMA_COLLECTION": "rahbar",
+        "CHROMA_HOST": "chroma",
+        "CHROMA_PORT": "8000",
+        "CHUNK_OVERLAP": "40",
+        "CHUNK_SIZE": "250",
+        "CORPUS_DIR": "/data/corpus",
+        "COVERAGE_THRESHOLD": "0.85",
+        "EMBED_BATCH_SIZE": "4",
+        "EMBED_DIMENSION": "768",
+        "EMBED_MODEL": "nomic-embed-text",
+        "EMBED_MODEL_VERSION": "unknown",
+        "EMBED_TIMEOUT": "300",
+        "EVAL_ALLOW_STUB": "false",
+        "EVAL_REQUEST_TIMEOUT": "720",
+        "GATE_ABSTENTION_MIN": "1.0",
+        "GATE_CITATION_MIN": "0.95",
+        "GATE_FAITHFULNESS_MIN": "0.90",
+        "GATE_P95_MAX_MS": "180000",
+        "GATE_RECALL5_MAX_DROP": "0.05",
+        "GENERATION_TIMEOUT": "240",
+        "INDEX_STATE_FILE": "/data/index-state.json",
+        "LLM_MODEL": "llama3.2:1b",
+        "LLM_PROVIDER": "ollama-incluster",
+        "MAX_OUTPUT_TOKENS": "256",
+        "OLLAMA_KEEP_ALIVE": "60m",
+        "OLLAMA_URL": "http://ollama:11434",
+        "QUARANTINE_DIR": "/data/quarantine",
+        "REDIS_INVALIDATION_CHANNEL": "rahbar:index-updated",
+        "REDIS_URL": "redis://redis:6379/0",
+        "RELEVANCE_FLOOR": "0.6",
+        "RETRIEVER": "chroma",
+        "TEMPERATURE": "0.2",
+        "TOP_K": "5",
+        "TRACE_DIR": "/data/traces",
+        "VERIFY_ENABLED": "true",
+        "VERIFY_REPORT_DIR": "/data/reports"
+    },
+    "kind": "ConfigMap",
+    "metadata": {
+        "annotations": {
+            "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"data\":{\"ARCHIVE_DIR\":\"/data/archive\",\"CACHE_THRESHOLD\":\"0.92\",\"CANDIDATE_COLLECTION\":\"rahbar-candidate\",\"CANDIDATE_TOP_K\":\"4\",\"CHROMA_COLLECTION\":\"rahbar\",\"CHROMA_HOST\":\"chroma\",\"CHROMA_PORT\":\"8000\",\"CHUNK_OVERLAP\":\"40\",\"CHUNK_SIZE\":\"250\",\"CORPUS_DIR\":\"/data/corpus\",\"COVERAGE_THRESHOLD\":\"0.85\",\"EMBED_BATCH_SIZE\":\"4\",\"EMBED_DIMENSION\":\"768\",\"EMBED_MODEL\":\"nomic-embed-text\",\"EMBED_MODEL_VERSION\":\"unknown\",\"EMBED_TIMEOUT\":\"300\",\"EVAL_ALLOW_STUB\":\"false\",\"EVAL_REQUEST_TIMEOUT\":\"720\",\"GATE_ABSTENTION_MIN\":\"1.0\",\"GATE_CITATION_MIN\":\"0.95\",\"GATE_FAITHFULNESS_MIN\":\"0.90\",\"GATE_P95_MAX_MS\":\"180000\",\"GATE_RECALL5_MAX_DROP\":\"0.05\",\"GENERATION_TIMEOUT\":\"240\",\"INDEX_STATE_FILE\":\"/data/index-state.json\",\"LLM_MODEL\":\"llama3.2:1b\",\"LLM_PROVIDER\":\"ollama-incluster\",\"MAX_OUTPUT_TOKENS\":\"256\",\"OLLAMA_KEEP_ALIVE\":\"60m\",\"OLLAMA_URL\":\"http://ollama:11434\",\"QUARANTINE_DIR\":\"/data/quarantine\",\"REDIS_INVALIDATION_CHANNEL\":\"rahbar:index-updated\",\"REDIS_URL\":\"redis://redis:6379/0\",\"RELEVANCE_FLOOR\":\"0.6\",\"RETRIEVER\":\"chroma\",\"TEMPERATURE\":\"0.2\",\"TOP_K\":\"5\",\"TRACE_DIR\":\"/data/traces\",\"VERIFY_ENABLED\":\"true\",\"VERIFY_REPORT_DIR\":\"/data/reports\"},\"kind\":\"ConfigMap\",\"metadata\":{\"annotations\":{},\"name\":\"rahbar-config\",\"namespace\":\"rahbar\"}}\n"
+        },
+        "creationTimestamp": "2026-11-26T11:28:40Z",
+        "name": "rahbar-config",
+        "namespace": "rahbar",
+        "resourceVersion": "27302",
+        "uid": "86ed794f-c2f0-4fcb-8631-0fdc6518ca5c"
+    }
+}
+
+$ kubectl -n rahbar create -f -
+{"apiVersion": "v1", "kind": "ConfigMap", "metadata": {"name": "gate-replay-ceff5c72"}, "data": {"GATE_ABSTENTION_MIN": "1.0", "GATE_CITATION_MIN": "0.95", "GATE_FAITHFULNESS_MIN": "0.90", "GATE_P95_MAX_MS": "180000", "GATE_RECALL5_MAX_DROP": "0.05"}}
+configmap/gate-replay-ceff5c72 created
+
+$ kubectl -n rahbar create -f -
+{"apiVersion": "batch/v1", "kind": "Job", "metadata": {"name": "gate-replay-ceff5c72-release", "namespace": "rahbar"}, "spec": {"backoffLimit": 0, "ttlSecondsAfterFinished": 86400, "template": {"metadata": {"labels": {"app": "evaluator"}}, "spec": {"restartPolicy": "Never", "automountServiceAccountToken": false, "containers": [{"name": "evaluator", "image": "rahbar-eval:dev", "imagePullPolicy": "IfNotPresent", "command": ["python", "-c"], "args": ["\nimport hashlib, json, os, sys\nfrom pathlib import Path\nfrom run_eval import gate\ndef read(name):\n    data = Path('/results', name + '-answers-run-1.json').read_bytes()\n    result = json.loads(data)\n    assert result['evaluation_complete']\n    print(name, hashlib.sha256(data).hexdigest())\n    return result\nbaseline = read('eval-results')\ncandidate = read('eval-candidate-results')\nassert candidate['dataset_sha256'] == baseline['dataset_sha256']\nerrors = gate(candidate, baseline)\nprint(json.dumps(dict(threshold=os.environ['GATE_FAITHFULNESS_MIN'],\n                      faithfulness=candidate['faithfulness'], failures=errors)))\nsys.exit(bool(errors))\n"], "env": [{"name": "EVAL_API", "value": "http://api:8000"}], "envFrom": [{"configMapRef": {"name": "gate-replay-ceff5c72"}}], "resources": {"requests": {"cpu": "100m", "memory": "128Mi"}, "limits": {"cpu": "500m", "memory": "512Mi"}}, "volumeMounts": [{"name": "results", "mountPath": "/results"}, {"name": "traces", "mountPath": "/data/traces", "readOnly": true}]}], "volumes": [{"name": "results", "persistentVolumeClaim": {"claimName": "rahbar-evaluation"}}, {"name": "traces", "persistentVolumeClaim": {"claimName": "rahbar-traces"}}]}}}}
+job.batch/gate-replay-ceff5c72-release created
+
+$ kubectl -n rahbar wait --for=condition=failed job/gate-replay-ceff5c72-release --timeout=180s
+job.batch/gate-replay-ceff5c72-release condition met
+
+$ kubectl -n rahbar logs job/gate-replay-ceff5c72-release
+eval-results 9c0e551b9b48a96397a5789e619507cc3c2c56ff944a77dbe2c57d79501ce9c5
+eval-candidate-results ccde2dce58ded83cd06bc2dfca72c36630db08df335a91558fc81d148a920d22
+{"threshold": "0.90", "faithfulness": 0.6666666666666666, "failures": ["faithfulness is below 90%: 0.6666666666666666"]}
+
+$ kubectl -n rahbar get pods -l job-name=gate-replay-ceff5c72-release -o custom-columns=IMAGE_ID:.status.containerStatuses[0].imageID
+IMAGE_ID
+sha256:107bb98e27c6672a6347e837c7a83d0bf980d591d5432f7355c46f4815bc8555
+
+$ kubectl -n rahbar patch configmap gate-replay-ceff5c72 --type=merge -p "{\"data\": {\"GATE_FAITHFULNESS_MIN\": \"0.65\"}}"
+configmap/gate-replay-ceff5c72 patched
+
+$ kubectl -n rahbar create -f -
+{"apiVersion": "batch/v1", "kind": "Job", "metadata": {"name": "gate-replay-ceff5c72-experiment", "namespace": "rahbar"}, "spec": {"backoffLimit": 0, "ttlSecondsAfterFinished": 86400, "template": {"metadata": {"labels": {"app": "evaluator"}}, "spec": {"restartPolicy": "Never", "automountServiceAccountToken": false, "containers": [{"name": "evaluator", "image": "rahbar-eval:dev", "imagePullPolicy": "IfNotPresent", "command": ["python", "-c"], "args": ["\nimport hashlib, json, os, sys\nfrom pathlib import Path\nfrom run_eval import gate\ndef read(name):\n    data = Path('/results', name + '-answers-run-1.json').read_bytes()\n    result = json.loads(data)\n    assert result['evaluation_complete']\n    print(name, hashlib.sha256(data).hexdigest())\n    return result\nbaseline = read('eval-results')\ncandidate = read('eval-candidate-results')\nassert candidate['dataset_sha256'] == baseline['dataset_sha256']\nerrors = gate(candidate, baseline)\nprint(json.dumps(dict(threshold=os.environ['GATE_FAITHFULNESS_MIN'],\n                      faithfulness=candidate['faithfulness'], failures=errors)))\nsys.exit(bool(errors))\n"], "env": [{"name": "EVAL_API", "value": "http://api:8000"}], "envFrom": [{"configMapRef": {"name": "gate-replay-ceff5c72"}}], "resources": {"requests": {"cpu": "100m", "memory": "128Mi"}, "limits": {"cpu": "500m", "memory": "512Mi"}}, "volumeMounts": [{"name": "results", "mountPath": "/results"}, {"name": "traces", "mountPath": "/data/traces", "readOnly": true}]}], "volumes": [{"name": "results", "persistentVolumeClaim": {"claimName": "rahbar-evaluation"}}, {"name": "traces", "persistentVolumeClaim": {"claimName": "rahbar-traces"}}]}}}}
+job.batch/gate-replay-ceff5c72-experiment created
+
+$ kubectl -n rahbar wait --for=condition=complete job/gate-replay-ceff5c72-experiment --timeout=180s
+job.batch/gate-replay-ceff5c72-experiment condition met
+
+$ kubectl -n rahbar logs job/gate-replay-ceff5c72-experiment
+eval-results 9c0e551b9b48a96397a5789e619507cc3c2c56ff944a77dbe2c57d79501ce9c5
+eval-candidate-results ccde2dce58ded83cd06bc2dfca72c36630db08df335a91558fc81d148a920d22
+{"threshold": "0.65", "faithfulness": 0.6666666666666666, "failures": []}
+
+$ kubectl -n rahbar get pods -l job-name=gate-replay-ceff5c72-experiment -o custom-columns=IMAGE_ID:.status.containerStatuses[0].imageID
+IMAGE_ID
+sha256:107bb98e27c6672a6347e837c7a83d0bf980d591d5432f7355c46f4815bc8555
+
+$ kubectl -n rahbar delete configmap gate-replay-ceff5c72
+configmap "gate-replay-ceff5c72" deleted from rahbar namespace
+

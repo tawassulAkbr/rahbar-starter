@@ -1,0 +1,5 @@
+Trace bc77b74081534ef18629a95c4b348adf: What is the minimum duration of a Bachelor's degree?
+Collection rahbar; embedding version 0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f.
+Filters: {'superseded': False}; retrieved document versions: [('academic-rules-handbook-jun-2026.pdf', '2026-06'), ('student-handbook-jun-2026.pdf', '2026-06'), ('grading-page.html', '2026'), ('academic-rules-handbook-jun-2026.pdf', '2026-06'), ('academic-rules-handbook-jun-2026.pdf', '2026-06')]
+Captured context contains the requested duration statement: False.
+The response abstained; this trace shows missing/insufficient retrieved support rather than a transport exception; pipeline events: [].

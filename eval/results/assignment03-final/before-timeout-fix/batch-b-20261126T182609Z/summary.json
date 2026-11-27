@@ -1,0 +1,17 @@
+{
+  "collection": "batch-b-20261126t182609z",
+  "batch_b_documents": 12,
+  "pass": 5,
+  "fail": 7,
+  "previously_indexed_version": "batch-b-policy-2026.md",
+  "superseded_chunks": 1,
+  "failed_document_active_chunk_counts": {
+    "batch-b-corrupt.txt": 0,
+    "batch-b-exact-duplicate-2.md": 0,
+    "batch-b-exact-duplicate.md": 0,
+    "batch-b-missing-metadata.md": 0,
+    "batch-b-near-duplicate.md": 0,
+    "batch-b-policy-2026.md": 0,
+    "batch-b-truncated.md": 0
+  }
+}

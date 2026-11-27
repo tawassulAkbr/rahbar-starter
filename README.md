@@ -6,22 +6,28 @@ RAHBAR is a grounded question-answering service for university policy documents.
 
 ## Runtime architecture
 
+Latest Assignment 03 verification: [report](docs/Assignment_03_Report.html),
+[PDF](docs/Assignment_03_Report.pdf), and
+[verification evidence](eval/results/assignment03-verification/). Use the final checklist in
+that evidence directory as the acceptance verdict; historical fixture results
+and generated terminal illustrations do not establish completion.
+
 For Assignment 03 Parts A–D, see the [Phase 0–4 re-audit and commands](docs/PHASE_0_TO_4_REAUDIT.md).
 Historical reference-harness results are superseded and cannot authorize release.
 
-For Part E, run the following commands from the repository root:
+For the current Part E measurement, run these commands from the repository root:
 
 ```bash
-python eval/query_coverage.py --out eval/results/coverage-before.json
-python eval/query_coverage.py --expanded --out eval/results/coverage-after.json
+python eval/coverage.py --golden eval/golden.jsonl --exclude-id-prefix phase5- --live eval/live_queries.jsonl --threshold 0.35 --out eval/results/assignment03-coverage-before.json
+python eval/coverage.py --golden eval/golden.jsonl --live eval/live_queries.jsonl --threshold 0.35 --fail-under 0.85 --out eval/results/assignment03-coverage-after.json
 ```
 
 The simulated log contains 28 questions on established topics and 12 on topics
-outside the original test set. A cosine score of 0.40 requires several shared
+outside the original test set. A cosine score of 0.35 requires several shared
 content words for typical short questions while allowing differences in wording.
 This lexical measure can miss paraphrases or match questions with different
 intent. The coverage gate requires 85% so at most six of 40 queries lack a
-match. The original 33 questions cover 26 queries (exit 1). Adding six
+match. The original 33 questions cover 32 queries (exit 1). Adding six
 synthetic abstention questions covers 37 (exit 0). These figures measure test
 coverage on this log. The six additions are stored separately to reproduce
 both measurements against the same original golden set.
@@ -140,11 +146,11 @@ docker build -t rahbar-eval:dev -f Dockerfile.eval .
 minikube image load rahbar-eval:dev
 ```
 
-The `prod` overlay deploys Ollama in-cluster as a single Deployment with a 20Gi PVC mounted at `/root/.ollama` and a 6Gi memory limit. On first startup it downloads `nomic-embed-text` and `llama3.2:3b`; the Ollama startup probe allows up to ten minutes for server startup and model initialization. The API and indexer use the in-cluster `http://ollama:11434` Service. Build and load the API, indexer, and UI images with the `prod` tag before applying this overlay. The standalone evaluation Job manifest uses the `rahbar-eval:dev` tag, so build and load that evaluator tag with the same source revision before applying evaluation Jobs. Do not use the CI embedding stub as a production model.
+The `prod` overlay deploys Ollama in-cluster as a single Deployment with a 20Gi PVC mounted at `/root/.ollama` and a 4Gi memory limit. On first startup it downloads `nomic-embed-text` and `llama3.2:3b`; the Ollama startup probe allows up to ten minutes for server startup and model initialization. The API and indexer use the in-cluster `http://ollama:11434` Service. Build and load the API, indexer, and UI images with the `prod` tag before applying this overlay. The standalone evaluation Job manifest uses the `rahbar-eval:dev` tag, so build and load that evaluator tag with the same source revision before applying evaluation Jobs. Do not use the CI embedding stub as a production model.
 
 For the complete Phase 6 apply order, evaluation, candidate collection setup, gated rollout, undo, and trace checks, see [`k8s/README.md`](k8s/README.md). Run the full three-level Part B suite with `kubectl apply -f k8s/eval-job.yaml`; it writes `/results/eval-results.json` on the `rahbar-evaluation` PVC. ConfigMap keys `GATE_RECALL5_MAX_DROP`, `GATE_CITATION_MIN`, `GATE_ABSTENTION_MIN`, `GATE_FAITHFULNESS_MIN`, and `GATE_P95_MAX_MS` control the thresholds without an image rebuild. Evaluation result files contain full query/answer rows, so treat the PVC as report data and restrict cluster access accordingly.
 
-The cluster evaluation Job runs the full Part B suite twice against the selected API Service: module-level real embedding checks, component-level Chroma recall@3/5, MRR, nDCG@5 plus typo noise, and end-to-end citation validity, trace-context faithfulness proxy, abstention correctness, and p50/p95 latency. The baseline Job records the measured baseline on the evaluation PVC; the candidate Job runs the same suite twice and compares its result with that baseline. Thresholds, including `GATE_FAITHFULNESS_MIN` and `GATE_P95_MAX_MS`, come from the ConfigMap; faithfulness is a lexical and numeric support check over captured trace context, not a semantic judge. The dev overlay is a stubbed wiring smoke test and cannot be used as Part B quality evidence. The current Docker environment has about 2.8 GiB total memory, below the Ollama container's 6Gi limit, so a valid real-model Kubernetes evaluation has not yet completed. The evaluator rejects stubbed runs.
+The cluster evaluation Job runs the full Part B suite twice against the selected API Service: module-level real embedding checks, component-level Chroma recall@3/5, MRR, nDCG@5 plus typo noise, and end-to-end citation validity, trace-context faithfulness proxy, abstention correctness, and p50/p95 latency. The baseline Job records the measured baseline on the evaluation PVC; the candidate Job runs the same suite twice and compares its result with that baseline. Thresholds, including `GATE_FAITHFULNESS_MIN` and `GATE_P95_MAX_MS`, come from the ConfigMap; faithfulness is a lexical and numeric support check over captured trace context, not a semantic judge. The dev overlay is a stubbed wiring smoke test and cannot be used as Part B quality evidence. Docker now exposes about 5.79 GiB and the real-model Minikube cluster starts successfully. The current Ollama limit is 4Gi. Check the final evidence checklist for measured quality-gate results; the evaluator rejects stubbed runs.
 
 ## Corpus and indexing
 
@@ -175,6 +181,69 @@ The API and indexer must use the same `EMBED_MODEL`, `EMBED_DIMENSION`, Chroma c
 
 Example response fields include `answer`, `citations`, `answered_from_context`, `confidence`, `provider`, and `retrieved`. The provider is `ollama` in the live stack and `stub` only in offline mode or CI tests.
 
+## Assignment 03: Exact Commands (Parts A–F)
+
+Use the real-model setup in [k8s/README.md](k8s/README.md), profile `minikube2`.
+Run from the repository root; activate `.venv` for Python commands.
+
+```powershell
+# A: real isolated lifecycle / Batch B audit, then unchanged serving corpus
+python scripts/prepare_assignment03_jobs.py
+kubectl apply -f k8s/assignment03/audit-scripts.json -f k8s/assignment03/audit.json
+kubectl apply -f k8s/assignment03/unchanged.json
+kubectl logs job/assignment03-audit -n rahbar --all-containers=true
+kubectl logs job/assignment03-unchanged -n rahbar
+# B: full real suite twice; inspect Job status, not just successful log retrieval
+kubectl apply -f k8s/eval-job.yaml
+python scripts/wait_for_job.py eval-job --namespace rahbar --timeout 14400
+# C: isolated candidate collection/API, same suite and release gate
+kubectl apply -f k8s/assignment03/seed-candidate.json
+kubectl wait --for=condition=complete job/assignment03-seed-candidate -n rahbar --timeout=60m
+kubectl apply -f k8s/base/candidate-deployment.yaml
+kubectl set image deployment/api-candidate api=rahbar-api:assignment03 -n rahbar
+kubectl rollout status deployment/api-candidate -n rahbar --timeout=5m
+kubectl apply -k k8s/eval-candidate
+python scripts/wait_for_job.py eval-candidate-job --namespace rahbar --timeout 14400
+# D: export persistent results, exact prompts/context and trace metrics
+kubectl apply -f k8s/assignment03/reader.json
+python scripts/collect_assignment03.py --out eval/results/assignment03-final
+python scripts/trace.py TRACE_ID --path traces/assignment03-final.jsonl
+python scripts/summarize_traces.py --path traces/assignment03-final.jsonl
+# E: coverage before (expected exit 1) and after (expected exit 0)
+python eval/coverage.py --golden eval/golden.jsonl --exclude-id-prefix phase5- --live eval/live_queries.jsonl --threshold 0.35 --out eval/results/assignment03-coverage-before.json
+python eval/coverage.py --golden eval/golden.jsonl --live eval/live_queries.jsonl --threshold 0.35 --fail-under 0.85 --out eval/results/assignment03-coverage-after.json
+# F: running objects, measured resources, metrics through a Service
+minikube status -p minikube2
+kubectl get all,pvc,configmap,cronjob,job -n rahbar
+kubectl top pods -n rahbar
+kubectl port-forward service/api 18000:8000 -n rahbar
+```
+
+Keep port-forward open, then request `http://localhost:18000/readyz` and
+`http://localhost:18000/metrics` in another terminal. The Kubernetes README
+contains controlled rollout/undo, ConfigMap threshold edits, and the separate
+before/after-collection command for real Batch B data drift. Retain the baseline
+before applying `k8s/assignment03/batch-b.json`. Existing Jobs are immutable:
+archive old logs/results before deleting and reapplying a Job to rerun it.
+Never promote a failed or incomplete candidate.
+
+Regenerate the evidence-based report after exporting completed Jobs:
+
+```powershell
+python scripts/assignment03_checklist.py
+python scripts/build_assignment03_report.py
+```
+
+While the baseline and candidate Jobs run, `python scripts/finish_assignment03.py`
+can finish the ordered acceptance sequence: retain both outcomes, exercise the
+gate ConfigMap, promote/undo only passing releases, ingest Batch B, evaluate data
+drift, export evidence and regenerate the checklist/HTML. It preserves rejection
+results and does not turn partial evaluations into passing results.
+
+Print `docs/Assignment_03_Report.html` to the PDF report; keep the report body
+within eight pages and append genuine terminal screenshots. Partial evaluator
+checkpoints cannot stand in for complete result files.
+
 ## Verification
 
 Run the local quality gates from the repository root:
@@ -182,7 +251,7 @@ Run the local quality gates from the repository root:
 ```bash
 python -m pytest -q
 ruff check api indexer eval corpus
-python -m mypy api/app indexer/pipeline
+python -m mypy --platform linux api/app indexer/pipeline
 python -m compileall -q api indexer corpus
 python scripts/check_submission.py
 git diff --check
@@ -230,13 +299,30 @@ The main runtime settings are supplied through environment variables and are def
 
 ## Assignment verification status
 
-Phases 1–6 code and Kubernetes setup are implemented. The checked verification run passed all 81 API, indexer, evaluator, and Phase 5 tests, Ruff, API and indexer mypy, and `scripts/check_submission.py`. Production Kustomize rendered successfully, and both evaluation Job manifests passed client dry runs. In Minikube, a fresh dev indexer Job completed; the API answered a query, emitted a trace, and exposed `/metrics` through port-forwarding. The dev models are stubs, so these checks establish wiring and runtime behavior only.
+The latest task-by-task verdict is in
+[`eval/results/assignment03-final/checklist.json`](eval/results/assignment03-final/checklist.json).
+Read the regenerated [HTML report](docs/Assignment_03_Report.html) or
+[PDF report](docs/Assignment_03_Report.pdf) with the retained command logs.
+Historical passing fixture scores and terminal illustrations are not acceptance evidence.
 
-A valid real-model Kubernetes Part B evaluation is still outstanding. The production Ollama container has a 6Gi memory limit, while the available Docker environment has about 2.8 GiB total memory. The evaluator correctly rejects the stubbed dev run, so no current Kubernetes quality result is claimed. The committed `eval/results.json` is an older live Ollama/Chroma run from 2026-11-11 (17 questions; recall@3 and recall@5 `0.20`, citation validity `1.00`, and abstention correctness `2/2`). It records historical retrieval quality and does not replace the pending Phase 6 evaluation.
+Verified locally: 85 tests, Ruff, Linux-targeted mypy and the submission checker.
+Verified on Minikube2: real Ollama models, API readiness with 639 chunks,
+zero chunks embedded on unchanged ingestion, lifecycle/Batch B audit Jobs,
+metrics through port-forward, and a deliberately unready release followed by undo.
+Seven invalid physical-PDF page references in the golden set were corrected
+by locating the named clauses directly in the source PDF; the audit is retained.
 
-### Remaining submission work
+Manual submission work: both members must confirm personal question authorship,
+synthetic-question review, names/rolls and contributions; capture genuine uncropped
+terminal screenshots for A–F and append them to the report; commit code/results
+from both members; submit the repository URL and report PDF; attend the demo
+with Kubernetes running and ingest the unseen batch supplied during the demo.
+`scripts/generate_screenshots.py` now refuses to create synthetic terminal evidence.
+Any incomplete or failed quality/gate/drift checks in the final checklist also
+remain required before claiming full completion.
 
-- Run the Part B Kubernetes evaluation with real Ollama models on a host with enough memory, then retain its measured baseline and candidate results.
-- Complete the assignment's remaining evidence and report work using genuine results; do not present the stubbed dev smoke test as quality evidence.
-- Confirm a successful `cd.yml` run has published the commit-SHA images when Docker Hub credentials are configured, and completed its ephemeral Kind deployment.
-- Recheck source downloads and OCR on the deployment environment; the old 2023 policy PDF is scanned, and host OCR availability is environment-dependent.
+To reproduce the F2 threshold experiment against the retained first-run files on
+the local results PVC, run `python scripts/replay_assignment03_gate.py`.
+It creates an isolated ConfigMap, evaluates the same files at the release
+threshold and at 65%, and records the Job logs and image IDs. The measured
+top-k 4 candidate remains rejected under the 90% release policy.
