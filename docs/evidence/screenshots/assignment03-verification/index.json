@@ -130,5 +130,23 @@
     "Recorded rollback and subsequent trace",
     1,
     1
+  ],
+  [
+    "F5-01.png",
+    "ConfigMap replay: release threshold 90%",
+    1,
+    1
+  ],
+  [
+    "F6-01.png",
+    "ConfigMap replay: experimental threshold 65%",
+    1,
+    1
+  ],
+  [
+    "F7-01.png",
+    "Terminal states of the two gate replay Jobs",
+    1,
+    1
   ]
 ]
