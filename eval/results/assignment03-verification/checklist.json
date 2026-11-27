@@ -1,0 +1,61 @@
+{
+  "date": "2026-11-27",
+  "verdict": "NOT FULLY COMPLETE",
+  "items": [
+    {
+      "task": "A1, A2 and Batch B",
+      "status": "Verified",
+      "evidence": "Four checks and reasons per document, quarantine, changed-only writes, deletion counts, archive and restore. See A1\u2013A2."
+    },
+    {
+      "task": "B \u00b7 Golden set",
+      "status": "Partial",
+      "evidence": "39 entries meet the count and category requirements. Members must attest to personal authorship and review."
+    },
+    {
+      "task": "B \u00b7 Three levels",
+      "status": "Verified for run 1",
+      "evidence": "Baseline and candidate each have 39 scored rows, module measurements and a retrieval noise test."
+    },
+    {
+      "task": "B \u00b7 Stochasticity",
+      "status": "Incomplete",
+      "evidence": "Seed 2026. The candidate second answer run stopped at 7/39 in the export. No complete two-run summary for either configuration."
+    },
+    {
+      "task": "C1\u2013C3 \u00b7 Change and gate",
+      "status": "Partial / reject",
+      "evidence": "First-run comparison and gate rejection verified. A passing candidate and subsequent gated promotion lack evidence."
+    },
+    {
+      "task": "D1\u2013D5 \u00b7 Observability",
+      "status": "Verified in sample",
+      "evidence": "Structured JSONL, prompt reconstruction, trace metrics, planted instruction and trace-only diagnosis."
+    },
+    {
+      "task": "E1, E2, E4 \u00b7 Coverage",
+      "status": "Verified",
+      "evidence": "40 live queries, six added golden questions and reproduced before/after exit codes."
+    },
+    {
+      "task": "E3 \u00b7 Data drift",
+      "status": "Incomplete",
+      "evidence": "Batch B ingestion is verified. A comparable full suite before and after that ingestion is missing."
+    },
+    {
+      "task": "F1, F4, F5 \u00b7 Operations",
+      "status": "Supported",
+      "evidence": "Deployment and PVCs, stdout and persistent traces, metrics export, workload measurements and resource settings. Fresh-cluster installation was not exercised in this audit."
+    },
+    {
+      "task": "F2, F3 \u00b7 Jobs and rollout",
+      "status": "Partial",
+      "evidence": "Ingestion Job, CronJob, separate candidate Service and historical undo verified. The gate replay Job failed at 90% and completed at 65% using identical measurements and image. A completed full-suite Job log and passing promotion remain outstanding."
+    },
+    {
+      "task": "G \u00b7 Report and submission",
+      "status": "Partial",
+      "evidence": "Report, appendix and A\u2013F instructions exist. Missing run outcomes limit the results section. The gate replay transcript is under eval/results/assignment03-verification/gate-replay-ceff5c72. Demo and submission require the members."
+    }
+  ]
+}

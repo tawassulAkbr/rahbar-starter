@@ -1,0 +1,136 @@
+{
+  "verified_at": "2026-11-27T12:11:24.580527+00:00",
+  "items": [
+    {
+      "task": "A1 / Batch B",
+      "status": "PASS",
+      "detail": "Real isolated audit: 12 documents; 5 pass, 7 quarantined; four checks with reasons; failed documents have zero active chunks."
+    },
+    {
+      "task": "A2 incremental / update / deletion / archive / restore",
+      "status": "PASS",
+      "detail": "Fresh lifecycle Job plus full-corpus unchanged Job: 0 embedded chunks; changed-only update; unrelated embeddings preserved; deleted IDs count 0; rollback restored one active chunk."
+    },
+    {
+      "task": "B golden-set structure",
+      "status": "PASS",
+      "detail": "39 questions; physical PDF clause references corrected directly against source; provenance labels present."
+    },
+    {
+      "task": "B personal authorship / review",
+      "status": "PARTIAL",
+      "detail": "Members must personally confirm at least 8 hand-written questions and 8 synthetic reviews; labels alone cannot certify human work."
+    },
+    {
+      "task": "B module embeddings",
+      "status": "PASS",
+      "detail": "Real module metrics and determinism: eval-results-levels-run-1.json; missing file means not completed."
+    },
+    {
+      "task": "B component retrieval / noise",
+      "status": "PASS",
+      "detail": "Real recall@3/5, MRR, nDCG@5 and typo deltas in stage checkpoint."
+    },
+    {
+      "task": "B end-to-end / repeatability",
+      "status": "PARTIAL",
+      "detail": "Two complete runs and metric deltas required in eval-results.json; partial answer checkpoints do not complete this task."
+    },
+    {
+      "task": "C1 baseline versus candidate",
+      "status": "PARTIAL",
+      "detail": "Both complete three-level suites required; candidate TOP_K=4 uses an isolated collection."
+    },
+    {
+      "task": "C2 gate passing and failing",
+      "status": "PARTIAL",
+      "detail": "Thresholds are ConfigMap-driven; retain measured passing and failing Job results, without weakening the release policy."
+    },
+    {
+      "task": "C3 / F3 passing promotion",
+      "status": "PARTIAL",
+      "detail": "Only a completed passing real-model candidate gate permits promotion; no incomplete/failed candidate is released."
+    },
+    {
+      "task": "D1 trace fields / D2 reconstruction",
+      "status": "PASS",
+      "detail": "Cluster JSONL trace export and exact-context/prompt reconstruction retained."
+    },
+    {
+      "task": "D3 trace metrics",
+      "status": "PASS",
+      "detail": "Top-1 distribution, abstention/cache rates, stage p95 and flagged injections."
+    },
+    {
+      "task": "D4 planted injection",
+      "status": "PASS",
+      "detail": "Runtime check uses the real isolated Batch B collection and an explicit 1.01 relevance floor to isolate rail logging; it does not measure answer quality."
+    },
+    {
+      "task": "D5 trace-only root cause",
+      "status": "PASS",
+      "detail": "Five lines derived only from a wrong/abstained current evaluation trace."
+    },
+    {
+      "task": "E1 simulated live log",
+      "status": "PASS",
+      "detail": "40 simulated user queries, including 12 from uncovered topics."
+    },
+    {
+      "task": "E2 coverage / E4 close gap",
+      "status": "PASS",
+      "detail": "0.35 cosine cutoff: 32/40 (80%, exit 1) before; six questions added; 37/40 (92.5%, exit 0) after. JSON lists uncovered topics."
+    },
+    {
+      "task": "E3 measured Batch B drift",
+      "status": "PARTIAL",
+      "detail": "A full real-model before/after-Batch-B suite comparison is required; old reference-harness drift is excluded."
+    },
+    {
+      "task": "F1 deployment / durable state",
+      "status": "PASS",
+      "detail": "Real API, Chroma, Redis, Ollama and UI recovered after cluster restart; 639 persisted chunks and bound data/trace/result PVCs."
+    },
+    {
+      "task": "F2 ingestion Job / CronJob",
+      "status": "PASS",
+      "detail": "Completed real audit/indexer Jobs and scheduled CronJob; shared-volume writer lock; API does not index."
+    },
+    {
+      "task": "F2 evaluation Job / ConfigMap outcome",
+      "status": "PARTIAL",
+      "detail": "Evaluation Job runs full suite and must fail its Job status on gate rejection; prove threshold edit changes outcome without rebuilding."
+    },
+    {
+      "task": "F3 bad release / undo / post-undo trace",
+      "status": "PASS",
+      "detail": "Deliberately missing collection prevented readiness; rollout undo restored rahbar; new trace must identify previous collection/model digest."
+    },
+    {
+      "task": "F4 stdout / volume traces / metrics",
+      "status": "PASS",
+      "detail": "kubectl logs plus PVC trace export; /metrics checked through service port-forward."
+    },
+    {
+      "task": "F5 resource measurements",
+      "status": "PASS",
+      "detail": "Measured API/Chroma/Ollama/evaluator/indexer CPU and memory are retained; resource requests/limits exist in manifests."
+    },
+    {
+      "task": "Docker / Minikube",
+      "status": "PASS",
+      "detail": "Docker Desktop and profile minikube2 running with real models; API /readyz reports 639 indexed chunks."
+    },
+    {
+      "task": "G report / README",
+      "status": "PARTIAL",
+      "detail": "HTML/PDF and commands updated; missing quality/drift tables remain explicit until complete results exist. Body must stay within eight pages; append genuine screenshots."
+    },
+    {
+      "task": "Submission screenshots / members / demo",
+      "status": "MANUAL",
+      "detail": "Capture uncropped actual terminal windows for A\u2013F; confirm human work; both members commit and attend; submit PDF/repo; demo an unseen ingestion batch."
+    }
+  ],
+  "verdict": "NOT FULLY COMPLETE"
+}

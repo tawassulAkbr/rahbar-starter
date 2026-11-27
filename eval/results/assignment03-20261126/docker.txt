@@ -1,0 +1,4 @@
+$ docker info --format "memory={{.MemTotal}} cpus={{.NCPU}}"
+memory=6217003008 cpus=2
+
+Exit code: 0

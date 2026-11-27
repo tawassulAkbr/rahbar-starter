@@ -1,0 +1,187 @@
+$ kubectl get job/assignment03-audit -n rahbar -o json
+{
+    "apiVersion": "batch/v1",
+    "kind": "Job",
+    "metadata": {
+        "annotations": {
+            "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"batch/v1\",\"kind\":\"Job\",\"metadata\":{\"annotations\":{},\"name\":\"assignment03-audit\",\"namespace\":\"rahbar\"},\"spec\":{\"backoffLimit\":2,\"template\":{\"metadata\":{\"labels\":{\"app\":\"indexer\"}},\"spec\":{\"automountServiceAccountToken\":false,\"containers\":[{\"command\":[\"python\",\"-c\",\"import runpy; runpy.run_path('/scripts/audit_lifecycle.py'); runpy.run_path('/scripts/audit_batch_b.py')\"],\"envFrom\":[{\"configMapRef\":{\"name\":\"rahbar-config\"}}],\"image\":\"rahbar-indexer:a03-20261126\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"indexer\",\"resources\":{\"limits\":{\"cpu\":1,\"memory\":\"2Gi\"},\"requests\":{\"cpu\":\"100m\",\"memory\":\"256Mi\"}},\"securityContext\":{\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]}},\"volumeMounts\":[{\"mountPath\":\"/workspace\",\"name\":\"work\"},{\"mountPath\":\"/scripts\",\"name\":\"scripts\",\"readOnly\":true},{\"mountPath\":\"/workspace/eval/results\",\"name\":\"results\"}],\"workingDir\":\"/workspace\"}],\"initContainers\":[{\"command\":[\"python\",\"-c\",\"import shutil; shutil.copytree('/corpus/batch-b','/workspace/corpus/batch-b',dirs_exist_ok=True)\"],\"image\":\"rahbar-indexer:a03-20261126\",\"name\":\"fixtures\",\"volumeMounts\":[{\"mountPath\":\"/workspace\",\"name\":\"work\"}]}],\"restartPolicy\":\"OnFailure\",\"securityContext\":{\"fsGroup\":10002,\"runAsGroup\":10002,\"runAsNonRoot\":true,\"runAsUser\":10002},\"serviceAccountName\":\"rahbar-indexer\",\"volumes\":[{\"emptyDir\":{},\"name\":\"work\"},{\"configMap\":{\"name\":\"assignment03-audit-scripts\"},\"name\":\"scripts\"},{\"name\":\"results\",\"persistentVolumeClaim\":{\"claimName\":\"rahbar-evaluation\"}}]}},\"ttlSecondsAfterFinished\":86400}}\n"
+        },
+        "creationTimestamp": "2026-11-26T14:02:00Z",
+        "generation": 1,
+        "labels": {
+            "app": "indexer",
+            "batch.kubernetes.io/controller-uid": "610c69cf-3a8c-46eb-bbb7-6a44a9c716aa",
+            "batch.kubernetes.io/job-name": "assignment03-audit",
+            "controller-uid": "610c69cf-3a8c-46eb-bbb7-6a44a9c716aa",
+            "job-name": "assignment03-audit"
+        },
+        "name": "assignment03-audit",
+        "namespace": "rahbar",
+        "resourceVersion": "8575",
+        "uid": "610c69cf-3a8c-46eb-bbb7-6a44a9c716aa"
+    },
+    "spec": {
+        "backoffLimit": 2,
+        "completionMode": "NonIndexed",
+        "completions": 1,
+        "manualSelector": false,
+        "parallelism": 1,
+        "podReplacementPolicy": "TerminatingOrFailed",
+        "selector": {
+            "matchLabels": {
+                "batch.kubernetes.io/controller-uid": "610c69cf-3a8c-46eb-bbb7-6a44a9c716aa"
+            }
+        },
+        "suspend": false,
+        "template": {
+            "metadata": {
+                "labels": {
+                    "app": "indexer",
+                    "batch.kubernetes.io/controller-uid": "610c69cf-3a8c-46eb-bbb7-6a44a9c716aa",
+                    "batch.kubernetes.io/job-name": "assignment03-audit",
+                    "controller-uid": "610c69cf-3a8c-46eb-bbb7-6a44a9c716aa",
+                    "job-name": "assignment03-audit"
+                }
+            },
+            "spec": {
+                "automountServiceAccountToken": false,
+                "containers": [
+                    {
+                        "command": [
+                            "python",
+                            "-c",
+                            "import runpy; runpy.run_path('/scripts/audit_lifecycle.py'); runpy.run_path('/scripts/audit_batch_b.py')"
+                        ],
+                        "envFrom": [
+                            {
+                                "configMapRef": {
+                                    "name": "rahbar-config"
+                                }
+                            }
+                        ],
+                        "image": "rahbar-indexer:a03-20261126",
+                        "imagePullPolicy": "IfNotPresent",
+                        "name": "indexer",
+                        "resources": {
+                            "limits": {
+                                "cpu": "1",
+                                "memory": "2Gi"
+                            },
+                            "requests": {
+                                "cpu": "100m",
+                                "memory": "256Mi"
+                            }
+                        },
+                        "securityContext": {
+                            "allowPrivilegeEscalation": false,
+                            "capabilities": {
+                                "drop": [
+                                    "ALL"
+                                ]
+                            }
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/workspace",
+                                "name": "work"
+                            },
+                            {
+                                "mountPath": "/scripts",
+                                "name": "scripts",
+                                "readOnly": true
+                            },
+                            {
+                                "mountPath": "/workspace/eval/results",
+                                "name": "results"
+                            }
+                        ],
+                        "workingDir": "/workspace"
+                    }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "initContainers": [
+                    {
+                        "command": [
+                            "python",
+                            "-c",
+                            "import shutil; shutil.copytree('/corpus/batch-b','/workspace/corpus/batch-b',dirs_exist_ok=True)"
+                        ],
+                        "image": "rahbar-indexer:a03-20261126",
+                        "imagePullPolicy": "IfNotPresent",
+                        "name": "fixtures",
+                        "resources": {},
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/workspace",
+                                "name": "work"
+                            }
+                        ]
+                    }
+                ],
+                "restartPolicy": "OnFailure",
+                "schedulerName": "default-scheduler",
+                "securityContext": {
+                    "fsGroup": 10002,
+                    "runAsGroup": 10002,
+                    "runAsNonRoot": true,
+                    "runAsUser": 10002
+                },
+                "serviceAccount": "rahbar-indexer",
+                "serviceAccountName": "rahbar-indexer",
+                "terminationGracePeriodSeconds": 30,
+                "volumes": [
+                    {
+                        "emptyDir": {},
+                        "name": "work"
+                    },
+                    {
+                        "configMap": {
+                            "defaultMode": 420,
+                            "name": "assignment03-audit-scripts"
+                        },
+                        "name": "scripts"
+                    },
+                    {
+                        "name": "results",
+                        "persistentVolumeClaim": {
+                            "claimName": "rahbar-evaluation"
+                        }
+                    }
+                ]
+            }
+        },
+        "ttlSecondsAfterFinished": 86400
+    },
+    "status": {
+        "completionTime": "2026-11-26T14:02:33Z",
+        "conditions": [
+            {
+                "lastProbeTime": "2026-11-26T14:02:33Z",
+                "lastTransitionTime": "2026-11-26T14:02:33Z",
+                "message": "Reached expected number of succeeded pods",
+                "reason": "CompletionsReached",
+                "status": "True",
+                "type": "SuccessCriteriaMet"
+            },
+            {
+                "lastProbeTime": "2026-11-26T14:02:33Z",
+                "lastTransitionTime": "2026-11-26T14:02:33Z",
+                "message": "Reached expected number of succeeded pods",
+                "reason": "CompletionsReached",
+                "status": "True",
+                "type": "Complete"
+            }
+        ],
+        "ready": 0,
+        "startTime": "2026-11-26T14:02:00Z",
+        "succeeded": 1,
+        "terminating": 0,
+        "uncountedTerminatedPods": {}
+    }
+}
+
+Exit code: 0

@@ -1,0 +1,5 @@
+Part B run 1/2: module embeddings
+Part B run 1/2: component retrieval
+  q001    0.63s  What attendance must students maintain under rule 1.21?
+  q002    0.61s  What happens if a student does not meet the attendance requi
+  q003  188.23s  What is the minimum duration of a Bachelor's degree?

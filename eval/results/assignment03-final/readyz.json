@@ -1,0 +1,12 @@
+﻿{
+    "status":  "ready",
+    "checks":  {
+                   "chroma":  {
+                                  "heartbeat":  "ok",
+                                  "count":  639,
+                                  "embed_model":  "nomic-embed-text",
+                                  "dimension":  768
+                              },
+                   "redis":  "ok"
+               }
+}

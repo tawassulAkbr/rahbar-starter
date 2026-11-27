@@ -1,0 +1,4 @@
+$ kubectl get job/eval-candidate-job -n rahbar -o json
+Unable to connect to the server: dial tcp 127.0.0.1:53816: connectex: No connection could be made because the target machine actively refused it.
+
+Exit code: 1

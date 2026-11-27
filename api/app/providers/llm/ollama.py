@@ -40,11 +40,15 @@ class OllamaProvider:
                         'keep_alive': self.settings.ollama_keep_alive,
                         "messages": [{"role": "user", "content": actual_prompt}],
                     },
-                    timeout=self.settings.embed_timeout,
+                    timeout=self.settings.generation_timeout,
                 )
                 response.raise_for_status()
                 content = response.json().get("message", {}).get("content")
                 return Answer.model_validate(json.loads(content))
+            except httpx.TimeoutException as exc:
+                # Retrying a timed-out generation doubles the outage. Keep
+                # ingestion's longer embedding timeout independent of serving.
+                raise ProviderError(f'Ollama generation timed out: {exc}') from exc
             except Exception as exc:
                 last_error = exc
         raise ProviderError(f"Ollama returned invalid structured output: {last_error}") from last_error

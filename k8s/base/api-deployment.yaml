@@ -74,26 +74,29 @@ spec:
               port: http
             failureThreshold: 30
             periodSeconds: 2
+            timeoutSeconds: 5
           livenessProbe:
             httpGet:
               path: /healthz
               port: http
-            periodSeconds: 20
-            failureThreshold: 3
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 30
           readinessProbe:
             httpGet:
               path: /readyz
               port: http
-            periodSeconds: 10
-            failureThreshold: 3
+            periodSeconds: 15
+            timeoutSeconds: 10
+            failureThreshold: 20
           lifecycle:
             preStop:
               exec:
                 command: ["/bin/sh", "-c", "sleep 5"]
           resources:
             requests:
-              cpu: 100m
-              memory: 256Mi
+              cpu: 50m
+              memory: 128Mi
             limits:
               cpu: 500m
               memory: 512Mi

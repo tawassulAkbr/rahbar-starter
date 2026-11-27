@@ -1,0 +1,25 @@
+$ kubectl logs job/assignment03-unchanged-final -n rahbar --all-containers=true --pod-running-timeout=5s
+{"ts": "2026-11-26T18:25:48Z", "logger": "rahbar.indexer", "msg": "indexer starting", "dummy": false, "embed_model": "nomic-embed-text", "collection": "rahbar", "chroma": "chroma:8000", "pod": "assignment03-unchanged-final-bkm6g"}
+{"ts": "2026-11-26T18:25:48Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "academic-rules-handbook-jun-2026.pdf", "doc_version": "2026-06", "superseded": false}
+{"ts": "2026-11-26T18:26:15Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "prospectus-2026-academic-rules-and-regulations.pdf", "doc_version": "2026", "superseded": false}
+{"ts": "2026-11-26T18:26:16Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "student-handbook-jun-2026.pdf", "doc_version": "2026-06", "superseded": false}
+{"ts": "2026-11-26T18:26:33Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "annual-report-2023-24.pdf", "doc_version": "2023-24", "superseded": false}
+{"ts": "2026-11-26T18:26:44Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "fee-structure-page.html", "doc_version": "2026-27", "superseded": false}
+{"ts": "2026-11-26T18:26:44Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "grading-page.html", "doc_version": "2026", "superseded": false}
+{"ts": "2026-11-26T18:26:44Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "faculty-entrepreneurship-and-technical-start-ups-policy.pdf", "doc_version": "2022-05", "superseded": false}
+{"ts": "2026-11-26T18:27:41Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "academic-rules-fall-2026-grade-improvement.md", "doc_version": "2026-Fall", "superseded": false}
+{"ts": "2026-11-26T18:27:41Z", "logger": "rahbar.indexer", "msg": "verified", "run_id": "verification-20261126T182741453546Z", "passed": 8, "failed": 0}
+{"ts": "2026-11-26T18:27:41Z", "logger": "rahbar.indexer", "msg": "unchanged; skipping chunks", "source": "academic-rules-handbook-jun-2026.pdf"}
+{"ts": "2026-11-26T18:27:41Z", "logger": "rahbar.indexer", "msg": "unchanged; skipping chunks", "source": "prospectus-2026-academic-rules-and-regulations.pdf"}
+{"ts": "2026-11-26T18:27:41Z", "logger": "rahbar.indexer", "msg": "unchanged; skipping chunks", "source": "student-handbook-jun-2026.pdf"}
+{"ts": "2026-11-26T18:27:41Z", "logger": "rahbar.indexer", "msg": "unchanged; skipping chunks", "source": "annual-report-2023-24.pdf"}
+{"ts": "2026-11-26T18:27:41Z", "logger": "rahbar.indexer", "msg": "unchanged; skipping chunks", "source": "fee-structure-page.html"}
+{"ts": "2026-11-26T18:27:41Z", "logger": "rahbar.indexer", "msg": "unchanged; skipping chunks", "source": "grading-page.html"}
+{"ts": "2026-11-26T18:27:41Z", "logger": "rahbar.indexer", "msg": "unchanged; skipping chunks", "source": "faculty-entrepreneurship-and-technical-start-ups-policy.pdf"}
+{"ts": "2026-11-26T18:27:41Z", "logger": "rahbar.indexer", "msg": "unchanged; skipping chunks", "source": "academic-rules-fall-2026-grade-improvement.md"}
+{"ts": "2026-11-26T18:27:41Z", "logger": "rahbar.indexer", "msg": "embedding", "chunks": 0, "batch_size": 4}
+{"ts": "2026-11-26T18:27:41Z", "logger": "rahbar.indexer", "msg": "storing", "chunks": 0, "dimension": 0, "changed_documents": 0}
+{"ts": "2026-11-26T18:27:44Z", "logger": "rahbar.indexer", "msg": "stored", "collection": "rahbar", "records": 639, "embedded_chunks": 0}
+{"ts": "2026-11-26T18:27:44Z", "logger": "rahbar.indexer", "msg": "indexer finished", "chunks": 639, "seconds": 116.2}
+
+Exit code: 0

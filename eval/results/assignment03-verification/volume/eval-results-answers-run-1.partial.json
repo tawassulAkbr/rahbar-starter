@@ -1,0 +1,223 @@
+{
+  "evaluation_complete": false,
+  "completed_questions": 3,
+  "expected_questions": 39,
+  "rows": [
+    {
+      "id": "q001",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-handbook-jun-2026.pdf",
+          "page": 10,
+          "section": "1.21"
+        }
+      ],
+      "expect": "100%",
+      "response": {
+        "request_id": "12c96ca333864c8bb3f3a20b0afa9230",
+        "trace_id": "ec77a76b20324bba9f8809ac79d49b64",
+        "answer": "Students must maintain 100% attendance in lectures, labs, tutorials, seminars, and discussions, subject to the stated condonation rules.",
+        "citations": [
+          {
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 10
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "779b6c8f0f673da9820db1ba",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 10,
+            "score": 0.64543182
+          },
+          {
+            "chunk_id": "b8ba77a396ba85f29ce822d6",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "6.1",
+            "page": 57,
+            "score": 0.43921770000000004
+          },
+          {
+            "chunk_id": "032bc9dbfc6ec795346e3a06",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "6.1",
+            "page": 57,
+            "score": 0.46521330000000005
+          },
+          {
+            "chunk_id": "ae5969453f93e4975a31e4c3",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.6979164
+          },
+          {
+            "chunk_id": "c0cfc71a747f1fb964f1ce85",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "FAST-NUCES",
+            "page": 1,
+            "score": 0.6578381
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": true,
+      "seconds": 0.57
+    },
+    {
+      "id": "q002",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-handbook-jun-2026.pdf",
+          "page": 10,
+          "section": "1.22"
+        }
+      ],
+      "expect": "ineligible",
+      "response": {
+        "request_id": "ea0a7c1254a24bdf9f3778eac9ba2cb5",
+        "trace_id": "6a7c495258f94fcda24cdac5e5f4769c",
+        "answer": "Failure to meet attendance requirements makes a student ineligible to appear in the final examination and results in an F/A grade.",
+        "citations": [
+          {
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "FAST-NUCES",
+            "page": 1
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "851fd2d8507f9019d21c8559",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "FAST-NUCES",
+            "page": 1,
+            "score": 0.64960617
+          },
+          {
+            "chunk_id": "c0cfc71a747f1fb964f1ce85",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "FAST-NUCES",
+            "page": 1,
+            "score": 0.64257085
+          },
+          {
+            "chunk_id": "d74fbe09c198d4d230833247",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.6709829
+          },
+          {
+            "chunk_id": "c61ae0e341ca610d559a3653",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.6543355
+          },
+          {
+            "chunk_id": "9a1cf897b20c021640e7c9cc",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "HOD.",
+            "page": 2,
+            "score": 0.63570583
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": 1.0,
+      "trace_found": true,
+      "seconds": 0.4
+    },
+    {
+      "id": "q003",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-handbook-jun-2026.pdf",
+          "page": 10,
+          "section": "1.23"
+        }
+      ],
+      "expect": "four academic years",
+      "response": {
+        "request_id": "5a3d46c4d0954ccdaf852e03dd2d4694",
+        "trace_id": "02dff0d3d4f24318992c5e5f2a06434d",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "ef21388c3afefa85a4995a3c",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.22",
+            "page": 10,
+            "score": 0.6566054800000001
+          },
+          {
+            "chunk_id": "c421b9aa18455829274c6ef2",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.65159482
+          },
+          {
+            "chunk_id": "4f54c85ab64a23dde29c9b4d",
+            "doc_version": "2026",
+            "source": "grading-page.html",
+            "section": "3.0",
+            "page": 1,
+            "score": 0.6318252
+          },
+          {
+            "chunk_id": "e01a6012e0d10522884171c7",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "MISSION",
+            "page": 4,
+            "score": 0.62227386
+          },
+          {
+            "chunk_id": "081bc9581d81c261f4387b36",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.22",
+            "page": 11,
+            "score": 0.62197876
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 138.34
+    }
+  ]
+}

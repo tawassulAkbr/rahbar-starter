@@ -29,6 +29,7 @@ class Settings:
     embed_model: str = "nomic-embed-text"
     embed_dimension: int = 768
     embed_timeout: float = 30.0
+    generation_timeout: float = 60.0
 
     # Vector store
     chroma_host: str = "chroma"
@@ -64,6 +65,7 @@ def get_settings() -> Settings:
         embed_model=os.environ.get("EMBED_MODEL", "nomic-embed-text"),
         embed_dimension=_int("EMBED_DIMENSION", 768),
         embed_timeout=_float("EMBED_TIMEOUT", 30.0),
+        generation_timeout=_float("GENERATION_TIMEOUT", 60.0),
         chroma_host=os.environ.get("CHROMA_HOST", "chroma"),
         chroma_port=_int("CHROMA_PORT", 8000),
         collection=os.environ.get("CHROMA_COLLECTION", "rahbar"),

@@ -110,7 +110,7 @@ phase5-coverage: ## measure Phase 5 live-query coverage and enforce the 85% floo
 	$(PY) eval/coverage.py --golden eval/golden.jsonl --live eval/live_queries.jsonl --threshold 0.35 --fail-under 0.85 --out eval/results/coverage-after.json
 
 phase5-drift: ## compare the Phase 2 suite before and after Batch B
-	$(PY) eval/drift.py --corpus corpus --golden eval/golden.jsonl --out eval/results/drift.json
+	$(PY) eval/drift.py --corpus corpus --golden eval/golden.jsonl --before-collection rahbar-before-b --after-collection rahbar-after-b --out eval/results/drift.json
 
 phase5-test: ## run the dependency-free Phase 5 evidence tests
 	$(PY) -m pytest eval/test_phase5.py -q -p no:cacheprovider

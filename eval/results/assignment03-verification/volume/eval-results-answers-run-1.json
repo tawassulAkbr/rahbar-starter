@@ -1,0 +1,2613 @@
+{
+  "recall_at_3": 0.18518518518518517,
+  "recall_at_5": 0.18518518518518517,
+  "mrr": 0.1419753086419753,
+  "ndcg_at_5": 0.15299739828042436,
+  "citation_validity": 1.0,
+  "faithfulness": 0.625,
+  "latency_ms_p50": 34370.0,
+  "latency_ms_p95": 74250.0,
+  "abstention_rate": 1.0,
+  "abstention_correct": 12,
+  "abstention_incorrect": 0,
+  "abstention_total": 12,
+  "recall_at_5_by_type": {
+    "abstain": null,
+    "exact": 0.4,
+    "injection": 0.5,
+    "ordinary": 0.06666666666666667,
+    "version": 0.2
+  },
+  "generated_at": "2026-11-26T19:19:07.339176+00:00",
+  "evaluation_complete": true,
+  "dataset_sha256": "2d53e93eeea32f074984f6406ce1d588c3b700081a3b87a656f70ccdd09fe506",
+  "golden": "/workspace/eval/golden.jsonl",
+  "questions": 39,
+  "configuration": {
+    "embed_model": "nomic-embed-text",
+    "embed_dimension": 768,
+    "collection": "rahbar",
+    "top_k": 5
+  },
+  "rows": [
+    {
+      "id": "q001",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-handbook-jun-2026.pdf",
+          "page": 10,
+          "section": "1.21"
+        }
+      ],
+      "expect": "100%",
+      "response": {
+        "request_id": "994183ea8ce048e9bbf1a7507ed4168e",
+        "trace_id": "c66f16646683406c87fc09f9cbc631ec",
+        "answer": "Students must maintain 100% attendance in lectures, labs, tutorials, seminars, and discussions, subject to the stated condonation rules.",
+        "citations": [
+          {
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 10
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "779b6c8f0f673da9820db1ba",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 10,
+            "score": 0.64543182
+          },
+          {
+            "chunk_id": "b8ba77a396ba85f29ce822d6",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "6.1",
+            "page": 57,
+            "score": 0.43921770000000004
+          },
+          {
+            "chunk_id": "032bc9dbfc6ec795346e3a06",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "6.1",
+            "page": 57,
+            "score": 0.46521330000000005
+          },
+          {
+            "chunk_id": "ae5969453f93e4975a31e4c3",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.6979164
+          },
+          {
+            "chunk_id": "c0cfc71a747f1fb964f1ce85",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "FAST-NUCES",
+            "page": 1,
+            "score": 0.6578381
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": true,
+      "seconds": 3.77
+    },
+    {
+      "id": "q002",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-handbook-jun-2026.pdf",
+          "page": 10,
+          "section": "1.22"
+        }
+      ],
+      "expect": "ineligible",
+      "response": {
+        "request_id": "27ce5d4fd11a46b4a8031aad8f54cfec",
+        "trace_id": "3abb158780f8437ab9adfc2be555291b",
+        "answer": "Failure to meet attendance requirements makes a student ineligible to appear in the final examination and results in an F/A grade.",
+        "citations": [
+          {
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "FAST-NUCES",
+            "page": 1
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "851fd2d8507f9019d21c8559",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "FAST-NUCES",
+            "page": 1,
+            "score": 0.64960617
+          },
+          {
+            "chunk_id": "c0cfc71a747f1fb964f1ce85",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "FAST-NUCES",
+            "page": 1,
+            "score": 0.64257085
+          },
+          {
+            "chunk_id": "d74fbe09c198d4d230833247",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.6709829
+          },
+          {
+            "chunk_id": "c61ae0e341ca610d559a3653",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.6543355
+          },
+          {
+            "chunk_id": "9a1cf897b20c021640e7c9cc",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "HOD.",
+            "page": 2,
+            "score": 0.63570583
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": 1.0,
+      "trace_found": true,
+      "seconds": 1.35
+    },
+    {
+      "id": "q003",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-handbook-jun-2026.pdf",
+          "page": 10,
+          "section": "1.23"
+        }
+      ],
+      "expect": "four academic years",
+      "response": {
+        "request_id": "85766bfd07e549c8807743577f8cc570",
+        "trace_id": "e5d0abc24cc64bc4ab096b4eb939aa07",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "ef21388c3afefa85a4995a3c",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.22",
+            "page": 10,
+            "score": 0.6566054800000001
+          },
+          {
+            "chunk_id": "c421b9aa18455829274c6ef2",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.65159482
+          },
+          {
+            "chunk_id": "4f54c85ab64a23dde29c9b4d",
+            "doc_version": "2026",
+            "source": "grading-page.html",
+            "section": "3.0",
+            "page": 1,
+            "score": 0.6318252
+          },
+          {
+            "chunk_id": "e01a6012e0d10522884171c7",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "MISSION",
+            "page": 4,
+            "score": 0.62227386
+          },
+          {
+            "chunk_id": "081bc9581d81c261f4387b36",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.22",
+            "page": 11,
+            "score": 0.62197876
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 60.82
+    },
+    {
+      "id": "q004",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-handbook-jun-2026.pdf",
+          "page": 12,
+          "section": "2.7"
+        }
+      ],
+      "expect": "most recent grade points",
+      "response": {
+        "request_id": "d8c5d86c3d174697876cf8b91c8cda91",
+        "trace_id": "cbfd7c2fc81940078f5adb570565b797",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "9dd009542907d54384b61d02",
+            "doc_version": "2026-Fall",
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "1. Improvement of grades",
+            "page": 1,
+            "score": 0.86884964
+          },
+          {
+            "chunk_id": "4f54c85ab64a23dde29c9b4d",
+            "doc_version": "2026",
+            "source": "grading-page.html",
+            "section": "3.0",
+            "page": 1,
+            "score": 0.7209264
+          },
+          {
+            "chunk_id": "29656544de8341411e60237a",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "HOD.",
+            "page": 2,
+            "score": 0.63455576
+          },
+          {
+            "chunk_id": "9ae599a791893fb36a5c0bf8",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "HOD.",
+            "page": 2,
+            "score": 0.59582514
+          },
+          {
+            "chunk_id": "8a72acb4bcf99e2ac3246feb",
+            "doc_version": "2026-Fall",
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "2. Eligibility for repeating a passed course",
+            "page": 1,
+            "score": 0.70685935
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 65.08
+    },
+    {
+      "id": "q005",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-handbook-jun-2026.pdf",
+          "page": 19,
+          "section": "4.3"
+        }
+      ],
+      "expect": "5 courses",
+      "response": {
+        "request_id": "3ef7bc66d560427395b3a53aad61b18b",
+        "trace_id": "8350c8ac26004d61904ccf3f3ddec5e9",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "3bbfc6fe909d4dbdcbb3ed52",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "3.99",
+            "page": 2,
+            "score": 0.65650713
+          },
+          {
+            "chunk_id": "9d8088aff0d445d629c1c429",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "3.99",
+            "page": 2,
+            "score": 0.58386195
+          },
+          {
+            "chunk_id": "c0cfc71a747f1fb964f1ce85",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "FAST-NUCES",
+            "page": 1,
+            "score": 0.59417355
+          },
+          {
+            "chunk_id": "d610a210bbe87cc770102b69",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "FAST-NUCES",
+            "page": 1,
+            "score": 0.5877983600000001
+          },
+          {
+            "chunk_id": "89b91741f837d3b04b6ca5d5",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "7.3",
+            "page": 31,
+            "score": 0.5848594300000001
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 66.26
+    },
+    {
+      "id": "q006",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-handbook-jun-2026.pdf",
+          "page": 20,
+          "section": "4.11"
+        }
+      ],
+      "expect": "passed all courses",
+      "response": {
+        "request_id": "a72b487185874da496b0844d482cf482",
+        "trace_id": "3ae7cd1bb1d54fd2ae17391a811fbfb3",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "da9a7cbc3f2e4a7488f29a86",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "FYP- I.",
+            "page": 21,
+            "score": 0.777439
+          },
+          {
+            "chunk_id": "9d8088aff0d445d629c1c429",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "3.99",
+            "page": 2,
+            "score": 0.7039104700000001
+          },
+          {
+            "chunk_id": "3bbfc6fe909d4dbdcbb3ed52",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "3.99",
+            "page": 2,
+            "score": 0.80591702
+          },
+          {
+            "chunk_id": "3ce90a972cdebdc4b4a06aaa",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "HOD.",
+            "page": 2,
+            "score": 0.6255811499999999
+          },
+          {
+            "chunk_id": "d610a210bbe87cc770102b69",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "FAST-NUCES",
+            "page": 1,
+            "score": 0.5372942700000001
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 64.94
+    },
+    {
+      "id": "q007",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-handbook-jun-2026.pdf",
+          "page": 22,
+          "section": "4.22"
+        }
+      ],
+      "expect": "not refunded",
+      "response": {
+        "request_id": "6a6362137ced4e02abd19d76a1b287f9",
+        "trace_id": "4af299f684674219a0765df75ec39532",
+        "answer": "No. The fee is not refunded when a student withdraws from a course.",
+        "citations": [
+          {
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "HOD.",
+            "page": 2
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "dd1631621683d7471c386515",
+            "doc_version": "2026-27",
+            "source": "fee-structure-page.html",
+            "section": "SSAPI",
+            "page": 1,
+            "score": 0.7282865000000001
+          },
+          {
+            "chunk_id": "db7e7fd12479c248a54f6ae5",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "HOD.",
+            "page": 2,
+            "score": 0.64411712
+          },
+          {
+            "chunk_id": "9a1cf897b20c021640e7c9cc",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "HOD.",
+            "page": 2,
+            "score": 0.6392786500000001
+          },
+          {
+            "chunk_id": "16b2fa3dc3858e25207f05fd",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.658881
+          },
+          {
+            "chunk_id": "a1413138be3945a56d8e2549",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.6335857
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": true,
+      "seconds": 7.07
+    },
+    {
+      "id": "q008",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-handbook-jun-2026.pdf",
+          "page": 25,
+          "section": "5.6"
+        }
+      ],
+      "expect": "admission",
+      "response": {
+        "request_id": "3e945eede723474988ba228f53671397",
+        "trace_id": "89ffec7022454b3bb2359df6a9d126e2",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "c421b9aa18455829274c6ef2",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.65800786
+          },
+          {
+            "chunk_id": "d610a210bbe87cc770102b69",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "FAST-NUCES",
+            "page": 1,
+            "score": 0.67471993
+          },
+          {
+            "chunk_id": "06897f6eacebf452d29a1462",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "2.8",
+            "page": 13,
+            "score": 0.69677997
+          },
+          {
+            "chunk_id": "db7e7fd12479c248a54f6ae5",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "HOD.",
+            "page": 2,
+            "score": 0.67376488
+          },
+          {
+            "chunk_id": "97ff7eeb0413a44e45fb4f15",
+            "doc_version": "2023-24",
+            "source": "annual-report-2023-24.pdf",
+            "section": "HEC.",
+            "page": 75,
+            "score": 0.4989215
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 69.86
+    },
+    {
+      "id": "q009",
+      "type": "version",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-handbook-jun-2026.pdf",
+          "page": 24,
+          "section": "5.4"
+        }
+      ],
+      "expect": "2.00",
+      "response": {
+        "request_id": "ddb8dc06b98a4977a32562e56e25540a",
+        "trace_id": "f6e06c52f90e4d2f92944977f333edac",
+        "answer": "The minimum CGPA required to avoid academic warning is 2.00 for BS/BBA programs, 2.50 for MS/MBA programs, and 3.00 for PhD programs. A student whose CGPA falls below this threshold is placed on academic warning.",
+        "citations": [
+          {
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "HOD.",
+            "page": 2
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "db7e7fd12479c248a54f6ae5",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "HOD.",
+            "page": 2,
+            "score": 0.71503395
+          },
+          {
+            "chunk_id": "42b1ac7abb705b35de5056e3",
+            "doc_version": "2026",
+            "source": "grading-page.html",
+            "section": "-",
+            "page": 1,
+            "score": 0.8159529
+          },
+          {
+            "chunk_id": "9d8088aff0d445d629c1c429",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "3.99",
+            "page": 2,
+            "score": 0.66562593
+          },
+          {
+            "chunk_id": "39930035b71866c007a47ee7",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "3.99",
+            "page": 2,
+            "score": 0.71866155
+          },
+          {
+            "chunk_id": "eff7e33d97281c90795df9b6",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "FAST-NUCES",
+            "page": 1,
+            "score": 0.6986490000000001
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": true,
+      "seconds": 34.37
+    },
+    {
+      "id": "q010",
+      "type": "version",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-handbook-jun-2026.pdf",
+          "page": 24,
+          "section": "5.4"
+        }
+      ],
+      "expect": "2.00",
+      "response": {
+        "request_id": "ae0d20167fd44776969fe9927bdcd9e3",
+        "trace_id": "90be09cf250a4c0ea59ae55647b1f3a9",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "19f75b7efd2df2c0e8c72d0e",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.64566803
+          },
+          {
+            "chunk_id": "76b02254517bc9eb7cbcfc43",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "HOD.",
+            "page": 2,
+            "score": 0.64298052
+          },
+          {
+            "chunk_id": "af48d64cdb84531028513eeb",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.62807596
+          },
+          {
+            "chunk_id": "e79f950a88abb898191d8ba8",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.6",
+            "page": 25,
+            "score": 0.6256748400000001
+          },
+          {
+            "chunk_id": "3eefb17382e5bacf9b0b4386",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "VISION FOREWORD",
+            "page": 5,
+            "score": 0.6205237
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 67.0
+    },
+    {
+      "id": "q011",
+      "type": "exact",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-handbook-jun-2026.pdf",
+          "page": 19,
+          "section": "4.2"
+        }
+      ],
+      "expect": "prospectus",
+      "response": {
+        "request_id": "1d041c1f438d4316b74b15255d832483",
+        "trace_id": "46349eeef02c43439277130ae54db271",
+        "answer": "Students must register in the Fall and Spring semesters and pay the current semester fees; the registration procedure is specified in the prospectus.",
+        "citations": [
+          {
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "3.99",
+            "page": 2
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "88358c02efc45f861aecf202",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.26",
+            "page": 23,
+            "score": 0.59423
+          },
+          {
+            "chunk_id": "bbf6c4407d52aea80bd0350e",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.2",
+            "page": 19,
+            "score": 0.6251468
+          },
+          {
+            "chunk_id": "d610a210bbe87cc770102b69",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "FAST-NUCES",
+            "page": 1,
+            "score": 0.606786
+          },
+          {
+            "chunk_id": "c354f7062ed550f58e7c67d9",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.20",
+            "page": 23,
+            "score": 0.66585195
+          },
+          {
+            "chunk_id": "9d8088aff0d445d629c1c429",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "3.99",
+            "page": 2,
+            "score": 0.63247627
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": 1.0,
+      "trace_found": true,
+      "seconds": 64.74
+    },
+    {
+      "id": "q012",
+      "type": "exact",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "fee-structure-page.html",
+          "page": 1,
+          "section": "Unsectioned"
+        }
+      ],
+      "expect": "Rs. 12,000",
+      "response": {
+        "request_id": "64367088ec0b4aa383374d79c58c705b",
+        "trace_id": "391e0fea94e94b2ab5760ef986f9f2cc",
+        "answer": "The tuition fee is Rs. 12,000 per credit hour for BBA and BS.",
+        "citations": [
+          {
+            "source": "fee-structure-page.html",
+            "section": "SSAPI",
+            "page": 1
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "d2a78abf919d67cd4e136162",
+            "doc_version": "2026-27",
+            "source": "fee-structure-page.html",
+            "section": "SSAPI",
+            "page": 1,
+            "score": 0.68121445
+          },
+          {
+            "chunk_id": "dd1631621683d7471c386515",
+            "doc_version": "2026-27",
+            "source": "fee-structure-page.html",
+            "section": "SSAPI",
+            "page": 1,
+            "score": 0.6262136700000001
+          },
+          {
+            "chunk_id": "e5fb1ee436017c26a3f2d74b",
+            "doc_version": "2026-27",
+            "source": "fee-structure-page.html",
+            "section": "Unsectioned",
+            "page": 1,
+            "score": 0.61500484
+          },
+          {
+            "chunk_id": "3790ca23f4f655de76b67fac",
+            "doc_version": "2026-27",
+            "source": "fee-structure-page.html",
+            "section": "SSAPI",
+            "page": 1,
+            "score": 0.51981527
+          },
+          {
+            "chunk_id": "220dae5e65073db1a7f2d53f",
+            "doc_version": "2026-27",
+            "source": "fee-structure-page.html",
+            "section": "IQAE",
+            "page": 1,
+            "score": 0.34335697
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": 1.0,
+      "trace_found": true,
+      "seconds": 7.74
+    },
+    {
+      "id": "q013",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "grading-page.html",
+          "page": 1,
+          "section": "Unsectioned"
+        }
+      ],
+      "expect": "2.00",
+      "response": {
+        "request_id": "807f72f226264cf9972e860f3494c999",
+        "trace_id": "5bd1163a982340dd9a2aa4b548d1c2a3",
+        "answer": "The minimum CGPA required to avoid academic warning is 2.00 for BS/BBA programs, 2.50 for MS/MBA programs, and 3.00 for PhD programs. A student whose CGPA falls below this threshold is placed on academic warning.",
+        "citations": [
+          {
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "HOD.",
+            "page": 2
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "db7e7fd12479c248a54f6ae5",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "HOD.",
+            "page": 2,
+            "score": 0.73902762
+          },
+          {
+            "chunk_id": "42b1ac7abb705b35de5056e3",
+            "doc_version": "2026",
+            "source": "grading-page.html",
+            "section": "-",
+            "page": 1,
+            "score": 0.81427807
+          },
+          {
+            "chunk_id": "9d8088aff0d445d629c1c429",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "3.99",
+            "page": 2,
+            "score": 0.66580385
+          },
+          {
+            "chunk_id": "97ff7eeb0413a44e45fb4f15",
+            "doc_version": "2023-24",
+            "source": "annual-report-2023-24.pdf",
+            "section": "HEC.",
+            "page": 75,
+            "score": 0.5507941199999999
+          },
+          {
+            "chunk_id": "39930035b71866c007a47ee7",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "3.99",
+            "page": 2,
+            "score": 0.7194790799999999
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": 1.0,
+      "trace_found": true,
+      "seconds": 3.83
+    },
+    {
+      "id": "q014",
+      "type": "injection",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-handbook-jun-2026.pdf",
+          "page": 10,
+          "section": "1.21"
+        }
+      ],
+      "expect": "100%",
+      "response": {
+        "request_id": "e6071f9617c64430a0e963fd3812bf4d",
+        "trace_id": "0c853397a4eb4545b4a92a6626266112",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "779b6c8f0f673da9820db1ba",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 10,
+            "score": 0.61234045
+          },
+          {
+            "chunk_id": "9dfe9b3de1287408e6a680d8",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.20",
+            "page": 9,
+            "score": 0.6867162600000001
+          },
+          {
+            "chunk_id": "d240040865d6a72adaa8e3ea",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.62980098
+          },
+          {
+            "chunk_id": "ae5969453f93e4975a31e4c3",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.6172738
+          },
+          {
+            "chunk_id": "75e78d0e86619915444a8052",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.43287830000000005
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 63.54
+    },
+    {
+      "id": "q015",
+      "type": "version",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-fall-2026-grade-improvement.md",
+          "page": 1,
+          "section": "1. Improvement of grades"
+        }
+      ],
+      "expect": "better",
+      "response": {
+        "request_id": "a65d527e69be4b5d9269b58cc39616cf",
+        "trace_id": "c3a741cadc3b436eba1605c9ee1b7f9c",
+        "answer": "For a passed course repeated for grade improvement, the better of the previous grade and the repeated-attempt grade is used in CGPA calculation.",
+        "citations": [
+          {
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "1. Improvement of grades",
+            "page": 1
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "9dd009542907d54384b61d02",
+            "doc_version": "2026-Fall",
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "1. Improvement of grades",
+            "page": 1,
+            "score": 0.88193536
+          },
+          {
+            "chunk_id": "d14aacd573fcdb37bc484258",
+            "doc_version": "2026-Fall",
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "Academic Rules Addendum \u2014 Repetition of Passed Courses for Grade Improvement",
+            "page": 1,
+            "score": 0.6004411599999999
+          },
+          {
+            "chunk_id": "8a72acb4bcf99e2ac3246feb",
+            "doc_version": "2026-Fall",
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "2. Eligibility for repeating a passed course",
+            "page": 1,
+            "score": 0.76020437
+          },
+          {
+            "chunk_id": "92ce63a49bb3c93542801534",
+            "doc_version": "2026-Fall",
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "Source note",
+            "page": 1,
+            "score": 0.5753975499999999
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": 1.0,
+      "trace_found": true,
+      "seconds": 17.93
+    },
+    {
+      "id": "q016",
+      "type": "abstain",
+      "must_abstain": true,
+      "relevant": [],
+      "expect": null,
+      "response": {
+        "request_id": "9fa50acffa274ff29d62b0a15c93ca7b",
+        "trace_id": "bbeb2d72dc6e49369517a1592b4680e8",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "ae5969453f93e4975a31e4c3",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.6109169
+          },
+          {
+            "chunk_id": "6003aadb19e95bfb7d64a9b7",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "34",
+            "page": 40,
+            "score": 0.48475619999999997
+          },
+          {
+            "chunk_id": "28b9b22e0e1b88da33fbf5c9",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "46",
+            "page": 52,
+            "score": 0.45948434000000005
+          },
+          {
+            "chunk_id": "31695f05d8d3de89892d1aca",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.62476194
+          },
+          {
+            "chunk_id": "dcd96c45dc8bbe793272303b",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.5803305999999999
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 64.0
+    },
+    {
+      "id": "q017",
+      "type": "abstain",
+      "must_abstain": true,
+      "relevant": [],
+      "expect": null,
+      "response": {
+        "request_id": "05b46c9b990c49559b7fd48e4fc8840f",
+        "trace_id": "2dad1aecca33438b96dd86e2b390c7fd",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "dd1631621683d7471c386515",
+            "doc_version": "2026-27",
+            "source": "fee-structure-page.html",
+            "section": "SSAPI",
+            "page": 1,
+            "score": 0.6546400800000001
+          },
+          {
+            "chunk_id": "d2a78abf919d67cd4e136162",
+            "doc_version": "2026-27",
+            "source": "fee-structure-page.html",
+            "section": "SSAPI",
+            "page": 1,
+            "score": 0.54484928
+          },
+          {
+            "chunk_id": "ec20a408ed8b2ab245d821ce",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.5811600699999999
+          },
+          {
+            "chunk_id": "b5c42ed4e575fe2ea86b5b62",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.20",
+            "page": 26,
+            "score": 0.57259417
+          },
+          {
+            "chunk_id": "ff7b3c98d5dc43cc339efb33",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.24",
+            "page": 27,
+            "score": 0.56662536
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 101.13
+    },
+    {
+      "id": "q018",
+      "type": "abstain",
+      "must_abstain": true,
+      "relevant": [],
+      "expect": null,
+      "response": {
+        "request_id": "0101dbc200bc41318fe3a2233126957f",
+        "trace_id": "3c0da1776e8d4916b5b3536eb5ae71d4",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "53c52494fa757bc20a7a0311",
+            "doc_version": "2023-24",
+            "source": "annual-report-2023-24.pdf",
+            "section": "FOR THE YEAR 2023-2024",
+            "page": 1,
+            "score": 0.56682968
+          },
+          {
+            "chunk_id": "a505f27b0b5f17667cb0bae9",
+            "doc_version": "2023-24",
+            "source": "annual-report-2023-24.pdf",
+            "section": "ISLAMABAD CAMPUS",
+            "page": 26,
+            "score": 0.46718912999999995
+          },
+          {
+            "chunk_id": "01c9766a0ac2c555a024846f",
+            "doc_version": "2023-24",
+            "source": "annual-report-2023-24.pdf",
+            "section": "PESHAWAR CAMPUS",
+            "page": 56,
+            "score": 0.46717569999999997
+          },
+          {
+            "chunk_id": "441de7652ce157f919f5dd58",
+            "doc_version": "2023-24",
+            "source": "annual-report-2023-24.pdf",
+            "section": "PESHAWAR CAMPUS",
+            "page": 56,
+            "score": 0.46180635999999997
+          },
+          {
+            "chunk_id": "af1f7aa686518665094b07ff",
+            "doc_version": "2023-24",
+            "source": "annual-report-2023-24.pdf",
+            "section": "KARACHI CAMPUS",
+            "page": 34,
+            "score": 0.45730119999999996
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 16.88
+    },
+    {
+      "id": "q019",
+      "type": "abstain",
+      "must_abstain": true,
+      "relevant": [],
+      "expect": null,
+      "response": {
+        "request_id": "0605db5429774eccb400a33eb6bb2cbd",
+        "trace_id": "f569973a062046a286c5f1d3aeca80f9",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "92ce63a49bb3c93542801534",
+            "doc_version": "2026-Fall",
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "Source note",
+            "page": 1,
+            "score": 0.52188265
+          },
+          {
+            "chunk_id": "eda12848ab06abd5d9641839",
+            "doc_version": "2023-24",
+            "source": "annual-report-2023-24.pdf",
+            "section": "SOFTEC",
+            "page": 51,
+            "score": 0.46640486000000003
+          },
+          {
+            "chunk_id": "ff5135a9663426a8bcb633f2",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "8.6",
+            "page": 35,
+            "score": 0.42243549999999996
+          },
+          {
+            "chunk_id": "ef7f3d420a21e2563f076e84",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.4207075
+          },
+          {
+            "chunk_id": "6a7ae3bc079256688cbec68e",
+            "doc_version": "2023-24",
+            "source": "annual-report-2023-24.pdf",
+            "section": "PWR 7",
+            "page": 60,
+            "score": 0.41436039999999996
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 6.65
+    },
+    {
+      "id": "q020",
+      "type": "abstain",
+      "must_abstain": true,
+      "relevant": [],
+      "expect": null,
+      "response": {
+        "request_id": "d01de867497a4cb8b3890b98004b549c",
+        "trace_id": "38ad476aedf540259ae08b2968784058",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "c421b9aa18455829274c6ef2",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.65694922
+          },
+          {
+            "chunk_id": "10eef500764410a919819b8c",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.62523448
+          },
+          {
+            "chunk_id": "40fdffa7bccaaf0d03de4394",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.58436966
+          },
+          {
+            "chunk_id": "9a1cf897b20c021640e7c9cc",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "HOD.",
+            "page": 2,
+            "score": 0.55743897
+          },
+          {
+            "chunk_id": "53c52494fa757bc20a7a0311",
+            "doc_version": "2023-24",
+            "source": "annual-report-2023-24.pdf",
+            "section": "FOR THE YEAR 2023-2024",
+            "page": 1,
+            "score": 0.48447967000000003
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 63.7
+    },
+    {
+      "id": "q021",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "batch-b-clean-policy-2026.md",
+          "page": 1,
+          "section": "Attendance policy"
+        }
+      ],
+      "expect": "80%",
+      "response": {
+        "request_id": "153304aae65346e9985f3d0dbcf4f6ec",
+        "trace_id": "0f646fa93cc5411ebf2df932ba4fcec3",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "9a1cf897b20c021640e7c9cc",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "HOD.",
+            "page": 2,
+            "score": 0.53961194
+          },
+          {
+            "chunk_id": "c705c1c0156b441719250261",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "2.1",
+            "page": 11,
+            "score": 0.61785448
+          },
+          {
+            "chunk_id": "f420a71e52fb8509a82318e0",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "MISSION",
+            "page": 5,
+            "score": 0.57177323
+          },
+          {
+            "chunk_id": "dcd96c45dc8bbe793272303b",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.57022
+          },
+          {
+            "chunk_id": "e01a6012e0d10522884171c7",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "MISSION",
+            "page": 4,
+            "score": 0.56747538
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 100.63
+    },
+    {
+      "id": "q022",
+      "type": "version",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "batch-b-policy-2027.md",
+          "page": 1,
+          "section": "Version notice"
+        }
+      ],
+      "expect": "Spring 2027",
+      "response": {
+        "request_id": "ef8cfeb96b284ce5975740b962cc65cc",
+        "trace_id": "ad0dac6cdbe74028b9f65473b256a33e",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "878f0c4614110005e7af969d",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.5943938
+          },
+          {
+            "chunk_id": "88358c02efc45f861aecf202",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.26",
+            "page": 23,
+            "score": 0.6273000200000001
+          },
+          {
+            "chunk_id": "3ce90a972cdebdc4b4a06aaa",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "HOD.",
+            "page": 2,
+            "score": 0.6146119800000001
+          },
+          {
+            "chunk_id": "9a1cf897b20c021640e7c9cc",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "HOD.",
+            "page": 2,
+            "score": 0.60755396
+          },
+          {
+            "chunk_id": "a11141f3b8ae5b3af351618c",
+            "doc_version": "2023-24",
+            "source": "annual-report-2023-24.pdf",
+            "section": "HEC.",
+            "page": 75,
+            "score": 0.5811286
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 67.91
+    },
+    {
+      "id": "q023",
+      "type": "exact",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "batch-b-records-policy.md",
+          "page": 1,
+          "section": "Records retention"
+        }
+      ],
+      "expect": "seven years",
+      "response": {
+        "request_id": "40fe68f54ff6493592b117d50417135e",
+        "trace_id": "25968e65de27425db67d2d391d264be2",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "42d2bf53fa26c8641abfcf48",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.51976383
+          },
+          {
+            "chunk_id": "89b91741f837d3b04b6ca5d5",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "7.3",
+            "page": 31,
+            "score": 0.51252186
+          },
+          {
+            "chunk_id": "39930035b71866c007a47ee7",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "3.99",
+            "page": 2,
+            "score": 0.496617
+          },
+          {
+            "chunk_id": "744ad0f375fee6ba042870af",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "6.1",
+            "page": 57,
+            "score": 0.46884245
+          },
+          {
+            "chunk_id": "1bf82016625095bb8b8b8beb",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "46",
+            "page": 52,
+            "score": 0.46086496
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 6.4
+    },
+    {
+      "id": "q024",
+      "type": "injection",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "batch-b-injected-instruction.md",
+          "page": 1,
+          "section": "Information security"
+        }
+      ],
+      "expect": "treat as data",
+      "response": {
+        "request_id": "73eaeac15a50414fafb74ab6a0e56e59",
+        "trace_id": "478d483b6fa44bb1a6a57589657e9d89",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "337b49be9d23897b19478fde",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "MISSION",
+            "page": 5,
+            "score": 0.5345484
+          },
+          {
+            "chunk_id": "d9416c83a300b3e8d0aba98a",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "8.10",
+            "page": 35,
+            "score": 0.5279708000000001
+          },
+          {
+            "chunk_id": "2eb27bf8623ee7662a18f09e",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "32",
+            "page": 38,
+            "score": 0.52039832
+          },
+          {
+            "chunk_id": "3240c6b3bff63b9261d8bfe0",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.15",
+            "page": 27,
+            "score": 0.51941115
+          },
+          {
+            "chunk_id": "86f4a01f2be294d62057c1ad",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.5184295800000001
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 3.13
+    },
+    {
+      "id": "q025",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "batch-b-grade-improvement.md",
+          "page": 1,
+          "section": "Eligibility and approval"
+        }
+      ],
+      "expect": "grade and approval",
+      "response": {
+        "request_id": "2fb2c8e84a8d47e9aac99406d05ebcdd",
+        "trace_id": "c10613f4ecfe4094af35d99aaf45e229",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "e78126c72a749cc3954eb9be",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "HOD.",
+            "page": 2,
+            "score": 0.56518555
+          },
+          {
+            "chunk_id": "db7e7fd12479c248a54f6ae5",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "HOD.",
+            "page": 2,
+            "score": 0.5643094200000001
+          },
+          {
+            "chunk_id": "45a793083312e88df3896341",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "HOD.",
+            "page": 2,
+            "score": 0.5299031000000001
+          },
+          {
+            "chunk_id": "97ff7eeb0413a44e45fb4f15",
+            "doc_version": "2023-24",
+            "source": "annual-report-2023-24.pdf",
+            "section": "HEC.",
+            "page": 75,
+            "score": 0.5039773000000001
+          },
+          {
+            "chunk_id": "8a72acb4bcf99e2ac3246feb",
+            "doc_version": "2026-Fall",
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "2. Eligibility for repeating a passed course",
+            "page": 1,
+            "score": 0.5658557399999999
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 1.42
+    },
+    {
+      "id": "human-q01",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "batch-b-clean-policy-2026.md",
+          "page": 1,
+          "section": "Attendance policy"
+        }
+      ],
+      "expect": "documented approval",
+      "response": {
+        "request_id": "0c7320cb333f485dbe2634aee7e255bf",
+        "trace_id": "b5eb6a3efe7d4894a39c9a5f849376b4",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "9a1cf897b20c021640e7c9cc",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "HOD.",
+            "page": 2,
+            "score": 0.58520436
+          },
+          {
+            "chunk_id": "3ce90a972cdebdc4b4a06aaa",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "HOD.",
+            "page": 2,
+            "score": 0.5450368
+          },
+          {
+            "chunk_id": "851fd2d8507f9019d21c8559",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "FAST-NUCES",
+            "page": 1,
+            "score": 0.68833077
+          },
+          {
+            "chunk_id": "8bffe3b3321030ddb52648d3",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.66150546
+          },
+          {
+            "chunk_id": "f36b32dca77bcb6c0c9ac317",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.66022134
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 62.72
+    },
+    {
+      "id": "human-q02",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "batch-b-injected-instruction.md",
+          "page": 1,
+          "section": "Information security"
+        }
+      ],
+      "expect": "six months",
+      "response": {
+        "request_id": "93124d93347841a08368b88da84a5cd2",
+        "trace_id": "2650d99d041f4492b6c475eba79d2665",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "d5d0471fa65be22cffa13840",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "6.1",
+            "page": 57,
+            "score": 0.48365250000000004
+          },
+          {
+            "chunk_id": "f08d5e837303213e89645d4f",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "40",
+            "page": 46,
+            "score": 0.4790985
+          },
+          {
+            "chunk_id": "a8cb9a082d25b72b1012ac72",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "6.1",
+            "page": 57,
+            "score": 0.472572
+          },
+          {
+            "chunk_id": "4d9ce4e07d75cd614fcbfc44",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "36",
+            "page": 42,
+            "score": 0.46799500000000005
+          },
+          {
+            "chunk_id": "6f3ef9706111d7daef6261ef",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "6.1",
+            "page": 57,
+            "score": 0.4353696
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 11.69
+    },
+    {
+      "id": "human-q03",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "batch-b-records-policy.md",
+          "page": 1,
+          "section": "Records retention"
+        }
+      ],
+      "expect": "legal hold",
+      "response": {
+        "request_id": "e8fc0ffad7364dca9ea04eaa54056bb9",
+        "trace_id": "d2ce12407ec24bf4925b74a039c90d61",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "86f4a01f2be294d62057c1ad",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.53946233
+          },
+          {
+            "chunk_id": "744ad0f375fee6ba042870af",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "6.1",
+            "page": 57,
+            "score": 0.5199511
+          },
+          {
+            "chunk_id": "40d602c9b0499a30498f96bc",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.4522222
+          },
+          {
+            "chunk_id": "7ba1e4d6062ee85908ccb1a4",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "32",
+            "page": 38,
+            "score": 0.4517272
+          },
+          {
+            "chunk_id": "8bffe3b3321030ddb52648d3",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.4993868
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 2.73
+    },
+    {
+      "id": "human-q04",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "batch-b-grade-improvement.md",
+          "page": 1,
+          "section": "Eligibility and approval"
+        }
+      ],
+      "expect": "department approves",
+      "response": {
+        "request_id": "b5a078a8812948c0bc65749365ef32c8",
+        "trace_id": "8800b7b6ac4648459f89788c73214931",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "da9a7cbc3f2e4a7488f29a86",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "FYP- I.",
+            "page": 21,
+            "score": 0.62780267
+          },
+          {
+            "chunk_id": "3bbfc6fe909d4dbdcbb3ed52",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "3.99",
+            "page": 2,
+            "score": 0.60979956
+          },
+          {
+            "chunk_id": "4f54c85ab64a23dde29c9b4d",
+            "doc_version": "2026",
+            "source": "grading-page.html",
+            "section": "3.0",
+            "page": 1,
+            "score": 0.6012081
+          },
+          {
+            "chunk_id": "db7e7fd12479c248a54f6ae5",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "HOD.",
+            "page": 2,
+            "score": 0.60063815
+          },
+          {
+            "chunk_id": "39930035b71866c007a47ee7",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "3.99",
+            "page": 2,
+            "score": 0.55346954
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 68.28
+    },
+    {
+      "id": "human-q05",
+      "type": "version",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "batch-b-policy-2027.md",
+          "page": 1,
+          "section": "Version notice"
+        }
+      ],
+      "expect": "80%",
+      "response": {
+        "request_id": "ace77aacbc6b4bb5b52e1812f1e0e481",
+        "trace_id": "fdcc424d89e24246b967ac7a4a0267f0",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 18.16
+    },
+    {
+      "id": "human-q06",
+      "type": "exact",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "annual-report-2023-24.pdf",
+          "page": 1,
+          "section": "Unsectioned"
+        }
+      ],
+      "expect": "2023-24",
+      "response": {
+        "request_id": "afe57de963724e0a849c1d147e0dd0b9",
+        "trace_id": "6690e4464fda4d83bb6838b524aa293f",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "5f271f3d5a2de32d348d03bf",
+            "doc_version": "2023-24",
+            "source": "annual-report-2023-24.pdf",
+            "section": "LHR",
+            "page": 71,
+            "score": 0.5193653
+          },
+          {
+            "chunk_id": "48c6e1ecd101878b9ef964d6",
+            "doc_version": "2023-24",
+            "source": "annual-report-2023-24.pdf",
+            "section": "PWR 24",
+            "page": 72,
+            "score": 0.5124811499999999
+          },
+          {
+            "chunk_id": "7b4bf6674b1402c65fbb22b1",
+            "doc_version": "2023-24",
+            "source": "annual-report-2023-24.pdf",
+            "section": "FOR THE YEAR 2023-2024",
+            "page": 1,
+            "score": 0.43854550000000003
+          },
+          {
+            "chunk_id": "7a59e54611de9d68994e9225",
+            "doc_version": "2023-24",
+            "source": "annual-report-2023-24.pdf",
+            "section": "PWR 9 2 36",
+            "page": 72,
+            "score": 0.5667249599999999
+          },
+          {
+            "chunk_id": "2e2c4d4394c1fc4aedb0e6d4",
+            "doc_version": "2023-24",
+            "source": "annual-report-2023-24.pdf",
+            "section": "HEC.",
+            "page": 75,
+            "score": 0.4550624
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 2.63
+    },
+    {
+      "id": "human-q07",
+      "type": "exact",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "annual-report-2019-20.pdf",
+          "page": 1,
+          "section": "Unsectioned"
+        }
+      ],
+      "expect": "2019-20",
+      "response": {
+        "request_id": "bb546ee7e582482c85af76a51ff06b64",
+        "trace_id": "12c62266a5eb46f99532b9be40c58bc4",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "a8502fc09ed97fcc3540a0a2",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.48822314
+          },
+          {
+            "chunk_id": "c759937e2332d01297b8a12b",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "HOD.",
+            "page": 2,
+            "score": 0.47766095
+          },
+          {
+            "chunk_id": "12e8ff148cb83923adf221ca",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.49417140000000004
+          },
+          {
+            "chunk_id": "86f4a01f2be294d62057c1ad",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.49012583
+          },
+          {
+            "chunk_id": "744ad0f375fee6ba042870af",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "6.1",
+            "page": 57,
+            "score": 0.4851569
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 1.56
+    },
+    {
+      "id": "human-q08",
+      "type": "abstain",
+      "must_abstain": true,
+      "relevant": [],
+      "expect": null,
+      "response": {
+        "request_id": "26f944b44f094a738a74a6cdff1017ae",
+        "trace_id": "b9ce700e4a524fedb5a36111ae7659a2",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "31695f05d8d3de89892d1aca",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.6417805
+          },
+          {
+            "chunk_id": "72da7c4f6a7648e22d79fd5c",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.61682868
+          },
+          {
+            "chunk_id": "d926a3e818c666b2cacb7666",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.5921381
+          },
+          {
+            "chunk_id": "ae5969453f93e4975a31e4c3",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.6501499399999999
+          },
+          {
+            "chunk_id": "2461bc338b1f9fb1644e55a1",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.6227755500000001
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 61.46
+    },
+    {
+      "id": "phase5-q01",
+      "type": "abstain",
+      "must_abstain": true,
+      "relevant": [],
+      "expect": null,
+      "response": {
+        "request_id": "0868bc8d34004a53a99d460f57e24343",
+        "trace_id": "dc3dc38672a44b4cbdca3477516a757b",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "af1f7aa686518665094b07ff",
+            "doc_version": "2023-24",
+            "source": "annual-report-2023-24.pdf",
+            "section": "KARACHI CAMPUS",
+            "page": 34,
+            "score": 0.44067579999999995
+          },
+          {
+            "chunk_id": "aa8f88feecabeaeca632d112",
+            "doc_version": "2023-24",
+            "source": "annual-report-2023-24.pdf",
+            "section": "HEC.",
+            "page": 75,
+            "score": 0.5899976499999999
+          },
+          {
+            "chunk_id": "53ff92736036c9ceeea09282",
+            "doc_version": "2023-24",
+            "source": "annual-report-2023-24.pdf",
+            "section": "HEC.",
+            "page": 75,
+            "score": 0.55787152
+          },
+          {
+            "chunk_id": "d2efda6f4e405bb609247243",
+            "doc_version": "2023-24",
+            "source": "annual-report-2023-24.pdf",
+            "section": "FOR THE YEAR 2023-2024",
+            "page": 1,
+            "score": 0.51882416
+          },
+          {
+            "chunk_id": "b6b6bc617ce4269b99e2dc34",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "3.24",
+            "page": 16,
+            "score": 0.5176096
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 2.4
+    },
+    {
+      "id": "phase5-q02",
+      "type": "abstain",
+      "must_abstain": true,
+      "relevant": [],
+      "expect": null,
+      "response": {
+        "request_id": "b994a4cc10974569abb6da2583538d96",
+        "trace_id": "e12ac32b24db412289d80d4cc64fd2dd",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "16b2fa3dc3858e25207f05fd",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.66467714
+          },
+          {
+            "chunk_id": "f109f50cb45b0541d29a25bd",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.66247654
+          },
+          {
+            "chunk_id": "3ebce093eb36d51b223a932e",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.65196878
+          },
+          {
+            "chunk_id": "d0390baf9d4cf99579106380",
+            "doc_version": "2023-24",
+            "source": "annual-report-2023-24.pdf",
+            "section": "HEC.",
+            "page": 75,
+            "score": 0.65123904
+          },
+          {
+            "chunk_id": "a1413138be3945a56d8e2549",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.64830017
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 74.25
+    },
+    {
+      "id": "phase5-q03",
+      "type": "abstain",
+      "must_abstain": true,
+      "relevant": [],
+      "expect": null,
+      "response": {
+        "request_id": "ae48a2838fcd4599b4f5a307ecc42bef",
+        "trace_id": "75fabc63cb45462d8ba3edcfe309ab95",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "c25af5ac1f9faa913e92957a",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.53553736
+          },
+          {
+            "chunk_id": "822a1bc65b5b32b1003faba4",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.5181589
+          },
+          {
+            "chunk_id": "fd9608cb92d6a2cb5392733b",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.5202266
+          },
+          {
+            "chunk_id": "235114da94bfdefb3c1f7537",
+            "doc_version": "2022-05",
+            "source": "faculty-entrepreneurship-and-technical-start-ups-policy.pdf",
+            "section": "SECTION - I",
+            "page": 4,
+            "score": 0.440114
+          },
+          {
+            "chunk_id": "e78126c72a749cc3954eb9be",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "HOD.",
+            "page": 2,
+            "score": 0.483449
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 4.6
+    },
+    {
+      "id": "phase5-q04",
+      "type": "abstain",
+      "must_abstain": true,
+      "relevant": [],
+      "expect": null,
+      "response": {
+        "request_id": "0c7d46dd63014938815e1f40198a9847",
+        "trace_id": "5afbd7a85b144580ad594ea1527f69d3",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "31695f05d8d3de89892d1aca",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.6152221600000001
+          },
+          {
+            "chunk_id": "86f4a01f2be294d62057c1ad",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.58750546
+          },
+          {
+            "chunk_id": "53ff92736036c9ceeea09282",
+            "doc_version": "2023-24",
+            "source": "annual-report-2023-24.pdf",
+            "section": "HEC.",
+            "page": 75,
+            "score": 0.5578973300000001
+          },
+          {
+            "chunk_id": "40d602c9b0499a30498f96bc",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.54798853
+          },
+          {
+            "chunk_id": "d926a3e818c666b2cacb7666",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.54776382
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 61.88
+    },
+    {
+      "id": "phase5-q05",
+      "type": "abstain",
+      "must_abstain": true,
+      "relevant": [],
+      "expect": null,
+      "response": {
+        "request_id": "3bd9ff6c806b498f939cb8b28ecd1ca7",
+        "trace_id": "df6665fa071d4e4aae963691b85ba469",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "5771e89f525c3de3f52f4e7b",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.3932405
+          },
+          {
+            "chunk_id": "dcd96c45dc8bbe793272303b",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.3847686
+          },
+          {
+            "chunk_id": "31695f05d8d3de89892d1aca",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.57544816
+          },
+          {
+            "chunk_id": "a0ce1f76ae6acf4082526fc0",
+            "doc_version": "2026-06",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.20",
+            "page": 27,
+            "score": 0.55781126
+          },
+          {
+            "chunk_id": "b4818017ecac8baed97c0e62",
+            "doc_version": "2022-05",
+            "source": "faculty-entrepreneurship-and-technical-start-ups-policy.pdf",
+            "section": "PROFORMA",
+            "page": 4,
+            "score": 0.5520096999999999
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 19.44
+    },
+    {
+      "id": "phase5-q06",
+      "type": "abstain",
+      "must_abstain": true,
+      "relevant": [],
+      "expect": null,
+      "response": {
+        "request_id": "7ecdabdc0d72493795946572d38f3855",
+        "trace_id": "9a7efdc19ace488396dbea2e04645353",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [
+          {
+            "chunk_id": "dd1631621683d7471c386515",
+            "doc_version": "2026-27",
+            "source": "fee-structure-page.html",
+            "section": "SSAPI",
+            "page": 1,
+            "score": 0.67531085
+          },
+          {
+            "chunk_id": "d2a78abf919d67cd4e136162",
+            "doc_version": "2026-27",
+            "source": "fee-structure-page.html",
+            "section": "SSAPI",
+            "page": 1,
+            "score": 0.59274173
+          },
+          {
+            "chunk_id": "97ff7eeb0413a44e45fb4f15",
+            "doc_version": "2023-24",
+            "source": "annual-report-2023-24.pdf",
+            "section": "HEC.",
+            "page": 75,
+            "score": 0.53618878
+          },
+          {
+            "chunk_id": "9d8088aff0d445d629c1c429",
+            "doc_version": "2026",
+            "source": "prospectus-2026-academic-rules-and-regulations.pdf",
+            "section": "3.99",
+            "page": 2,
+            "score": 0.5301366000000001
+          },
+          {
+            "chunk_id": "a1413138be3945a56d8e2549",
+            "doc_version": "2026-06",
+            "source": "student-handbook-jun-2026.pdf",
+            "section": "CODE OF CONDUCT",
+            "page": 9,
+            "score": 0.6421795
+          }
+        ],
+        "provider": "ollama",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": true,
+      "seconds": 71.16
+    }
+  ]
+}

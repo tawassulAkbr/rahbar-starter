@@ -1,0 +1,1122 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rahbar
+---
+apiVersion: v1
+automountServiceAccountToken: false
+kind: ServiceAccount
+metadata:
+  name: rahbar-api
+  namespace: rahbar
+---
+apiVersion: v1
+automountServiceAccountToken: false
+kind: ServiceAccount
+metadata:
+  name: rahbar-chroma
+  namespace: rahbar
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: rahbar-indexer
+  namespace: rahbar
+---
+apiVersion: v1
+automountServiceAccountToken: false
+kind: ServiceAccount
+metadata:
+  name: rahbar-ollama
+  namespace: rahbar
+---
+apiVersion: v1
+automountServiceAccountToken: false
+kind: ServiceAccount
+metadata:
+  name: rahbar-redis
+  namespace: rahbar
+---
+apiVersion: v1
+automountServiceAccountToken: false
+kind: ServiceAccount
+metadata:
+  name: rahbar-ui
+  namespace: rahbar
+---
+apiVersion: v1
+data:
+  ARCHIVE_DIR: /data/archive
+  CACHE_THRESHOLD: "0.92"
+  CANDIDATE_COLLECTION: rahbar-candidate
+  CANDIDATE_TOP_K: "4"
+  CHROMA_COLLECTION: rahbar
+  CHROMA_HOST: chroma
+  CHROMA_PORT: "8000"
+  CHUNK_OVERLAP: "40"
+  CHUNK_SIZE: "250"
+  CORPUS_DIR: /data/corpus
+  COVERAGE_THRESHOLD: "0.85"
+  EMBED_BATCH_SIZE: "4"
+  EMBED_DIMENSION: "768"
+  EMBED_MODEL: nomic-embed-text
+  EMBED_MODEL_VERSION: unknown
+  EMBED_TIMEOUT: "300"
+  EVAL_ALLOW_STUB: "false"
+  GATE_ABSTENTION_MIN: "1.0"
+  GATE_CITATION_MIN: "0.95"
+  GATE_FAITHFULNESS_MIN: "0.90"
+  GATE_P95_MAX_MS: "180000"
+  GATE_RECALL5_MAX_DROP: "0.05"
+  INDEX_STATE_FILE: /data/index-state.json
+  LLM_PROVIDER: ollama-incluster
+  MAX_OUTPUT_TOKENS: "128"
+  OLLAMA_KEEP_ALIVE: 30m
+  OLLAMA_URL: http://ollama:11434
+  QUARANTINE_DIR: /data/quarantine
+  REDIS_INVALIDATION_CHANNEL: rahbar:index-updated
+  REDIS_URL: redis://redis:6379/0
+  RELEVANCE_FLOOR: "0.6"
+  RETRIEVER: chroma
+  TEMPERATURE: "0.2"
+  TOP_K: "5"
+  TRACE_DIR: /data/traces
+  VERIFY_ENABLED: "true"
+  VERIFY_REPORT_DIR: /data/reports
+kind: ConfigMap
+metadata:
+  name: rahbar-config
+  namespace: rahbar
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+  namespace: rahbar
+spec:
+  ports:
+  - name: http
+    port: 8000
+    targetPort: http
+  selector:
+    app: api
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chroma
+  namespace: rahbar
+spec:
+  ports:
+  - name: http
+    port: 8000
+    targetPort: http
+  selector:
+    app: chroma
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ollama
+  name: ollama
+  namespace: rahbar
+spec:
+  ports:
+  - name: http
+    port: 11434
+    targetPort: http
+  selector:
+    app: ollama
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  namespace: rahbar
+spec:
+  ports:
+  - name: redis
+    port: 6379
+    targetPort: redis
+  selector:
+    app: redis
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ui
+  namespace: rahbar
+spec:
+  ports:
+  - name: http
+    port: 8081
+    targetPort: http
+  selector:
+    app: ui
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ollama-models
+  namespace: rahbar
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rahbar-data-lake
+  namespace: rahbar
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rahbar-evaluation
+  namespace: rahbar
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rahbar-traces
+  namespace: rahbar
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-data
+  namespace: rahbar
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  namespace: rahbar
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - env:
+        - name: LLM_API_KEY
+          valueFrom:
+            secretKeyRef:
+              key: LLM_API_KEY
+              name: rahbar-secret
+              optional: true
+        envFrom:
+        - configMapRef:
+            name: rahbar-config
+        image: rahbar-api:assignment03
+        imagePullPolicy: IfNotPresent
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - sleep 5
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: http
+          periodSeconds: 20
+        name: api
+        ports:
+        - containerPort: 8000
+          name: http
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /readyz
+            port: http
+          periodSeconds: 10
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+        startupProbe:
+          failureThreshold: 30
+          httpGet:
+            path: /healthz
+            port: http
+          periodSeconds: 2
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp
+        - mountPath: /data/traces
+          name: traces
+      securityContext:
+        fsGroup: 10001
+        runAsGroup: 10001
+        runAsNonRoot: true
+        runAsUser: 10001
+      serviceAccountName: rahbar-api
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - emptyDir: {}
+        name: tmp
+      - name: traces
+        persistentVolumeClaim:
+          claimName: rahbar-traces
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ollama
+  namespace: rahbar
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ollama
+  template:
+    metadata:
+      labels:
+        app: ollama
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - args:
+        - ollama serve & server_pid=$!; until ollama list >/dev/null 2>&1; do sleep
+          2; done; ollama pull nomic-embed-text; ollama pull llama3.2:3b; wait "$server_pid"
+        command:
+        - /bin/sh
+        - -c
+        env:
+        - name: OLLAMA_HOST
+          value: 0.0.0.0:11434
+        image: ollama/ollama:0.12.6
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /api/tags
+            port: http
+          periodSeconds: 30
+          timeoutSeconds: 5
+        name: ollama
+        ports:
+        - containerPort: 11434
+          name: http
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - ollama list | grep -q 'llama3.2:3b'
+          failureThreshold: 3
+          periodSeconds: 10
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: 2
+            memory: 4Gi
+          requests:
+            cpu: 100m
+            memory: 2Gi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        startupProbe:
+          failureThreshold: 30
+          httpGet:
+            path: /api/tags
+            port: http
+          periodSeconds: 10
+          timeoutSeconds: 5
+        volumeMounts:
+        - mountPath: /root/.ollama
+          name: ollama-models
+      serviceAccountName: rahbar-ollama
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: ollama-models
+        persistentVolumeClaim:
+          claimName: ollama-models
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: rahbar
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - args:
+        - redis-server
+        - --appendonly
+        - "yes"
+        image: redis:7.4-alpine
+        livenessProbe:
+          exec:
+            command:
+            - redis-cli
+            - ping
+          periodSeconds: 20
+        name: redis
+        ports:
+        - containerPort: 6379
+          name: redis
+        readinessProbe:
+          exec:
+            command:
+            - redis-cli
+            - ping
+          periodSeconds: 10
+        resources:
+          limits:
+            cpu: 250m
+            memory: 256Mi
+          requests:
+            cpu: 25m
+            memory: 64Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: false
+          runAsGroup: 999
+          runAsUser: 999
+        volumeMounts:
+        - mountPath: /data
+          name: redis-data
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - chown -R 999:999 /data && chmod -R u+rwX,g+rwX /data
+        image: redis:7.4-alpine
+        name: fix-data-ownership
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsGroup: 0
+          runAsUser: 0
+        volumeMounts:
+        - mountPath: /data
+          name: redis-data
+      securityContext:
+        fsGroup: 999
+      serviceAccountName: rahbar-redis
+      volumes:
+      - name: redis-data
+        persistentVolumeClaim:
+          claimName: redis-data
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui
+  namespace: rahbar
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ui
+  template:
+    metadata:
+      labels:
+        app: ui
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - image: rahbar-ui:assignment03
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+        name: ui
+        ports:
+        - containerPort: 8081
+          name: http
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+        resources:
+          limits:
+            cpu: 250m
+            memory: 128Mi
+          requests:
+            cpu: 25m
+            memory: 32Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp
+      securityContext:
+        fsGroup: 101
+        runAsGroup: 101
+        runAsNonRoot: true
+        runAsUser: 101
+      serviceAccountName: rahbar-ui
+      volumes:
+      - emptyDir: {}
+        name: tmp
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: chroma
+  namespace: rahbar
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chroma
+  serviceName: chroma
+  template:
+    metadata:
+      labels:
+        app: chroma
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - env:
+        - name: IS_PERSISTENT
+          value: "TRUE"
+        - name: PERSIST_DIRECTORY
+          value: /data
+        - name: ANONYMIZED_TELEMETRY
+          value: "FALSE"
+        image: chromadb/chroma:1.0.12
+        livenessProbe:
+          httpGet:
+            path: /api/v2/heartbeat
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 20
+        name: chroma
+        ports:
+        - containerPort: 8000
+          name: http
+        readinessProbe:
+          httpGet:
+            path: /api/v2/heartbeat
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        resources:
+          limits:
+            cpu: 1
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 512Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: false
+        volumeMounts:
+        - mountPath: /data
+          name: chroma-data
+      enableServiceLinks: false
+      serviceAccountName: rahbar-chroma
+  volumeClaimTemplates:
+  - metadata:
+      name: chroma-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: reindex
+  namespace: rahbar
+spec:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        metadata:
+          labels:
+            app: indexer
+        spec:
+          automountServiceAccountToken: false
+          containers:
+          - command:
+            - python
+            - -m
+            - pipeline.run
+            envFrom:
+            - configMapRef:
+                name: rahbar-config
+            image: rahbar-indexer:a03-20261126
+            imagePullPolicy: IfNotPresent
+            name: indexer
+            resources:
+              limits:
+                cpu: 1
+                memory: 2Gi
+              requests:
+                cpu: 100m
+                memory: 256Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+            volumeMounts:
+            - mountPath: /data
+              name: data-lake
+          initContainers:
+          - command:
+            - python
+            - /app/seed_corpus.py
+            envFrom:
+            - configMapRef:
+                name: rahbar-config
+            image: rahbar-indexer:a03-20261126
+            name: seed-data-lake
+            volumeMounts:
+            - mountPath: /data
+              name: data-lake
+          restartPolicy: OnFailure
+          securityContext:
+            fsGroup: 10002
+            runAsGroup: 10002
+            runAsNonRoot: true
+            runAsUser: 10002
+          serviceAccountName: rahbar-indexer
+          volumes:
+          - name: data-lake
+            persistentVolumeClaim:
+              claimName: rahbar-data-lake
+  schedule: 0 3 * * 0
+  successfulJobsHistoryLimit: 2
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: api
+  namespace: rahbar
+spec:
+  maxReplicas: 2
+  metrics:
+  - resource:
+      name: cpu
+      target:
+        averageUtilization: 70
+        type: Utilization
+    type: Resource
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: api
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: indexer-job
+  namespace: rahbar
+spec:
+  backoffLimit: 2
+  template:
+    metadata:
+      labels:
+        app: indexer
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - command:
+        - python
+        - -m
+        - pipeline.run
+        envFrom:
+        - configMapRef:
+            name: rahbar-config
+        image: rahbar-indexer:a03-20261126
+        imagePullPolicy: IfNotPresent
+        name: indexer
+        resources:
+          limits:
+            cpu: 1
+            memory: 2Gi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        volumeMounts:
+        - mountPath: /data
+          name: data-lake
+      initContainers:
+      - command:
+        - python
+        - /app/seed_corpus.py
+        envFrom:
+        - configMapRef:
+            name: rahbar-config
+        image: rahbar-indexer:a03-20261126
+        name: seed-data-lake
+        volumeMounts:
+        - mountPath: /data
+          name: data-lake
+      restartPolicy: OnFailure
+      securityContext:
+        fsGroup: 10002
+        runAsGroup: 10002
+        runAsNonRoot: true
+        runAsUser: 10002
+      serviceAccountName: rahbar-indexer
+      volumes:
+      - name: data-lake
+        persistentVolumeClaim:
+          claimName: rahbar-data-lake
+  ttlSecondsAfterFinished: 86400
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rahbar
+  namespace: rahbar
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: rahbar.local
+    http:
+      paths:
+      - backend:
+          service:
+            name: api
+            port:
+              number: 8000
+        path: /api
+        pathType: Prefix
+      - backend:
+          service:
+            name: ui
+            port:
+              number: 8081
+        path: /
+        pathType: Prefix
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-candidate-traffic
+  namespace: rahbar
+spec:
+  egress:
+  - ports:
+    - port: 8000
+      protocol: TCP
+    to:
+    - podSelector:
+        matchLabels:
+          app: chroma
+  - ports:
+    - port: 6379
+      protocol: TCP
+    to:
+    - podSelector:
+        matchLabels:
+          app: redis
+  - ports:
+    - port: 11434
+      protocol: TCP
+    to:
+    - podSelector:
+        matchLabels:
+          app: ollama
+  - ports:
+    - port: 11434
+      protocol: TCP
+    to:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+  - ports:
+    - port: 53
+      protocol: UDP
+    - port: 53
+      protocol: TCP
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: evaluator
+    ports:
+    - port: 8000
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      app: api-candidate
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-evaluator-egress
+  namespace: rahbar
+spec:
+  egress:
+  - ports:
+    - port: 8000
+      protocol: TCP
+    to:
+    - podSelector:
+        matchLabels:
+          app: api
+    - podSelector:
+        matchLabels:
+          app: api-candidate
+  - ports:
+    - port: 8000
+      protocol: TCP
+    to:
+    - podSelector:
+        matchLabels:
+          app: chroma
+  - ports:
+    - port: 11434
+      protocol: TCP
+    to:
+    - podSelector:
+        matchLabels:
+          app: ollama
+  - ports:
+    - port: 11434
+      protocol: TCP
+    to:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+  - ports:
+    - port: 53
+      protocol: UDP
+    - port: 53
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      app: evaluator
+  policyTypes:
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-indexer-egress
+  namespace: rahbar
+spec:
+  egress:
+  - ports:
+    - port: 8000
+      protocol: TCP
+    to:
+    - podSelector:
+        matchLabels:
+          app: chroma
+  - ports:
+    - port: 6379
+      protocol: TCP
+    to:
+    - podSelector:
+        matchLabels:
+          app: redis
+  - ports:
+    - port: 11434
+      protocol: TCP
+    to:
+    - podSelector:
+        matchLabels:
+          app: ollama
+  - ports:
+    - port: 11434
+      protocol: TCP
+    to:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+  - ports:
+    - port: 53
+      protocol: UDP
+    - port: 53
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      app: indexer
+  policyTypes:
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-indexer-storage
+  namespace: rahbar
+spec:
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: api
+    - podSelector:
+        matchLabels:
+          app: indexer
+    - podSelector:
+        matchLabels:
+          app: evaluator
+    - podSelector:
+        matchLabels:
+          app: api-candidate
+    ports:
+    - port: 8000
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      app: chroma
+  policyTypes:
+  - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ollama
+  namespace: rahbar
+spec:
+  egress:
+  - ports:
+    - port: 443
+      protocol: TCP
+    - port: 53
+      protocol: UDP
+    - port: 53
+      protocol: TCP
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: api
+    - podSelector:
+        matchLabels:
+          app: api-candidate
+    - podSelector:
+        matchLabels:
+          app: evaluator
+    - podSelector:
+        matchLabels:
+          app: indexer
+    ports:
+    - port: 11434
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      app: ollama
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-rahbar-traffic
+  namespace: rahbar
+spec:
+  egress:
+  - ports:
+    - port: 8000
+      protocol: TCP
+    to:
+    - podSelector:
+        matchLabels:
+          app: chroma
+  - ports:
+    - port: 6379
+      protocol: TCP
+    to:
+    - podSelector:
+        matchLabels:
+          app: redis
+  - ports:
+    - port: 11434
+      protocol: TCP
+    to:
+    - podSelector:
+        matchLabels:
+          app: ollama
+  - ports:
+    - port: 11434
+      protocol: TCP
+    to:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+  - ports:
+    - port: 53
+      protocol: UDP
+    - port: 53
+      protocol: TCP
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: ingress-nginx
+    - podSelector:
+        matchLabels:
+          app: ui
+    - podSelector:
+        matchLabels:
+          app: evaluator
+    ports:
+    - port: 8000
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      app: api
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-redis-clients
+  namespace: rahbar
+spec:
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: api
+    - podSelector:
+        matchLabels:
+          app: indexer
+    - podSelector:
+        matchLabels:
+          app: api-candidate
+    ports:
+    - port: 6379
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      app: redis
+  policyTypes:
+  - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ui-ingress
+  namespace: rahbar
+spec:
+  egress:
+  - ports:
+    - port: 8000
+      protocol: TCP
+    to:
+    - podSelector:
+        matchLabels:
+          app: api
+  - ports:
+    - port: 53
+      protocol: UDP
+    - port: 53
+      protocol: TCP
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: ingress-nginx
+    ports:
+    - port: 8081
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      app: ui
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny
+  namespace: rahbar
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress

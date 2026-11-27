@@ -1,0 +1,55 @@
+{
+  "run_id": "20261126T140222555684Z",
+  "documents": [
+    {
+      "run_id": "20261126T140222555684Z",
+      "document": "access-2026.md",
+      "sha256": "0731dca60e61b21df9ea0a08d8af84feaccaa39731cb26de6e7f804fdefef03a",
+      "checks": {
+        "quality": {
+          "passed": true,
+          "reason": "extracted text is non-empty and readable"
+        },
+        "completeness": {
+          "passed": true,
+          "reason": "source, title, version, page count, and text completeness present"
+        },
+        "recency": {
+          "passed": true,
+          "reason": "latest known version"
+        },
+        "uniqueness": {
+          "passed": true,
+          "reason": "no exact or near duplicate"
+        }
+      },
+      "verdict": "pass",
+      "quarantined": false
+    },
+    {
+      "run_id": "20261126T140222555684Z",
+      "document": "library-2026.md",
+      "sha256": "8db07ed18fe4f3483ec38a293bc8cdadc3054ce04c2d7df64252621bf79a3b5b",
+      "checks": {
+        "quality": {
+          "passed": true,
+          "reason": "extracted text is non-empty and readable"
+        },
+        "completeness": {
+          "passed": true,
+          "reason": "source, title, version, page count, and text completeness present"
+        },
+        "recency": {
+          "passed": true,
+          "reason": "latest known version"
+        },
+        "uniqueness": {
+          "passed": true,
+          "reason": "no exact or near duplicate"
+        }
+      },
+      "verdict": "pass",
+      "quarantined": false
+    }
+  ]
+}

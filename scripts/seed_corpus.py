@@ -10,3 +10,8 @@ if not marker.exists():
     destination.mkdir(parents=True, exist_ok=True)
     shutil.copytree(source, destination, dirs_exist_ok=True)
     marker.write_text('Seeded from image; updates are owned by ingestion.\n')
+
+# Older images seeded only the committed PDFs. Add the fetched source lake
+# once when upgrading, preserving subsequent document updates and deletions.
+if (source / 'raw').is_dir() and not (destination / 'raw').exists():
+    shutil.copytree(source / 'raw', destination / 'raw')

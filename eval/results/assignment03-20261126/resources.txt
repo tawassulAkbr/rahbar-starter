@@ -1,0 +1,12 @@
+$ kubectl top pods -n rahbar
+NAME                           CPU(cores)   MEMORY(bytes)   
+api-5fcc879f9c-9487d           10m          241Mi           
+api-8f746dbf6-zldcf            12m          322Mi           
+assignment03-reader            0m           5Mi             
+assignment03-unchanged-pgdgj   3m           137Mi           
+chroma-0                       4m           609Mi           
+ollama-7654d4dbc6-xslxk        996m         544Mi           
+redis-6c96b7fcc6-blmtv         8m           13Mi            
+ui-7c5c69dbf4-g2g7p            1m           8Mi             
+
+Exit code: 0

@@ -1,0 +1,130 @@
+{
+  "run_id": "20261126T140230239206Z",
+  "documents": [
+    {
+      "run_id": "20261126T140230239206Z",
+      "document": "batch-b-clean-policy-2026.md",
+      "sha256": "b0a78b80760b946216ff594c5f0125a4f4f2efaa86089af2f8f71f115e69991d",
+      "checks": {
+        "quality": {
+          "passed": true,
+          "reason": "extracted text is non-empty and readable"
+        },
+        "completeness": {
+          "passed": true,
+          "reason": "source, title, version, page count, and text completeness present"
+        },
+        "recency": {
+          "passed": true,
+          "reason": "latest known version"
+        },
+        "uniqueness": {
+          "passed": true,
+          "reason": "no exact or near duplicate"
+        }
+      },
+      "verdict": "pass",
+      "quarantined": false
+    },
+    {
+      "run_id": "20261126T140230239206Z",
+      "document": "batch-b-grade-improvement.md",
+      "sha256": "c32e6c766a6efb664936c277fb077a3f4e5f8badc891f71ff21f95b4cdcd4205",
+      "checks": {
+        "quality": {
+          "passed": true,
+          "reason": "extracted text is non-empty and readable"
+        },
+        "completeness": {
+          "passed": true,
+          "reason": "source, title, version, page count, and text completeness present"
+        },
+        "recency": {
+          "passed": true,
+          "reason": "latest known version"
+        },
+        "uniqueness": {
+          "passed": true,
+          "reason": "no exact or near duplicate"
+        }
+      },
+      "verdict": "pass",
+      "quarantined": false
+    },
+    {
+      "run_id": "20261126T140230239206Z",
+      "document": "batch-b-injected-instruction.md",
+      "sha256": "c52df2fbe41bae58e497163a9410e9fc01ea632647fcd67897d525d70c5e22d3",
+      "checks": {
+        "quality": {
+          "passed": true,
+          "reason": "extracted text is non-empty and readable"
+        },
+        "completeness": {
+          "passed": true,
+          "reason": "source, title, version, page count, and text completeness present"
+        },
+        "recency": {
+          "passed": true,
+          "reason": "latest known version"
+        },
+        "uniqueness": {
+          "passed": true,
+          "reason": "no exact or near duplicate"
+        }
+      },
+      "verdict": "pass",
+      "quarantined": false
+    },
+    {
+      "run_id": "20261126T140230239206Z",
+      "document": "batch-b-policy-2027.md",
+      "sha256": "39e54cc600a3b4d3661c2be86464da39d0d33799716c30f5b5a8c86d389630d5",
+      "checks": {
+        "quality": {
+          "passed": true,
+          "reason": "extracted text is non-empty and readable"
+        },
+        "completeness": {
+          "passed": true,
+          "reason": "source, title, version, page count, and text completeness present"
+        },
+        "recency": {
+          "passed": true,
+          "reason": "latest known version"
+        },
+        "uniqueness": {
+          "passed": true,
+          "reason": "no exact or near duplicate"
+        }
+      },
+      "verdict": "pass",
+      "quarantined": false
+    },
+    {
+      "run_id": "20261126T140230239206Z",
+      "document": "batch-b-records-policy.md",
+      "sha256": "545b3b0288d8b60f037ceeb901ed730e27c2fbfd7f5c9e0173887c6784b43173",
+      "checks": {
+        "quality": {
+          "passed": true,
+          "reason": "extracted text is non-empty and readable"
+        },
+        "completeness": {
+          "passed": true,
+          "reason": "source, title, version, page count, and text completeness present"
+        },
+        "recency": {
+          "passed": true,
+          "reason": "latest known version"
+        },
+        "uniqueness": {
+          "passed": true,
+          "reason": "no exact or near duplicate"
+        }
+      },
+      "verdict": "pass",
+      "quarantined": false
+    }
+  ]
+}

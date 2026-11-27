@@ -1,0 +1,118 @@
+{
+  "apiVersion": "batch/v1",
+  "kind": "Job",
+  "metadata": {
+    "name": "assignment03-audit",
+    "namespace": "rahbar"
+  },
+  "spec": {
+    "backoffLimit": 2,
+    "ttlSecondsAfterFinished": 86400,
+    "template": {
+      "metadata": {
+        "labels": {
+          "app": "indexer"
+        }
+      },
+      "spec": {
+        "serviceAccountName": "rahbar-indexer",
+        "automountServiceAccountToken": false,
+        "restartPolicy": "OnFailure",
+        "securityContext": {
+          "runAsNonRoot": true,
+          "runAsUser": 10002,
+          "runAsGroup": 10002,
+          "fsGroup": 10002
+        },
+        "initContainers": [
+          {
+            "name": "fixtures",
+            "image": "rahbar-indexer:a03-20261126",
+            "command": [
+              "python",
+              "-c",
+              "import shutil; shutil.copytree('/corpus/batch-b','/workspace/corpus/batch-b',dirs_exist_ok=True)"
+            ],
+            "volumeMounts": [
+              {
+                "name": "work",
+                "mountPath": "/workspace"
+              }
+            ]
+          }
+        ],
+        "containers": [
+          {
+            "name": "indexer",
+            "image": "rahbar-indexer:a03-20261126",
+            "imagePullPolicy": "IfNotPresent",
+            "command": [
+              "python",
+              "-c",
+              "import runpy; runpy.run_path('/scripts/audit_lifecycle.py'); runpy.run_path('/scripts/audit_batch_b.py')"
+            ],
+            "envFrom": [
+              {
+                "configMapRef": {
+                  "name": "rahbar-config"
+                }
+              }
+            ],
+            "volumeMounts": [
+              {
+                "name": "work",
+                "mountPath": "/workspace"
+              },
+              {
+                "name": "scripts",
+                "mountPath": "/scripts",
+                "readOnly": true
+              },
+              {
+                "name": "results",
+                "mountPath": "/workspace/eval/results"
+              }
+            ],
+            "securityContext": {
+              "allowPrivilegeEscalation": false,
+              "capabilities": {
+                "drop": [
+                  "ALL"
+                ]
+              }
+            },
+            "resources": {
+              "requests": {
+                "cpu": "100m",
+                "memory": "256Mi"
+              },
+              "limits": {
+                "cpu": 1,
+                "memory": "2Gi"
+              }
+            },
+            "workingDir": "/workspace"
+          }
+        ],
+        "volumes": [
+          {
+            "name": "work",
+            "emptyDir": {}
+          },
+          {
+            "name": "scripts",
+            "configMap": {
+              "name": "assignment03-audit-scripts"
+            }
+          },
+          {
+            "name": "results",
+            "persistentVolumeClaim": {
+              "claimName": "rahbar-evaluation"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

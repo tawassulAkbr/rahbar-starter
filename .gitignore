@@ -32,4 +32,5 @@ tmp_pytest/
 *.log
 .DS_Store
 .audit-data/
+.docker-anon/
 /tmp-k8s-audit.yaml

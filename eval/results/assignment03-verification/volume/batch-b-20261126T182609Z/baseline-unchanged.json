@@ -1,0 +1,11 @@
+{
+  "label": "baseline-unchanged",
+  "collection_count": 1,
+  "changed_documents": 0,
+  "deleted_documents": 0,
+  "embedded_chunks": 0,
+  "embedded_chunks_by_document": {},
+  "orphan_chunks_removed": 0,
+  "orphan_counts_by_document": {},
+  "superseded_documents": []
+}

@@ -1,4 +1,8 @@
 from run_eval import faithfulness, gate, summarise
+import json
+import os
+
+import pytest
 
 
 def test_faithfulness_uses_context_captured_in_trace():
@@ -43,3 +47,52 @@ def test_summary_reports_component_and_end_to_end_metrics():
     assert summary["ndcg_at_5"] == 1.0
     assert summary["latency_ms_p95"] == 250.0
     assert summary["faithfulness"] == 1.0
+
+
+def test_cluster_suite_evaluates_configured_candidate_top_k(monkeypatch, tmp_path):
+    import run_cluster_suite as cluster
+
+    golden = tmp_path / "golden.jsonl"
+    golden.write_text(json.dumps({"id": "q1"}) + "\n")
+    observed = []
+    monkeypatch.setenv("TOP_K", "4")
+    monkeypatch.setattr(cluster, "run_module_level", lambda **kw: {})
+
+    def component(*args, **kwargs):
+        observed.append(kwargs["top_k"])
+        return {"baseline": {}, "noise_test": {}}
+
+    def answers(command, **kwargs):
+        from types import SimpleNamespace
+        output = command[command.index("--out") + 1]
+        assert float(command[command.index('--request-timeout') + 1]) >= 600
+        from pathlib import Path
+        Path(output).write_text(json.dumps({"faithfulness": 0.0}))
+        return SimpleNamespace(returncode=1)
+
+    monkeypatch.setattr(cluster, "run_component_level", component)
+    monkeypatch.setattr(cluster.subprocess, "run", answers)
+    result = cluster.run_suite("http://candidate", golden, tmp_path / "baseline.json",
+                               tmp_path / "trace.jsonl", tmp_path / "result.json")
+    assert observed == [4, 4]
+    assert result["configuration"]["top_k"] == 4
+    assert result["gate_status"] == "FAIL"
+
+
+def test_drift_requires_distinct_collections_and_restores_environment(monkeypatch, tmp_path):
+    import drift
+
+    monkeypatch.setenv("CHROMA_COLLECTION", "live")
+    with pytest.raises(ValueError, match="distinct"):
+        drift.run_drift(tmp_path, tmp_path / "golden", "same", "same")
+    observed = []
+
+    def suite(*args):
+        observed.append(os.environ["CHROMA_COLLECTION"])
+        raise RuntimeError("unavailable")
+
+    monkeypatch.setattr(drift, "run_suite", suite)
+    with pytest.raises(RuntimeError, match="unavailable"):
+        drift.run_drift(tmp_path, tmp_path / "golden", "before", "after")
+    assert observed == ["before"]
+    assert os.environ["CHROMA_COLLECTION"] == "live"

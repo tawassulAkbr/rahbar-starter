@@ -67,9 +67,13 @@ def test_pdf_pages_preserve_numbers_and_remove_repeated_edges(
     class FakePage:
         def __init__(self, text: str) -> None:
             self.text = text
+            self.closed = False
 
         def extract_text(self) -> str:
             return self.text
+
+        def close(self) -> None:
+            self.closed = True
 
     class FakePdf:
         pages = [FakePage("Header\nFirst page\nFooter"), FakePage("Header\nSecond page\nFooter")]
@@ -87,6 +91,7 @@ def test_pdf_pages_preserve_numbers_and_remove_repeated_edges(
     assert [page.page for page in document.pages] == [1, 2]
     assert document.pages[0].text == "First page"
     assert document.pages[1].text == "Second page"
+    assert all(page.closed for page in FakePdf.pages)
 
 
 def test_scanned_pdf_uses_ocr_fallback(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:

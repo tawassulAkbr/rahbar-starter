@@ -1,0 +1,88 @@
+$ kubectl get all,pvc,configmap,cronjob,job -n rahbar
+NAME                                     READY   STATUS      RESTARTS        AGE
+pod/api-8f8c948cb-6hx4l                  1/1     Running     2 (7m33s ago)   8m49s
+pod/api-8f8c948cb-znbvn                  1/1     Running     0               17m
+pod/api-candidate-77749d7c8d-bqvmq       1/1     Running     0               17m
+pod/assignment03-audit-final-7m6vx       0/1     Completed   0               44m
+pod/assignment03-audit-w4gv5             0/1     Completed   0               5h7m
+pod/assignment03-reader                  1/1     Running     0               45m
+pod/assignment03-seed-candidate-rhpr4    0/1     Completed   0               45m
+pod/assignment03-unchanged-final-bkm6g   0/1     Completed   0               44m
+pod/assignment03-unchanged-pgdgj         0/1     Completed   0               5h7m
+pod/chroma-0                             1/1     Running     4 (47m ago)     7h41m
+pod/eval-candidate-job-dzzb7             1/1     Running     0               17m
+pod/eval-job-mxpsb                       1/1     Running     0               17m
+pod/indexer-job-p4x5p                    0/1     Completed   0               3h46m
+pod/ollama-7f7bb48dcb-msxbq              1/1     Running     3 (47m ago)     3h19m
+pod/redis-6c96b7fcc6-blmtv               1/1     Running     3 (47m ago)     7h41m
+pod/ui-7c5c69dbf4-csngl                  1/1     Running     5 (47m ago)     3h18m
+
+NAME                    TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)     AGE
+service/api             ClusterIP   10.97.83.135     <none>        8000/TCP    7h41m
+service/api-candidate   ClusterIP   10.107.196.130   <none>        8000/TCP    25m
+service/chroma          ClusterIP   10.100.15.218    <none>        8000/TCP    7h41m
+service/ollama          ClusterIP   10.99.67.149     <none>        11434/TCP   7h41m
+service/redis           ClusterIP   10.108.155.248   <none>        6379/TCP    7h41m
+service/ui              ClusterIP   10.103.218.151   <none>        8081/TCP    7h41m
+
+NAME                            READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/api             2/2     2            2           7h41m
+deployment.apps/api-candidate   1/1     1            1           25m
+deployment.apps/ollama          1/1     1            1           7h41m
+deployment.apps/redis           1/1     1            1           7h41m
+deployment.apps/ui              1/1     1            1           7h41m
+
+NAME                                       DESIRED   CURRENT   READY   AGE
+replicaset.apps/api-5994f7798c             0         0         0       3h19m
+replicaset.apps/api-5c88dfc775             0         0         0       3h4m
+replicaset.apps/api-5fcc879f9c             0         0         0       5h12m
+replicaset.apps/api-755879fff6             0         0         0       3h27m
+replicaset.apps/api-75777f8fdd             0         0         0       7h41m
+replicaset.apps/api-76d945b587             0         0         0       3h28m
+replicaset.apps/api-79858cfbc5             0         0         0       39m
+replicaset.apps/api-8f746dbf6              0         0         0       6h52m
+replicaset.apps/api-8f8c948cb              2         2         2       17m
+replicaset.apps/api-candidate-77749d7c8d   1         1         1       17m
+replicaset.apps/api-candidate-7c79757854   0         0         0       25m
+replicaset.apps/api-candidate-7cc575c5cf   0         0         0       25m
+replicaset.apps/ollama-7654d4dbc6          0         0         0       5h19m
+replicaset.apps/ollama-7b4f7db6bb          0         0         0       7h41m
+replicaset.apps/ollama-7f7bb48dcb          1         1         1       3h19m
+replicaset.apps/redis-6c96b7fcc6           1         1         1       7h41m
+replicaset.apps/ui-69d5bfccfc              0         0         0       7h41m
+replicaset.apps/ui-7b8d47dccf              0         0         0       6h52m
+replicaset.apps/ui-7c5c69dbf4              1         1         1       5h12m
+
+NAME                      READY   AGE
+statefulset.apps/chroma   1/1     7h41m
+
+NAME                                      REFERENCE        TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+horizontalpodautoscaler.autoscaling/api   Deployment/api   cpu: 52%/70%   1         2         2          7h41m
+
+NAME                    SCHEDULE    TIMEZONE   SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+cronjob.batch/reindex   0 3 * * 0   <none>     False     0        <none>          7h41m
+
+NAME                                     STATUS     COMPLETIONS   DURATION   AGE
+job.batch/assignment03-audit             Complete   1/1           33s        5h7m
+job.batch/assignment03-audit-final       Complete   1/1           3m16s      44m
+job.batch/assignment03-seed-candidate    Complete   1/1           20m        45m
+job.batch/assignment03-unchanged         Complete   1/1           19m        5h7m
+job.batch/assignment03-unchanged-final   Complete   1/1           2m4s       44m
+job.batch/eval-candidate-job             Running    0/1           17m        17m
+job.batch/eval-job                       Running    0/1           17m        17m
+job.batch/indexer-job                    Complete   1/1           78s        3h46m
+
+NAME                                         STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/chroma-data-chroma-0   Bound    pvc-3eec87e3-1320-4a64-97c9-ea6f44714e41   10Gi       RWO            standard       <unset>                 7h41m
+persistentvolumeclaim/ollama-models          Bound    pvc-a1432d57-38ba-48b1-b740-1a73d0a18850   20Gi       RWO            standard       <unset>                 7h41m
+persistentvolumeclaim/rahbar-data-lake       Bound    pvc-ee0b0a9d-416c-4037-a025-29d49d5ef696   10Gi       RWO            standard       <unset>                 7h41m
+persistentvolumeclaim/rahbar-evaluation      Bound    pvc-cde9d1d5-9d29-4daa-9ea8-32f3136ae04a   1Gi        RWO            standard       <unset>                 7h41m
+persistentvolumeclaim/rahbar-traces          Bound    pvc-6835f40d-2488-4db9-97f1-193990835a2c   1Gi        RWO            standard       <unset>                 7h41m
+persistentvolumeclaim/redis-data             Bound    pvc-8b3fe177-9714-48d5-90f6-8a9732b7626b   1Gi        RWO            standard       <unset>                 7h41m
+
+NAME                                   DATA   AGE
+configmap/assignment03-audit-scripts   2      5h7m
+configmap/kube-root-ca.crt             1      7h41m
+configmap/rahbar-config                39     7h41m
+
+Exit code: 0

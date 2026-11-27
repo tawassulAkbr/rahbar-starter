@@ -30,7 +30,7 @@ def _focused_text(question: str, text: str) -> str:
         key=lambda item: (len(terms & set(re.findall(r"[a-z0-9]+", item[1].lower()))), -item[0]),
         reverse=True,
     )
-    selected = sorted((item for item in scored[:3] if terms & set(
+    selected = sorted((item for item in scored[:2] if terms & set(
         re.findall(r"[a-z0-9]+", item[1].lower()))), key=lambda item: item[0])
     return " ".join(sentence for _, sentence in selected) or " ".join(sentences[:2])
 

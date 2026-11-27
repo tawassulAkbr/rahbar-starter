@@ -1,0 +1,5 @@
+$ kubectl exec assignment03-reader -n rahbar -- cat /data/index-state.json
+cat: /data/index-state.json: No such file or directory
+command terminated with exit code 1
+
+Exit code: 1

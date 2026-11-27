@@ -1,0 +1,11 @@
+.venv\Scripts\python.exe scripts/inspect_assignment03_evidence.py suite
+rahbar run 1 | questions: 39
+module {'paraphrase_unrelated_gap': 0.3434400667754336, 'determinism_largest_abs_difference': 0.0}
+retrieval {'recall_at_3': 0.2962962962962963, 'recall_at_5': 0.2962962962962963, 'mrr': 0.2345679012345679, 'ndcg_at_5': 0.25043924100529313}
+answers {'recall_at_3': 0.18518518518518517, 'recall_at_5': 0.18518518518518517, 'mrr': 0.1419753086419753, 'ndcg_at_5': 0.15299739828042436, 'citation_validity': 1.0, 'faithfulness': 0.625, 'latency_ms_p50': 34370.0, 'latency_ms_p95': 74250.0, 'abstention_rate': 1.0}
+rahbar-candidate run 1 | questions: 39
+module {'paraphrase_unrelated_gap': 0.3434400667754336, 'determinism_largest_abs_difference': 0.0}
+retrieval {'recall_at_3': 0.2962962962962963, 'recall_at_5': 0.2962962962962963, 'mrr': 0.2345679012345679, 'ndcg_at_5': 0.25043924100529313}
+answers {'recall_at_3': 0.18518518518518517, 'recall_at_5': 0.18518518518518517, 'mrr': 0.1419753086419753, 'ndcg_at_5': 0.15299739828042436, 'citation_validity': 1.0, 'faithfulness': 0.6666666666666666, 'latency_ms_p50': 53300.0, 'latency_ms_p95': 78270.0, 'abstention_rate': 1.0}
+
+Exit 0
