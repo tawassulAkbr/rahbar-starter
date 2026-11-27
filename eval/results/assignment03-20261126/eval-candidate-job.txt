@@ -1,0 +1,4 @@
+$ kubectl logs job/eval-candidate-job -n rahbar --all-containers=true --pod-running-timeout=5s
+error: error from server (NotFound): jobs.batch "eval-candidate-job" not found in namespace "rahbar"
+
+Exit code: 1

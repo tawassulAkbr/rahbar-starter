@@ -1,0 +1,30 @@
+{
+  "run_id": "20261126T182611456302Z",
+  "documents": [
+    {
+      "run_id": "20261126T182611456302Z",
+      "document": "batch-b-policy-2026.md",
+      "sha256": "c34632c44b95bbf48de0c6b41348aa5980964e39ae85300c5c19b84fcae40189",
+      "checks": {
+        "quality": {
+          "passed": true,
+          "reason": "extracted text is non-empty and readable"
+        },
+        "completeness": {
+          "passed": true,
+          "reason": "source, title, version, page count, and text completeness present"
+        },
+        "recency": {
+          "passed": true,
+          "reason": "latest known version"
+        },
+        "uniqueness": {
+          "passed": true,
+          "reason": "no exact or near duplicate"
+        }
+      },
+      "verdict": "pass",
+      "quarantined": false
+    }
+  ]
+}

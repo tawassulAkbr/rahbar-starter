@@ -1,14 +1,15 @@
 {
-  "candidate_image": "rahbar-indexer:phase3-topk4",
-  "collection": "rahbar",
+  "status": "not-authorized-real-model-gate-and-phase6-acceptance-incomplete",
+  "candidate_image": "rahbar-api:phase3-topk4",
+  "collection": "rahbar-candidate",
   "top_k": 4,
   "embed_model": "nomic-embed-text",
   "embed_dimension": 768,
   "gate_config": "eval/gate.json",
-  "gate_result": "eval/results/gate-pass.json",
+  "gate_result": "eval/results/gate-real-topk4.json",
   "build_commands": [
-    "docker build -f indexer/Dockerfile -t rahbar-indexer:phase3-topk4 .",
-    "minikube image load rahbar-indexer:phase3-topk4"
+    "docker build -f api/Dockerfile -t rahbar-api:phase3-topk4 api",
+    "minikube image load rahbar-api:phase3-topk4"
   ],
-  "rollout_note": "Use the existing rahbar collection only after the gate passes; the embedding model and dimension remain pinned."
+  "rollout_note": "Promotion is denied until a measured real-model serving-pipeline gate passes and Phase 6 records candidate handling, rollback, and a post-rollback trace. Historical reference PASS files and dev stub results cannot authorize release. See docs/PHASE_6_ACCEPTANCE_STATUS.md."
 }

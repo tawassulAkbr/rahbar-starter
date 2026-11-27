@@ -1,0 +1,10 @@
+.venv\Scripts\python.exe eval/coverage.py --threshold 0.35 --fail-under 0.85 --out eval/results/assignment03-verification/coverage-after.json
+{
+  "threshold": 0.35,
+  "live_queries": 40,
+  "covered_queries": 37,
+  "coverage": 0.925,
+  "uncovered_count": 3
+}
+
+Exit 0

@@ -6,6 +6,9 @@ Connection details are already here; the query is not.
 from __future__ import annotations
 
 import re
+import time
+from typing import Any
+from ..tracing import retrieval_details
 
 import httpx
 
@@ -18,9 +21,10 @@ class RetrievalError(RuntimeError):
 
 
 def _query_embedding(question: str, settings: Settings) -> list[float]:
+    started = time.perf_counter()
     url = settings.ollama_url.rstrip("/") + "/api/embed"
     try:
-        response = httpx.post(url, json={"model": settings.embed_model, "input": [question]},
+        response = httpx.post(url, json={"model": settings.embed_model, "input": [question], 'keep_alive': settings.ollama_keep_alive},
                               timeout=settings.embed_timeout)
         response.raise_for_status()
         embeddings = response.json().get("embeddings")
@@ -35,6 +39,11 @@ def _query_embedding(question: str, settings: Settings) -> list[float]:
         raise RetrievalError(
             f"query embedding dimension or values do not match {settings.embed_dimension}"
         )
+    details = retrieval_details.get()
+    if details is not None:
+        details.setdefault("queries", []).append(question)
+        timings = details.setdefault("latencies", {})
+        timings["embed_ms"] = timings.get("embed_ms", 0) + (time.perf_counter() - started) * 1000
     return [float(value) for value in vector]
 
 
@@ -79,7 +88,10 @@ class ChromaRetriever:
         if k <= 0:
             return []
         try:
-            collection = self.client.get_collection(name=self.settings.collection)
+            # Chroma's generated SDK types disagree with its runtime query
+            # result contract. Keep the dynamic boundary here, then validate
+            # every returned field before constructing Passage objects below.
+            collection: Any = self.client.get_collection(name=self.settings.collection)
             if collection.count() == 0:
                 return []
             embedding = _query_embedding(question, self.settings)
@@ -88,12 +100,25 @@ class ChromaRetriever:
             # An explicit version request must include that version even when
             # superseded. General queries stay on current documents. The wider
             # candidate pool gives clause and exact-term reranking room to work.
+            where: Any = ({"doc_version": requested_version} if requested_version
+                          else {"superseded": False})
             query: dict[str, object] = {
                 "query_embeddings": [embedding], "n_results": max(k, 50),
-                "where": ({"doc_version": requested_version} if requested_version
-                          else {"superseded": False}),
+                "where": where,
             }
+            details = retrieval_details.get()
+            if details is not None:
+                details["filters"] = query["where"]
             result = collection.query(**query)  # type: ignore[arg-type]
+            if requested_version and '-' in requested_version and not (result.get('ids') or [[]])[0]:
+                # Some sources declare only a year, while queries name a semester.
+                # Fall back only when no precisely versioned document exists.
+                year_query = {**query, 'where': {'doc_version': requested_version[:4]}}
+                year_result = collection.query(**year_query)
+                if (year_result.get('ids') or [[]])[0]:
+                    query, result = year_query, year_result
+                    if details is not None:
+                        details['filters'] = query['where']
             ignored = {
                 "what", "is", "the", "a", "an", "to", "of", "for", "does", "if", "how",
                 "who", "under", "and", "in", "on", "when", "superseded", "both", "indexed",
@@ -172,7 +197,7 @@ class ChromaRetriever:
                 chunk_id=chunk_id, text=text,
                 source=str(metadata.get("source", "unknown")),
                 section=str(metadata.get("section", "Unsectioned")),
-                page=page, score=score,
+                page=page, score=score, doc_version=str(metadata.get("doc_version", "unknown")),
             ))
         stopwords = {"what", "is", "the", "a", "an", "to", "of", "for", "does", "if", "how", "who", "under", "and", "in", "on", "when", "superseded", "both", "indexed", "which", "version", "should", "answer", "question", "current", "latest"}
         terms = _tokens(question) - stopwords
@@ -212,5 +237,14 @@ class ChromaRetriever:
                     + passage.score,
                     passage.score)
 
+        rerank_start = time.perf_counter()
+        details = retrieval_details.get()
+        if details is not None:
+            details['candidates'] = [{'chunk_id': p.chunk_id, 'document_id': p.source,
+                                      'doc_version': p.doc_version, 'score': p.score} for p in passages]
         passages.sort(key=rank, reverse=True)
+        details = retrieval_details.get()
+        if details is not None:
+            details.setdefault("latencies", {})["rerank_ms"] = (time.perf_counter() - rerank_start) * 1000
+            details["rewritten_query"] = " ".join(sorted(keyword_terms))
         return passages[:k]

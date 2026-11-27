@@ -1,0 +1,6 @@
+.venv\Scripts\python.exe scripts/inspect_assignment03_evidence.py gate
+Candidate versus baseline | run 1 | repository release policy
+FAIL
+faithfulness is below 90%: 0.6666666666666666
+
+Exit 1

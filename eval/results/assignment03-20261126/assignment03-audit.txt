@@ -1,0 +1,111 @@
+$ kubectl logs job/assignment03-audit -n rahbar --all-containers=true --pod-running-timeout=5s
+{"ts": "2026-11-26T14:02:03Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "access-2026.md", "doc_version": "2026", "superseded": false}
+{"ts": "2026-11-26T14:02:03Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "library-2026.md", "doc_version": "2026", "superseded": false}
+{"ts": "2026-11-26T14:02:17Z", "logger": "rahbar.indexer", "msg": "verified", "run_id": "verification-20261126T140203284717Z", "passed": 2, "failed": 0}
+{"ts": "2026-11-26T14:02:17Z", "logger": "rahbar.indexer", "msg": "chunked", "source": "access-2026.md", "chunks": 1}
+{"ts": "2026-11-26T14:02:17Z", "logger": "rahbar.indexer", "msg": "chunked", "source": "library-2026.md", "chunks": 1}
+{"ts": "2026-11-26T14:02:17Z", "logger": "rahbar.indexer", "msg": "embedding", "chunks": 2, "batch_size": 4}
+{"ts": "2026-11-26T14:02:19Z", "logger": "rahbar.indexer", "msg": "storing", "chunks": 2, "dimension": 768, "changed_documents": 2}
+{"ts": "2026-11-26T14:02:22Z", "logger": "rahbar.indexer", "msg": "stored", "collection": "lifecycle-20261126t140203z", "records": 2, "embedded_chunks": 2}
+{"ts": "2026-11-26T14:02:22Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "access-2026.md", "doc_version": "2026", "superseded": false}
+{"ts": "2026-11-26T14:02:22Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "library-2026.md", "doc_version": "2026", "superseded": false}
+{"ts": "2026-11-26T14:02:22Z", "logger": "rahbar.indexer", "msg": "verified", "run_id": "verification-20261126T140222555684Z", "passed": 2, "failed": 0}
+{"ts": "2026-11-26T14:02:22Z", "logger": "rahbar.indexer", "msg": "unchanged; skipping chunks", "source": "access-2026.md"}
+{"ts": "2026-11-26T14:02:22Z", "logger": "rahbar.indexer", "msg": "unchanged; skipping chunks", "source": "library-2026.md"}
+{"ts": "2026-11-26T14:02:22Z", "logger": "rahbar.indexer", "msg": "embedding", "chunks": 0, "batch_size": 4}
+{"ts": "2026-11-26T14:02:22Z", "logger": "rahbar.indexer", "msg": "storing", "chunks": 0, "dimension": 0, "changed_documents": 0}
+{"ts": "2026-11-26T14:02:22Z", "logger": "rahbar.indexer", "msg": "stored", "collection": "lifecycle-20261126t140203z", "records": 2, "embedded_chunks": 0}
+{"ts": "2026-11-26T14:02:22Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "access-2026.md", "doc_version": "2026", "superseded": false}
+{"ts": "2026-11-26T14:02:22Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "library-2026.md", "doc_version": "2026", "superseded": false}
+{"ts": "2026-11-26T14:02:22Z", "logger": "rahbar.indexer", "msg": "verified", "run_id": "verification-20261126T140222666580Z", "passed": 2, "failed": 0}
+{"ts": "2026-11-26T14:02:22Z", "logger": "rahbar.indexer", "msg": "chunked", "source": "access-2026.md", "chunks": 1}
+{"ts": "2026-11-26T14:02:22Z", "logger": "rahbar.indexer", "msg": "unchanged; skipping chunks", "source": "library-2026.md"}
+{"ts": "2026-11-26T14:02:22Z", "logger": "rahbar.indexer", "msg": "embedding", "chunks": 1, "batch_size": 4}
+{"ts": "2026-11-26T14:02:23Z", "logger": "rahbar.indexer", "msg": "storing", "chunks": 1, "dimension": 768, "changed_documents": 1}
+{"ts": "2026-11-26T14:02:23Z", "logger": "rahbar.indexer", "msg": "stored", "collection": "lifecycle-20261126t140203z", "records": 2, "embedded_chunks": 1}
+{"ts": "2026-11-26T14:02:23Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "access-2026.md", "doc_version": "2026", "superseded": false}
+{"ts": "2026-11-26T14:02:23Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "access-2027.md", "doc_version": "2027", "superseded": false}
+{"ts": "2026-11-26T14:02:23Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "library-2026.md", "doc_version": "2026", "superseded": false}
+{"ts": "2026-11-26T14:02:23Z", "logger": "rahbar.indexer", "msg": "verified", "run_id": "verification-20261126T140223475731Z", "passed": 2, "failed": 1}
+{"ts": "2026-11-26T14:02:23Z", "logger": "rahbar.indexer", "msg": "chunked", "source": "access-2027.md", "chunks": 1}
+{"ts": "2026-11-26T14:02:23Z", "logger": "rahbar.indexer", "msg": "unchanged; skipping chunks", "source": "library-2026.md"}
+{"ts": "2026-11-26T14:02:23Z", "logger": "rahbar.indexer", "msg": "embedding", "chunks": 1, "batch_size": 4}
+{"ts": "2026-11-26T14:02:23Z", "logger": "rahbar.indexer", "msg": "storing", "chunks": 1, "dimension": 768, "changed_documents": 1}
+{"ts": "2026-11-26T14:02:24Z", "logger": "rahbar.indexer", "msg": "stored", "collection": "lifecycle-20261126t140203z", "records": 3, "embedded_chunks": 1}
+{"ts": "2026-11-26T14:02:24Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "access-2026.md", "doc_version": "2026", "superseded": false}
+{"ts": "2026-11-26T14:02:24Z", "logger": "rahbar.indexer", "msg": "verified", "run_id": "verification-20261126T140224393251Z", "passed": 1, "failed": 0}
+{"ts": "2026-11-26T14:02:24Z", "logger": "rahbar.indexer", "msg": "unchanged; skipping chunks", "source": "access-2026.md"}
+{"ts": "2026-11-26T14:02:24Z", "logger": "rahbar.indexer", "msg": "embedding", "chunks": 0, "batch_size": 4}
+{"ts": "2026-11-26T14:02:24Z", "logger": "rahbar.indexer", "msg": "storing", "chunks": 0, "dimension": 0, "changed_documents": 0}
+{"ts": "2026-11-26T14:02:24Z", "logger": "rahbar.indexer", "msg": "stored", "collection": "lifecycle-20261126t140203z", "records": 2, "embedded_chunks": 0}
+eval/results/lifecycle-20261126T140203Z.json
+{"ts": "2026-11-26T14:02:24Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "batch-b-policy-2026.md", "doc_version": "2026", "superseded": false}
+{"ts": "2026-11-26T14:02:24Z", "logger": "rahbar.indexer", "msg": "verified", "run_id": "verification-20261126T140224694651Z", "passed": 1, "failed": 0}
+{"ts": "2026-11-26T14:02:24Z", "logger": "rahbar.indexer", "msg": "chunked", "source": "batch-b-policy-2026.md", "chunks": 1}
+{"ts": "2026-11-26T14:02:24Z", "logger": "rahbar.indexer", "msg": "embedding", "chunks": 1, "batch_size": 4}
+{"ts": "2026-11-26T14:02:25Z", "logger": "rahbar.indexer", "msg": "storing", "chunks": 1, "dimension": 768, "changed_documents": 1}
+{"ts": "2026-11-26T14:02:25Z", "logger": "rahbar.indexer", "msg": "stored", "collection": "batch-b-20261126t140224z", "records": 1, "embedded_chunks": 1}
+{"label": "baseline-old-version", "collection_count": 1, "changed_documents": 1, "deleted_documents": 0, "embedded_chunks": 1, "embedded_chunks_by_document": {"batch-b-policy-2026.md": 1}, "orphan_chunks_removed": 0, "orphan_counts_by_document": {}, "superseded_documents": []}
+{"ts": "2026-11-26T14:02:25Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "batch-b-policy-2026.md", "doc_version": "2026", "superseded": false}
+{"ts": "2026-11-26T14:02:25Z", "logger": "rahbar.indexer", "msg": "verified", "run_id": "verification-20261126T140225919243Z", "passed": 1, "failed": 0}
+{"ts": "2026-11-26T14:02:25Z", "logger": "rahbar.indexer", "msg": "unchanged; skipping chunks", "source": "batch-b-policy-2026.md"}
+{"ts": "2026-11-26T14:02:25Z", "logger": "rahbar.indexer", "msg": "embedding", "chunks": 0, "batch_size": 4}
+{"ts": "2026-11-26T14:02:25Z", "logger": "rahbar.indexer", "msg": "storing", "chunks": 0, "dimension": 0, "changed_documents": 0}
+{"ts": "2026-11-26T14:02:26Z", "logger": "rahbar.indexer", "msg": "stored", "collection": "batch-b-20261126t140224z", "records": 1, "embedded_chunks": 0}
+{"label": "baseline-unchanged", "collection_count": 1, "changed_documents": 0, "deleted_documents": 0, "embedded_chunks": 0, "embedded_chunks_by_document": {}, "orphan_chunks_removed": 0, "orphan_counts_by_document": {}, "superseded_documents": []}
+{"ts": "2026-11-26T14:02:26Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "batch-b-clean-policy-2026.md", "doc_version": "2026", "superseded": false}
+{"ts": "2026-11-26T14:02:26Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "batch-b-corrupt.txt", "doc_version": "unknown", "superseded": false}
+{"ts": "2026-11-26T14:02:26Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "batch-b-exact-duplicate-2.md", "doc_version": "2026", "superseded": false}
+{"ts": "2026-11-26T14:02:26Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "batch-b-exact-duplicate.md", "doc_version": "2026", "superseded": false}
+{"ts": "2026-11-26T14:02:26Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "batch-b-grade-improvement.md", "doc_version": "2026-Fall", "superseded": false}
+{"ts": "2026-11-26T14:02:26Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "batch-b-injected-instruction.md", "doc_version": "2026", "superseded": false}
+{"ts": "2026-11-26T14:02:26Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "batch-b-missing-metadata.md", "doc_version": "unknown", "superseded": false}
+{"ts": "2026-11-26T14:02:26Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "batch-b-near-duplicate.md", "doc_version": "2026", "superseded": false}
+{"ts": "2026-11-26T14:02:26Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "batch-b-policy-2026.md", "doc_version": "2026", "superseded": true}
+{"ts": "2026-11-26T14:02:26Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "batch-b-policy-2027.md", "doc_version": "2027", "superseded": false}
+{"ts": "2026-11-26T14:02:26Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "batch-b-records-policy.md", "doc_version": "2026", "superseded": false}
+{"ts": "2026-11-26T14:02:26Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "batch-b-truncated.md", "doc_version": "2026", "superseded": false}
+{"ts": "2026-11-26T14:02:28Z", "logger": "rahbar.indexer", "msg": "verified", "run_id": "verification-20261126T140226039756Z", "passed": 5, "failed": 7}
+{"ts": "2026-11-26T14:02:28Z", "logger": "rahbar.indexer", "msg": "chunked", "source": "batch-b-clean-policy-2026.md", "chunks": 1}
+{"ts": "2026-11-26T14:02:28Z", "logger": "rahbar.indexer", "msg": "chunked", "source": "batch-b-grade-improvement.md", "chunks": 1}
+{"ts": "2026-11-26T14:02:28Z", "logger": "rahbar.indexer", "msg": "chunked", "source": "batch-b-injected-instruction.md", "chunks": 1}
+{"ts": "2026-11-26T14:02:28Z", "logger": "rahbar.indexer", "msg": "chunked", "source": "batch-b-policy-2027.md", "chunks": 1}
+{"ts": "2026-11-26T14:02:28Z", "logger": "rahbar.indexer", "msg": "chunked", "source": "batch-b-records-policy.md", "chunks": 1}
+{"ts": "2026-11-26T14:02:28Z", "logger": "rahbar.indexer", "msg": "embedding", "chunks": 5, "batch_size": 4}
+{"ts": "2026-11-26T14:02:29Z", "logger": "rahbar.indexer", "msg": "storing", "chunks": 5, "dimension": 768, "changed_documents": 5}
+{"ts": "2026-11-26T14:02:30Z", "logger": "rahbar.indexer", "msg": "stored", "collection": "batch-b-20261126t140224z", "records": 6, "embedded_chunks": 5}
+{"label": "batch-b", "collection_count": 6, "changed_documents": 5, "deleted_documents": 1, "embedded_chunks": 5, "embedded_chunks_by_document": {"batch-b-clean-policy-2026.md": 1, "batch-b-grade-improvement.md": 1, "batch-b-injected-instruction.md": 1, "batch-b-policy-2027.md": 1, "batch-b-records-policy.md": 1}, "orphan_chunks_removed": 0, "orphan_counts_by_document": {}, "superseded_documents": ["batch-b-policy-2026.md"]}
+{"ts": "2026-11-26T14:02:30Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "batch-b-clean-policy-2026.md", "doc_version": "2026", "superseded": false}
+{"ts": "2026-11-26T14:02:30Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "batch-b-grade-improvement.md", "doc_version": "2026-Fall", "superseded": false}
+{"ts": "2026-11-26T14:02:30Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "batch-b-injected-instruction.md", "doc_version": "2026", "superseded": false}
+{"ts": "2026-11-26T14:02:30Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "batch-b-policy-2027.md", "doc_version": "2027", "superseded": false}
+{"ts": "2026-11-26T14:02:30Z", "logger": "rahbar.indexer", "msg": "extracting", "source": "batch-b-records-policy.md", "doc_version": "2026", "superseded": false}
+{"ts": "2026-11-26T14:02:30Z", "logger": "rahbar.indexer", "msg": "verified", "run_id": "verification-20261126T140230239206Z", "passed": 5, "failed": 0}
+{"ts": "2026-11-26T14:02:30Z", "logger": "rahbar.indexer", "msg": "unchanged; skipping chunks", "source": "batch-b-clean-policy-2026.md"}
+{"ts": "2026-11-26T14:02:30Z", "logger": "rahbar.indexer", "msg": "unchanged; skipping chunks", "source": "batch-b-grade-improvement.md"}
+{"ts": "2026-11-26T14:02:30Z", "logger": "rahbar.indexer", "msg": "unchanged; skipping chunks", "source": "batch-b-injected-instruction.md"}
+{"ts": "2026-11-26T14:02:30Z", "logger": "rahbar.indexer", "msg": "unchanged; skipping chunks", "source": "batch-b-policy-2027.md"}
+{"ts": "2026-11-26T14:02:30Z", "logger": "rahbar.indexer", "msg": "unchanged; skipping chunks", "source": "batch-b-records-policy.md"}
+{"ts": "2026-11-26T14:02:30Z", "logger": "rahbar.indexer", "msg": "embedding", "chunks": 0, "batch_size": 4}
+{"ts": "2026-11-26T14:02:30Z", "logger": "rahbar.indexer", "msg": "storing", "chunks": 0, "dimension": 0, "changed_documents": 0}
+{"ts": "2026-11-26T14:02:30Z", "logger": "rahbar.indexer", "msg": "stored", "collection": "batch-b-20261126t140224z", "records": 6, "embedded_chunks": 0}
+{"label": "batch-b-unchanged", "collection_count": 6, "changed_documents": 0, "deleted_documents": 0, "embedded_chunks": 0, "embedded_chunks_by_document": {}, "orphan_chunks_removed": 0, "orphan_counts_by_document": {}, "superseded_documents": []}
+{
+  "collection": "batch-b-20261126t140224z",
+  "batch_b_documents": 12,
+  "pass": 5,
+  "fail": 7,
+  "previously_indexed_version": "batch-b-policy-2026.md",
+  "superseded_chunks": 1,
+  "failed_document_active_chunk_counts": {
+    "batch-b-corrupt.txt": 0,
+    "batch-b-exact-duplicate-2.md": 0,
+    "batch-b-exact-duplicate.md": 0,
+    "batch-b-missing-metadata.md": 0,
+    "batch-b-near-duplicate.md": 0,
+    "batch-b-policy-2026.md": 0,
+    "batch-b-truncated.md": 0
+  }
+}
+
+Exit code: 0

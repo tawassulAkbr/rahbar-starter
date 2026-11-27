@@ -1,0 +1,7 @@
+{
+  "captured_at": "2026-11-26T19:24:57.734Z",
+  "url": "http://localhost:18081",
+  "question": "What is the 2026-27 tuition fee per credit hour for BBA and BS?",
+  "actual_page_text": "RAHBAR\n\nAnswers only from the indexed documents, with sources. If the documents do not cover it, it says so.\n\nWhat is the 2026-27 tuition fee per credit hour for BBA and BS?\nFrom the documents\nconfidence: high\nprovider: ollama\ncache: hit\n\nThe tuition fee is Rs. 12,000 per credit hour for BBA and BS.\n\nSOURCES\nfee-structure-page.html / SSAPI, p. 1\nRetrieved passages (5)\nSource\tSection\tPage\tScore\nfee-structure-page.html\tSSAPI\t1\t0.681\nfee-structure-page.html\tSSAPI\t1\t0.626\nfee-structure-page.html\tUnsectioned\t1\t0.615\nfee-structure-page.html\tSSAPI\t1\t0.520\nfee-structure-page.html\tIQAE\t1\t0.343\nrequest id 71c56383098d46e3bb55dc45506439b3\nAsk\nEnter to send, Shift+Enter for a new line. 3 to 500 characters.",
+  "note": "Actual browser captures. Website images do not replace required terminal evidence."
+}

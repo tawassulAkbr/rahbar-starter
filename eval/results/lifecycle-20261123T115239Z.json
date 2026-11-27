@@ -1,0 +1,88 @@
+{
+  "collection": "lifecycle-20261123t115239z",
+  "steps": [
+    {
+      "step": "initial",
+      "changed_documents": 2,
+      "deleted_documents": 0,
+      "embedded_chunks": 2,
+      "embedded_chunks_by_document": {
+        "access-2026.md": 1,
+        "library-2026.md": 1
+      },
+      "orphan_chunks_removed": 0,
+      "orphan_counts_by_document": {},
+      "superseded_documents": []
+    },
+    {
+      "step": "unchanged",
+      "changed_documents": 0,
+      "deleted_documents": 0,
+      "embedded_chunks": 0,
+      "embedded_chunks_by_document": {},
+      "orphan_chunks_removed": 0,
+      "orphan_counts_by_document": {},
+      "superseded_documents": []
+    },
+    {
+      "step": "changed",
+      "changed_documents": 1,
+      "deleted_documents": 0,
+      "embedded_chunks": 1,
+      "embedded_chunks_by_document": {
+        "access-2026.md": 1
+      },
+      "orphan_chunks_removed": 0,
+      "orphan_counts_by_document": {},
+      "superseded_documents": [],
+      "unrelated_document_unchanged": {
+        "document_id": "library-2026.md",
+        "chunk_count": 1,
+        "ids_text_metadata_embeddings_identical": true
+      }
+    },
+    {
+      "step": "superseded",
+      "changed_documents": 1,
+      "deleted_documents": 1,
+      "embedded_chunks": 1,
+      "embedded_chunks_by_document": {
+        "access-2027.md": 1
+      },
+      "orphan_chunks_removed": 0,
+      "orphan_counts_by_document": {},
+      "superseded_documents": [
+        "access-2026.md"
+      ]
+    },
+    {
+      "step": "rollback",
+      "restored_document": "access-2026.md",
+      "active_chunks": 1
+    },
+    {
+      "step": "delete-unrelated-document",
+      "changed_documents": 0,
+      "deleted_documents": 1,
+      "embedded_chunks": 0,
+      "embedded_chunks_by_document": {},
+      "orphan_chunks_removed": 1,
+      "orphan_counts_by_document": {
+        "library-2026.md": 0
+      },
+      "superseded_documents": []
+    },
+    {
+      "step": "delete-final-active-document",
+      "changed_documents": 0,
+      "deleted_documents": 1,
+      "embedded_chunks": 0,
+      "embedded_chunks_by_document": {},
+      "orphan_chunks_removed": 1,
+      "orphan_counts_by_document": {
+        "access-2026.md": 0
+      },
+      "superseded_documents": []
+    }
+  ]
+}

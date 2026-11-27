@@ -92,6 +92,12 @@ def extract(path: str, doc_version: str, superseded: bool) -> Document:
                 if ocr:
                     text = _ocr_page(pdf_page).strip()
                 pages.append(Page(source, number, text, ocr))
+                # pdfplumber caches each page's layout and rendered objects.
+                # Release them after extraction so long scanned PDFs do not
+                # retain every OCR page until the entire document is closed.
+                close_page = getattr(pdf_page, "close", None)
+                if callable(close_page):
+                    close_page()
     except RuntimeError:
         raise
     except Exception as exc:

@@ -7,4 +7,14 @@ data:
   EMBED_MODEL: nomic-embed-text
   RETRIEVER: chroma
   LLM_PROVIDER: ollama-incluster
+  LLM_MODEL: llama3.2:1b
   OLLAMA_URL: http://ollama:11434
+  EMBED_TIMEOUT: "300"
+  # Bound generation separately from long ingestion embedding batches.
+  # CPU-only prompt evaluation of a grounded prompt needs more than 60s.
+  GENERATION_TIMEOUT: "240"
+  EMBED_BATCH_SIZE: "4"
+  OLLAMA_KEEP_ALIVE: 60m
+  MAX_OUTPUT_TOKENS: "256"
+  # Two provider attempts may each consume EMBED_TIMEOUT; include overhead.
+  EVAL_REQUEST_TIMEOUT: "720"

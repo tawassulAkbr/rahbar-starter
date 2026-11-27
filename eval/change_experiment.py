@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -30,8 +31,8 @@ def _run_variant(corpus: Path, golden: Path, seed: int, top_k: int) -> dict[str,
         "configuration": {
             "change": "retrieval_top_k",
             "top_k": top_k,
-            "embed_model": "deterministic-hash-v1",
-            "collection": "rahbar",
+            "embed_model": os.environ.get("EMBED_MODEL", "nomic-embed-text"),
+            "collection": os.environ.get("CHROMA_COLLECTION", "rahbar"),
         },
         "module": run_module_level(seed=seed),
         "component": run_component_level(corpus, golden, seed=seed, top_k=top_k),
@@ -45,7 +46,7 @@ def run_change_experiment(
     baseline_top_k: int = 5,
     candidate_top_k: int = 4,
     seed: int = 2026,
-    candidate_image: str = "rahbar-indexer:phase3-topk4",
+    candidate_image: str = "rahbar-api:phase3-topk4",
     collection: str = "rahbar",
 ) -> dict[str, object]:
     baseline = _run_variant(corpus, golden, seed, baseline_top_k)
@@ -67,8 +68,8 @@ def run_change_experiment(
         },
         "rollout_handoff": {
             "candidate_image": candidate_image,
-            "collection": collection,
-            "embed_model": "nomic-embed-text",
+            "collection": candidate['configuration']['collection'],
+            "embed_model": candidate['configuration']['embed_model'],
             "embed_dimension": 768,
             "change": f"TOP_K={candidate_top_k}",
         },
@@ -81,7 +82,7 @@ def main() -> int:
     parser.add_argument("--golden", type=Path, default=Path("eval/golden.jsonl"))
     parser.add_argument("--baseline-top-k", type=int, default=5)
     parser.add_argument("--candidate-top-k", type=int, default=4)
-    parser.add_argument("--candidate-image", default="rahbar-indexer:phase3-topk4")
+    parser.add_argument("--candidate-image", default="rahbar-api:phase3-topk4")
     parser.add_argument("--collection", default="rahbar")
     parser.add_argument("--seed", type=int, default=2026)
     parser.add_argument("--out", type=Path, default=Path("eval/results/change-topk4.json"))

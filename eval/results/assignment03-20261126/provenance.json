@@ -1,0 +1,15 @@
+{
+  "captured_at": "2026-11-26T14:17:18.324576+00:00",
+  "members": [
+    {
+      "name": "Tawassul Akbar",
+      "roll": "24I-3100"
+    },
+    {
+      "name": "Ayesha Anjum",
+      "roll": "24I-3171"
+    }
+  ],
+  "human_question_writing_and_synthetic_review": "Confirmed by the user in this session",
+  "note": "Nonzero command outputs are retained as failures, not reported as completed checks."
+}

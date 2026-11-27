@@ -46,6 +46,8 @@ spec:
           env:
             - name: IS_PERSISTENT
               value: "TRUE"
+            - name: PERSIST_DIRECTORY
+              value: /data
             - name: ANONYMIZED_TELEMETRY
               value: "FALSE"
           readinessProbe:
@@ -63,13 +65,13 @@ spec:
           resources:
             requests:
               cpu: 100m
-              memory: 256Mi
+              memory: 512Mi
             limits:
               cpu: 1
               memory: 1Gi
           volumeMounts:
             - name: chroma-data
-              mountPath: /chroma/chroma
+              mountPath: /data
   volumeClaimTemplates:
     - metadata:
         name: chroma-data

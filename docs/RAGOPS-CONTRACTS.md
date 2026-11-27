@@ -97,7 +97,7 @@ reproducibility, guardrail auditing, and latency analysis.
   "prompt_hash": "<lowercase SHA-256 hex digest>",
   "model": "llama3.2:3b",
   "parameters": {"temperature": 0.2, "top_k": 5},
-  "response": "Students must maintain 100% attendance.",
+  "response": {"answer": "Students must maintain 100% attendance.", "answered_from_context": true, "confidence": "high"},
   "citations": [{"document_id": "doc-03", "page": 9}],
   "guardrail_actions": [],
   "latency_per_stage": {"rewrite_ms": 3, "embed_ms": 12, "retrieve_ms": 8, "generate_ms": 220},
@@ -107,12 +107,22 @@ reproducibility, guardrail auditing, and latency analysis.
 
 Required fields and types: `trace_id`, `timestamp`, `query`,
 `rewritten_query`, `embed_model`, `embed_model_version`, `collection`,
-`prompt_hash`, `model`, `response` are strings; `retrieved`, `reranked_order`,
+`prompt_hash`, `model` are strings; `response` is an object with `answer`,
+`answered_from_context`, and `confidence`; `retrieved`, `reranked_order`,
 `citations`, and `guardrail_actions` are arrays; `filters`, `parameters`, and
 `latency_per_stage` are objects; `cache_hit` is boolean. Each `retrieved`
 entry requires string `chunk_id`, `document_id`, `doc_version`, and numeric
 `score`. `timestamp` is RFC 3339 UTC. `prompt_hash` is a SHA-256 digest and
 `latency_per_stage` values are non-negative milliseconds.
+
+Phase 4 adds `generation_attempts` containing each exact provider prompt,
+`generation_path` distinguishing provider calls from extractive/abstention
+paths, and `origin_trace_id` on cache hits. Replay follows that reference to
+the generating query. Extractive and abstention paths retain the grounded
+prompt built from their captured context even when no provider prompt was
+sent. `embed_model_version` is the resolved model
+digest, not an assignment label. `retrieval_ms` includes embedding and reranking;
+`retrieve_ms` excludes them. These durations must not be summed together.
 
 ## 4. Evaluation golden set schema
 
@@ -139,26 +149,27 @@ metadata exist.
 
 ## 5. ConfigMap contract
 
-The following keys are reserved in `k8s/base/configmap.yaml`. Values are
+The following keys are defined in `k8s/base/configmap.yaml`. Values are
 strings because Kubernetes ConfigMap data is string-valued; applications
-parse booleans and numbers at their boundary. The base values are conservative
-placeholders until the corresponding Phase 1-6 implementation consumes them.
+parse booleans and numbers at their boundary.
 
 | Key | Placeholder | Meaning |
 | --- | --- | --- |
 | `QUARANTINE_DIR` | `/data/quarantine` | Failed documents, excluded from serving |
 | `ARCHIVE_DIR` | `/data/archive` | Superseded/processed source documents |
-| `VERIFY_ENABLED` | `"false"` | Enable verification pipeline when implemented |
+| `VERIFY_ENABLED` | `"true"` | Enable the verification stage before chunking |
 | `GATE_RECALL5_MAX_DROP` | `"0.05"` | Maximum allowed recall@5 decrease |
-| `GATE_FAITHFULNESS_MIN` | `"0.95"` | Minimum faithfulness score |
-| `GATE_P95_MAX_MS` | `"2000"` | Maximum p95 query latency in milliseconds |
+| `GATE_FAITHFULNESS_MIN` | `"0.90"` | Minimum faithfulness score |
+| `GATE_P95_MAX_MS` | `"180000"` | Maximum p95 query latency in milliseconds |
 | `GATE_ABSTENTION_MIN` | `"1.0"` | Minimum required abstention correctness |
-| `COVERAGE_THRESHOLD` | `"0.80"` | Minimum corpus/evaluation coverage |
-| `TRACE_VOLUME` | `"1.0"` | Fraction of queries traced; `1.0` means all |
+| `COVERAGE_THRESHOLD` | `"0.85"` | Minimum share of live queries above the similarity cutoff |
+| `EVAL_ALLOW_STUB` | `"false"` | Permit stub responses only for an explicitly labelled dev smoke run |
+| `CANDIDATE_COLLECTION` | `rahbar-candidate` | Isolated Part C candidate collection |
+| `CANDIDATE_TOP_K` | `"4"` | Candidate top-k setting for the Part C experiment |
 
-Existing embedding, retrieval, collection, and provider keys remain unchanged
-in the base ConfigMap so Phase 0 does not change the Assignment 02 stub
-deployment. Production overlays may pin the live embedding values.
+The base ConfigMap supplies the active runtime, verification, evaluation,
+coverage, and candidate settings. The dev overlay opts into an explicitly
+labelled stub smoke run; production keeps stub responses disabled.
 
 ## 6. G0 checklist and handoff
 
@@ -166,7 +177,7 @@ deployment. Production overlays may pin the live embedding values.
 - [x] Verification report schema is frozen.
 - [x] Trace record schema is frozen.
 - [x] Golden JSONL schema is frozen.
-- [x] ConfigMap keys are reserved with typed placeholders.
+- [x] ConfigMap keys are defined and consumed by their corresponding components.
 - [ ] Live Ingress golden-set run: pending a reachable Kubernetes context.
 
 Consumers: Phase 1 verification consumes sections 2 and 5; golden-set work

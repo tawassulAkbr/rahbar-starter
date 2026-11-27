@@ -1,5 +1,8 @@
 # Phase 0–3 Completion Audit
 
+**Historical checklist:** superseded by [the Phase 0–4 re-audit](PHASE_0_TO_4_REAUDIT.md).
+The original reference evaluation is not valid release evidence.
+
 Audited on 2026-11-22 on `feature/assignment-03-phase1-integrated` before Phase 4 work.
 
 ## Result

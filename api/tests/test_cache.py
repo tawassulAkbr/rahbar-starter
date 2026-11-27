@@ -70,3 +70,26 @@ def test_abstentions_and_fallbacks_are_not_written():
     cache.set("fallback", _response(confidence="low"))
 
     assert list(redis.scan_iter(match="rahbar:cache:*")) == []
+
+
+def test_candidate_collection_cannot_reuse_live_cache():
+    from dataclasses import replace
+    settings = get_settings()
+    redis = FakeRedis()
+    live = SemanticCache(settings, redis, lambda q: [1, 0])
+    candidate = SemanticCache(replace(settings, collection='candidate'), redis, lambda q: [1, 0])
+    live.set('policy', _response())
+    assert candidate.get('policy') is None
+
+
+def test_serving_policy_change_cannot_reuse_old_cache():
+    from dataclasses import replace
+    settings = get_settings()
+    redis = FakeRedis()
+    live = SemanticCache(settings, redis, lambda q: [1, 0])
+    live.set('policy', _response())
+    for change in ({'generation_timeout': settings.generation_timeout + 1},
+                   {'relevance_floor': settings.relevance_floor + .1},
+                   {'max_output_tokens': settings.max_output_tokens + 1}):
+        updated = SemanticCache(replace(settings, **change), redis, lambda q: [1, 0])
+        assert updated.get('policy') is None

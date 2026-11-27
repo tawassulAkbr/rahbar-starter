@@ -1,0 +1,17 @@
+{
+  "level": "module_embedding",
+  "seed": 2026,
+  "provider": "ollama",
+  "model": "nomic-embed-text",
+  "model_version": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f",
+  "paraphrase_pairs": 15,
+  "unrelated_pairs": 15,
+  "mean_paraphrase_cosine": 0.7655850848639028,
+  "mean_unrelated_cosine": 0.42214501808846916,
+  "paraphrase_unrelated_gap": 0.3434400667754336,
+  "embedding_time_ms_per_text": 91.53199936666668,
+  "embedding_time_ms_per_chunk": 503.95495253333326,
+  "measured_chunks": 15,
+  "determinism_largest_abs_difference": 0.0,
+  "determinism_pass": true
+}

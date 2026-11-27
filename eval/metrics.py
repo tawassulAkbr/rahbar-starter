@@ -45,7 +45,11 @@ def reciprocal_rank(expected: set[tuple[str, str]], retrieved: list[tuple[str, s
 def ndcg(expected: set[tuple[str, str]], retrieved: list[tuple[str, str]], k: int) -> float | None:
     if not expected:
         return None
-    gains = [1.0 if item in expected else 0.0 for item in retrieved[:k]]
+    seen = set()
+    gains = []
+    for item in retrieved[:k]:
+        gains.append(1.0 if item in expected and item not in seen else 0.0)
+        seen.add(item)
     dcg = sum(gain / math.log2(index + 2) for index, gain in enumerate(gains))
     ideal_hits = min(len(expected), k)
     ideal = sum(1.0 / math.log2(index + 2) for index in range(ideal_hits))

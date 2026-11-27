@@ -1,0 +1,13 @@
+{
+  "label": "baseline-old-version",
+  "collection_count": 1,
+  "changed_documents": 1,
+  "deleted_documents": 0,
+  "embedded_chunks": 1,
+  "embedded_chunks_by_document": {
+    "batch-b-policy-2026.md": 1
+  },
+  "orphan_chunks_removed": 0,
+  "orphan_counts_by_document": {},
+  "superseded_documents": []
+}

@@ -1,0 +1,53 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: eval-job
+  namespace: rahbar
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app: evaluator
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      containers:
+        - name: evaluator
+          image: rahbar-eval:dev
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - >-
+              exec python /workspace/eval/run_cluster_suite.py --api "${EVAL_API}"
+              --golden /workspace/eval/golden.jsonl
+              --baseline /results/part-b-baseline.json
+              --trace-path /data/traces/traces.jsonl
+              --out /results/eval-results.json --bootstrap-baseline
+          env:
+            - name: EVAL_API
+              value: http://api:8000
+          envFrom:
+            - configMapRef:
+                name: rahbar-config
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          volumeMounts:
+            - name: results
+              mountPath: /results
+            - name: traces
+              mountPath: /data/traces
+              readOnly: true
+      volumes:
+        - name: results
+          persistentVolumeClaim:
+            claimName: rahbar-evaluation
+        - name: traces
+          persistentVolumeClaim:
+            claimName: rahbar-traces

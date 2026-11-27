@@ -1,0 +1,63 @@
+.venv\Scripts\python.exe scripts/inspect_assignment03_evidence.py batch
+batch-b-clean-policy-2026.md PASS
+  quality PASS - extracted text is non-empty and readable
+  completeness PASS - source, title, version, page count, and text completeness present
+  recency PASS - latest known version
+  uniqueness PASS - no exact or near duplicate
+batch-b-corrupt.txt FAIL
+  quality FAIL - extracted text contains replacement/control characters
+  completeness FAIL - date/version is missing
+  recency PASS - latest known version
+  uniqueness PASS - no exact or near duplicate
+batch-b-exact-duplicate-2.md FAIL
+  quality PASS - extracted text is non-empty and readable
+  completeness PASS - source, title, version, page count, and text completeness present
+  recency PASS - latest known version
+  uniqueness FAIL - exact duplicate of batch-b-clean-policy-2026.md
+batch-b-exact-duplicate.md FAIL
+  quality PASS - extracted text is non-empty and readable
+  completeness PASS - source, title, version, page count, and text completeness present
+  recency PASS - latest known version
+  uniqueness FAIL - exact duplicate of batch-b-clean-policy-2026.md
+batch-b-grade-improvement.md PASS
+  quality PASS - extracted text is non-empty and readable
+  completeness PASS - source, title, version, page count, and text completeness present
+  recency PASS - latest known version
+  uniqueness PASS - no exact or near duplicate
+batch-b-injected-instruction.md PASS
+  quality PASS - extracted text is non-empty and readable
+  completeness PASS - source, title, version, page count, and text completeness present
+  recency PASS - latest known version
+  uniqueness PASS - no exact or near duplicate
+batch-b-missing-metadata.md FAIL
+  quality PASS - extracted text is non-empty and readable
+  completeness FAIL - date/version is missing
+  recency PASS - latest known version
+  uniqueness PASS - no exact or near duplicate
+batch-b-near-duplicate.md FAIL
+  quality PASS - extracted text is non-empty and readable
+  completeness PASS - source, title, version, page count, and text completeness present
+  recency PASS - latest known version
+  uniqueness FAIL - near-duplicate of batch-b-clean-policy-2026.md (cosine >= 0.97)
+batch-b-policy-2026.md FAIL
+  quality PASS - extracted text is non-empty and readable
+  completeness PASS - source, title, version, page count, and text completeness present
+  recency FAIL - newer version exists: 2027
+  uniqueness PASS - no exact or near duplicate
+batch-b-policy-2027.md PASS
+  quality PASS - extracted text is non-empty and readable
+  completeness PASS - source, title, version, page count, and text completeness present
+  recency PASS - latest known version
+  uniqueness PASS - no exact or near duplicate
+batch-b-records-policy.md PASS
+  quality PASS - extracted text is non-empty and readable
+  completeness PASS - source, title, version, page count, and text completeness present
+  recency PASS - latest known version
+  uniqueness PASS - no exact or near duplicate
+batch-b-truncated.md FAIL
+  quality PASS - extracted text is non-empty and readable
+  completeness FAIL - text is marked truncated
+  recency PASS - latest known version
+  uniqueness PASS - no exact or near duplicate
+
+Exit 0

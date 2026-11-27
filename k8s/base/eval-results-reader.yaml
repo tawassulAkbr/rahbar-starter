@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: eval-results-reader
+  namespace: rahbar
+spec:
+  restartPolicy: Never
+  automountServiceAccountToken: false
+  containers:
+    - name: reader
+      image: busybox:1.36.1
+      command: ["/bin/sh", "-c", "cat /results/eval-results.json"]
+      volumeMounts:
+        - name: results
+          mountPath: /results
+          readOnly: true
+  volumes:
+    - name: results
+      persistentVolumeClaim:
+        claimName: rahbar-evaluation

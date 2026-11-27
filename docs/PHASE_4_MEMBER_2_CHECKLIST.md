@@ -1,5 +1,8 @@
 # Phase 4 completion checklist
 
+**Historical checklist:** see [the Phase 0–4 re-audit](PHASE_0_TO_4_REAUDIT.md)
+for prompt, cache provenance, versioning and guardrail corrections.
+
 - [x] Every normal query emits one JSON trace line to stdout and `TRACE_DIR/traces.jsonl`.
 - [x] Cache-hit queries also emit a trace with `cache_hit: true`.
 - [x] Trace fields include query rewrite, embedding model/version, collection, retrieved

@@ -14,10 +14,11 @@ import json
 import os
 import sys
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 
 from .config import IndexerSettings, get_settings
-from .models import Chunk
+from .models import Chunk, Document
 
 
 def log(msg: str, **fields: object) -> None:
@@ -96,13 +97,19 @@ def run_pipeline(settings: IndexerSettings) -> int:
     from .verify import sha256_file, verify_documents
 
     documents = discover(settings.corpus_dir)
+    prior_state = load_state(settings.state_file)
+    documents = [(path, version, False if prior_state.get('documents', {}).get(path.name, {}).get('restored') else superseded)
+                 for path, version, superseded in documents]
+    if not Path(settings.corpus_dir).is_dir():
+        raise RuntimeError("corpus directory is unavailable; refusing deletion")
+    documents = [item for item in documents if item[0].exists()]
     if not documents:
-        raise SystemExit(f"no documents found in {settings.corpus_dir}")
-    extracted: list[tuple[Path, object, str, str, bool]] = []
+        return store_incremental([], [], settings, [])
+    extracted: list[tuple[Path, Document, str, str, bool]] = []
     for path, doc_version, superseded in documents:
         log("extracting", source=path.name, doc_version=doc_version, superseded=superseded)
         try:
-            doc = clean(extract(str(path), doc_version, superseded))
+            doc = extract(str(path), doc_version, superseded)
             extracted.append((path, doc, sha256_file(path), doc_version, superseded))
         except Exception as exc:
             log("extraction failed", source=path.name, error=str(exc), error_type=type(exc).__name__)
@@ -121,10 +128,11 @@ def run_pipeline(settings: IndexerSettings) -> int:
         if state.get("documents", {}).get(path.name, {}).get("sha256") != digest
     }
     if settings.verify_enabled:
-        run_id = time.strftime("verification-%Y%m%dT%H%M%SZ", time.gmtime())
+        run_id = 'verification-' + datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
         reports, verified = verify_documents(
             extracted, run_id=run_id.removeprefix("verification-"),
             quarantine_dir=settings.quarantine_dir,
+            archive_dir=settings.archive_dir,
             report_dir=settings.verification_report_dir,
             near_duplicate_threshold=settings.near_duplicate_threshold,
             # A fully unchanged corpus was already near-duplicate checked on
@@ -135,11 +143,13 @@ def run_pipeline(settings: IndexerSettings) -> int:
             failed=sum(report.verdict == "fail" for report in reports))
         extracted = verified
     if not extracted:
-        raise RuntimeError("all documents failed verification")
+        return store_incremental([], [], settings, [])
 
     changed_sources = {
-        path.name for path, _, digest, _, _ in extracted
+        path.name for path, _, digest, version, superseded in extracted
         if state.get("documents", {}).get(path.name, {}).get("sha256") != digest
+        or state.get('documents', {}).get(path.name, {}).get('doc_version') != version
+        or state.get('documents', {}).get(path.name, {}).get('superseded', False) != superseded
     }
     all_chunks: list[Chunk] = []
     current_documents: list[dict[str, object]] = []
@@ -149,7 +159,7 @@ def run_pipeline(settings: IndexerSettings) -> int:
         if path.name not in changed_sources:
             log("unchanged; skipping chunks", source=path.name)
             continue
-        pieces = chunk(doc, settings.chunk_size, settings.chunk_overlap)
+        pieces = chunk(clean(doc), settings.chunk_size, settings.chunk_overlap)
         log("chunked", source=path.name, chunks=len(pieces))
         all_chunks.extend(pieces)
     log("embedding", chunks=len(all_chunks), batch_size=settings.embed_batch_size)
@@ -164,6 +174,7 @@ def run_pipeline(settings: IndexerSettings) -> int:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Build the RAHBAR index, then exit.")
     parser.add_argument("--dummy", action="store_true", help="write three fake chunks")
+    parser.add_argument('--restore', help='Restore an archived document version before indexing')
     args = parser.parse_args()
     settings = get_settings()
     log("indexer starting", dummy=args.dummy, embed_model=settings.embed_model,
@@ -171,6 +182,17 @@ def main() -> int:
         pod=os.environ.get("HOSTNAME", "-"))
     started = time.perf_counter()
     try:
+        # Both the Job and CronJob mount the same state volume. On Linux the
+        # process-held lock prevents their ingestion runs from overlapping.
+        lock_path = Path(settings.state_file).with_suffix('.lock')
+        lock_path.parent.mkdir(parents=True, exist_ok=True)
+        writer_lock = lock_path.open('a')
+        if os.name == 'posix':
+            import fcntl
+            fcntl.flock(writer_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        if args.restore:
+            from .store import restore_document
+            restore_document(args.restore, settings)
         if args.dummy:
             from .dummy import write_dummy_index
             from .store import get_client
@@ -184,6 +206,9 @@ def main() -> int:
     except Exception as exc:
         log("indexer failed", error=str(exc), error_type=type(exc).__name__)
         return 1
+    finally:
+        if 'writer_lock' in locals():
+            writer_lock.close()
     log("indexer finished", chunks=count, seconds=round(time.perf_counter() - started, 1))
     return 0
 

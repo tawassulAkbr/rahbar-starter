@@ -1,0 +1,15 @@
+{
+  "captured_at": "2026-11-26T19:09:56.371303+00:00",
+  "members": [
+    {
+      "name": "Tawassul Akbar",
+      "roll": "24I-3100"
+    },
+    {
+      "name": "Ayesha Anjum",
+      "roll": "24I-3171"
+    }
+  ],
+  "human_question_writing_and_synthetic_review": "Labels exist in the dataset; actual authorship and personal review must be confirmed by both members.",
+  "note": "Nonzero command outputs are retained as failures, not reported as completed checks."
+}

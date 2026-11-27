@@ -1,0 +1,84 @@
+{
+  "archives": {
+    "batch-b-policy-2026.md": {
+      "chunk_ids": [
+        "a2fbaa2b87fe1f49b1ed3b50"
+      ],
+      "doc_version": "2026",
+      "original_path": ".audit-data/batch-b-20261123T115728Z/corpus/batch-b-policy-2026.md",
+      "path": ".audit-data/batch-b-20261123T115728Z/archive/batch-b-policy/2367cb003889580e30a60265bceaf604949df635917bcb4b66766d79080bc7d6/batch-b-policy-2026.md",
+      "sha256": "2367cb003889580e30a60265bceaf604949df635917bcb4b66766d79080bc7d6",
+      "snapshot": ".audit-data/batch-b-20261123T115728Z/archive/batch-b-policy/2367cb003889580e30a60265bceaf604949df635917bcb4b66766d79080bc7d6/batch-b-policy-2026.md",
+      "source": "batch-b-policy-2026.md",
+      "superseded": true
+    }
+  },
+  "documents": {
+    "batch-b-clean-policy-2026.md": {
+      "chunk_ids": [
+        "358873a6cd3ff4972a3de457"
+      ],
+      "doc_version": "2026",
+      "path": ".audit-data/batch-b-20261123T115728Z/corpus/batch-b-clean-policy-2026.md",
+      "sha256": "b0a78b80760b946216ff594c5f0125a4f4f2efaa86089af2f8f71f115e69991d",
+      "snapshot": ".audit-data/batch-b-20261123T115728Z/archive/batch-b-clean-policy/b0a78b80760b946216ff594c5f0125a4f4f2efaa86089af2f8f71f115e69991d/batch-b-clean-policy-2026.md",
+      "source": "batch-b-clean-policy-2026.md",
+      "superseded": false
+    },
+    "batch-b-grade-improvement.md": {
+      "chunk_ids": [
+        "31788c84e7d4c35741fd0200"
+      ],
+      "doc_version": "2026-Fall",
+      "path": ".audit-data/batch-b-20261123T115728Z/corpus/batch-b-grade-improvement.md",
+      "sha256": "c32e6c766a6efb664936c277fb077a3f4e5f8badc891f71ff21f95b4cdcd4205",
+      "snapshot": ".audit-data/batch-b-20261123T115728Z/archive/batch-b-grade-improvement/c32e6c766a6efb664936c277fb077a3f4e5f8badc891f71ff21f95b4cdcd4205/batch-b-grade-improvement.md",
+      "source": "batch-b-grade-improvement.md",
+      "superseded": false
+    },
+    "batch-b-injected-instruction.md": {
+      "chunk_ids": [
+        "906be928b8519c5021cbe785"
+      ],
+      "doc_version": "2026",
+      "path": ".audit-data/batch-b-20261123T115728Z/corpus/batch-b-injected-instruction.md",
+      "sha256": "c52df2fbe41bae58e497163a9410e9fc01ea632647fcd67897d525d70c5e22d3",
+      "snapshot": ".audit-data/batch-b-20261123T115728Z/archive/batch-b-injected-instruction/c52df2fbe41bae58e497163a9410e9fc01ea632647fcd67897d525d70c5e22d3/batch-b-injected-instruction.md",
+      "source": "batch-b-injected-instruction.md",
+      "superseded": false
+    },
+    "batch-b-policy-2027.md": {
+      "chunk_ids": [
+        "ad0e9bd5a1683bf8cda1f198"
+      ],
+      "doc_version": "2027",
+      "path": ".audit-data/batch-b-20261123T115728Z/corpus/batch-b-policy-2027.md",
+      "sha256": "39e54cc600a3b4d3661c2be86464da39d0d33799716c30f5b5a8c86d389630d5",
+      "snapshot": ".audit-data/batch-b-20261123T115728Z/archive/batch-b-policy/39e54cc600a3b4d3661c2be86464da39d0d33799716c30f5b5a8c86d389630d5/batch-b-policy-2027.md",
+      "source": "batch-b-policy-2027.md",
+      "superseded": false
+    },
+    "batch-b-records-policy.md": {
+      "chunk_ids": [
+        "a138fcc3ff8285a108b6db96"
+      ],
+      "doc_version": "2026",
+      "path": ".audit-data/batch-b-20261123T115728Z/corpus/batch-b-records-policy.md",
+      "sha256": "545b3b0288d8b60f037ceeb901ed730e27c2fbfd7f5c9e0173887c6784b43173",
+      "snapshot": ".audit-data/batch-b-20261123T115728Z/archive/batch-b-records-policy/545b3b0288d8b60f037ceeb901ed730e27c2fbfd7f5c9e0173887c6784b43173/batch-b-records-policy.md",
+      "source": "batch-b-records-policy.md",
+      "superseded": false
+    }
+  },
+  "last_run": {
+    "changed_documents": 0,
+    "deleted_documents": 0,
+    "embedded_chunks": 0,
+    "embedded_chunks_by_document": {},
+    "orphan_chunks_removed": 0,
+    "orphan_counts_by_document": {},
+    "superseded_documents": []
+  },
+  "updated_at": "2026-11-23T11:57:38.201395+00:00",
+  "version": 1
+}

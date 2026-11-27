@@ -13,7 +13,7 @@ INGRESS_IP ?= $(shell minikube ip 2>/dev/null)
 HOST ?= rahbar.local
 
 .DEFAULT_GOAL := help
-.PHONY: help install test lint dev live-up live-down live-status live-ask cluster images apply secret index ask fetch eval eval-offline phase3-experiment phase3-gate phase5-coverage phase5-drift phase5-test eval-fixtures check
+.PHONY: help install test lint dev live-up live-down live-status live-ask cluster images apply secret index ask fetch eval eval-offline phase3-experiment phase3-gate phase5-coverage phase5-drift phase5-test eval-fixtures eval-image eval-job candidate apply-candidate check
 
 help: ## list the targets
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  make %-14s %s\n", $$1, $$2}'
@@ -23,9 +23,8 @@ install: ## create .venv and install the api, indexer and tool dependencies
 	$(BIN)/pip install -q --upgrade pip
 	$(BIN)/pip install -q -r api/requirements-dev.txt -r indexer/requirements-dev.txt
 
-test: ## run the api and indexer tests (stubs only: no cluster, no model, no network)
-	cd api && $(BIN)/pytest -q
-	cd indexer && $(BIN)/pytest -q
+test: ## run the api, indexer and evaluator tests (stubs only: no cluster, no model, no network)
+	$(BIN)/pytest -q
 
 lint: ## ruff and mypy over everything in Python
 	$(BIN)/ruff check api indexer eval corpus
@@ -65,6 +64,19 @@ images: ## build the three images and load them into minikube (needs yours: Dock
 apply: ## apply the dev overlay (needs yours: manifests)
 	kubectl apply -k k8s/overlays/dev
 
+eval-image: ## build and load the Kubernetes Part B evaluator image
+	docker build -f Dockerfile.eval -t rahbar-eval:$(TAG) .
+	minikube image load rahbar-eval:$(TAG)
+
+eval-job: ## run the Part B Kubernetes evaluation Job after API readiness
+	kubectl delete job eval-job -n $(NS) --ignore-not-found
+	kubectl apply -f k8s/eval-job.yaml
+	$(PY) scripts/wait_for_job.py eval-job --namespace $(NS) --timeout 7200
+
+apply-candidate: ## apply the isolated candidate API (seed its collection first)
+	kubectl apply -f k8s/base/candidate-deployment.yaml
+	kubectl rollout status deployment/api-candidate -n $(NS) --timeout=180s
+
 secret: ## create the LLM key Secret from the LLM_API_KEY variable; never from a file
 	@test -n "$$LLM_API_KEY" || { echo "export LLM_API_KEY=... first"; exit 1; }
 	kubectl create secret generic rahbar-secret -n $(NS) \
@@ -89,16 +101,16 @@ eval-offline: ## run the Phase 2 three-level offline suite twice with a fixed se
 	$(PY) eval/run_offline_suite.py --corpus corpus --golden eval/golden.jsonl
 
 phase3-experiment: ## compare baseline TOP_K=5 with candidate TOP_K=4
-	$(PY) eval/change_experiment.py --candidate-top-k 4 --out eval/results/change-topk4.json
+	$(PY) eval/change_experiment.py --candidate-top-k 4 --out eval/results/change-real-topk4.json
 
-phase3-gate: ## apply the Phase 3 release gate to the passing candidate
-	$(PY) eval/gate.py --experiment eval/results/change-topk4.json --config eval/gate.json --out eval/results/gate-pass.json
+phase3-gate: ## apply the Phase 3 release gate to the measured candidate
+	$(PY) eval/gate.py --experiment eval/results/change-real-topk4.json --config eval/gate.json --out eval/results/gate-real-topk4.json
 
 phase5-coverage: ## measure Phase 5 live-query coverage and enforce the 85% floor
 	$(PY) eval/coverage.py --golden eval/golden.jsonl --live eval/live_queries.jsonl --threshold 0.35 --fail-under 0.85 --out eval/results/coverage-after.json
 
 phase5-drift: ## compare the Phase 2 suite before and after Batch B
-	$(PY) eval/drift.py --corpus corpus --golden eval/golden.jsonl --out eval/results/drift.json
+	$(PY) eval/drift.py --corpus corpus --golden eval/golden.jsonl --before-collection rahbar-before-b --after-collection rahbar-after-b --out eval/results/drift.json
 
 phase5-test: ## run the dependency-free Phase 5 evidence tests
 	$(PY) -m pytest eval/test_phase5.py -q -p no:cacheprovider

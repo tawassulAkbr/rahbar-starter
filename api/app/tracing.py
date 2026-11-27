@@ -4,15 +4,24 @@ from __future__ import annotations
 
 import hashlib
 import json
-import os
 import re
 import threading
 import uuid
+from contextvars import ContextVar
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 _lock = threading.Lock()
+generation_attempts: ContextVar[list | None] = ContextVar('generation_attempts', default=None)
+retrieval_details: ContextVar[dict | None] = ContextVar('retrieval_details', default=None)
+
+
+def record_generation(prompt: str, model: str, parameters: dict) -> None:
+    attempts = generation_attempts.get()
+    if attempts is not None:
+        attempts.append({'prompt': prompt, 'prompt_hash': prompt_hash(prompt),
+                         'model': model, 'parameters': parameters})
 
 
 def new_trace_id() -> str:
@@ -66,7 +75,7 @@ def base_record(*, trace_id: str, query: str, settings: Any, collection: str,
         "retrieved": retrieved,
         "filters": filters,
         "reranked_order": reranked_order,
-        "prompt_hash": prompt_hash(prompt) if prompt else "",
+        "prompt_hash": prompt_hash(prompt),
         "prompt": prompt,
         "context": context,
         "model": model,

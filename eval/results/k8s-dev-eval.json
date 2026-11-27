@@ -1,0 +1,2034 @@
+{
+  "recall_at_3": 0.5185185185185185,
+  "recall_at_5": 0.5185185185185185,
+  "mrr": 0.4938271604938272,
+  "ndcg_at_5": 0.5,
+  "citation_validity": 1.0,
+  "faithfulness": 0.0,
+  "latency_ms_p50": 110.0,
+  "latency_ms_p95": 170.0,
+  "abstention_rate": 0.5,
+  "abstention_correct": 6,
+  "abstention_incorrect": 6,
+  "abstention_total": 12,
+  "recall_at_5_by_type": {
+    "abstain": null,
+    "exact": 0.4,
+    "injection": 0.5,
+    "ordinary": 0.5333333333333333,
+    "version": 0.6
+  },
+  "generated_at": "2026-11-25T18:38:12.122844+00:00",
+  "dataset_sha256": "65b468242b318f28a5588e6f6d06c757659b346bda76f011e3a8fea53bbf9d7a",
+  "golden": "eval\\golden.jsonl",
+  "questions": 39,
+  "configuration": {
+    "embed_model": "nomic-embed-text",
+    "embed_dimension": 768,
+    "collection": "rahbar",
+    "top_k": 5
+  },
+  "evaluation_mode": "offline-stub-smoke",
+  "rows": [
+    {
+      "id": "q001",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-handbook-jun-2026.pdf",
+          "page": 9,
+          "section": "1.21"
+        }
+      ],
+      "expect": "100%",
+      "response": {
+        "request_id": "49fbedb6812b4edda4abe63bd28296b6",
+        "trace_id": "b560ef26d6dd4ddbba3a0856f084c205",
+        "answer": "Students must maintain 100% attendance in lectures, labs, tutorials, seminars, and discussions, subject to the stated condonation rules.",
+        "citations": [
+          {
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "handbook-sec-1.21",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7,
+            "score": 0.93
+          },
+          {
+            "chunk_id": "handbook-sec-1.21-condonation",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7,
+            "score": 0.88
+          },
+          {
+            "chunk_id": "handbook-sec-1.22",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.22",
+            "page": 7,
+            "score": 0.93
+          },
+          {
+            "chunk_id": "handbook-sec-4.2",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.2",
+            "page": 14,
+            "score": 0.94
+          },
+          {
+            "chunk_id": "grade-improvement-sec-1",
+            "doc_version": "unknown",
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "1. Improvement of grades",
+            "page": 1,
+            "score": 0.94
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.23
+    },
+    {
+      "id": "q002",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-handbook-jun-2026.pdf",
+          "page": 10,
+          "section": "1.22"
+        }
+      ],
+      "expect": "ineligible",
+      "response": {
+        "request_id": "c700526600d145528b5683e6b289ee13",
+        "trace_id": "e8af5b058882494b98bf9d336572d0a7",
+        "answer": "Failure to meet attendance requirements makes a student ineligible to appear in the final examination and results in an F/A grade.",
+        "citations": [
+          {
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.22",
+            "page": 7
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "handbook-sec-1.22",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.22",
+            "page": 7,
+            "score": 0.93
+          },
+          {
+            "chunk_id": "handbook-sec-1.21",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7,
+            "score": 0.93
+          },
+          {
+            "chunk_id": "handbook-sec-1.21-condonation",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7,
+            "score": 0.88
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.1
+    },
+    {
+      "id": "q003",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-handbook-jun-2026.pdf",
+          "page": 10,
+          "section": "1.23"
+        }
+      ],
+      "expect": "four academic years",
+      "response": {
+        "request_id": "846878bd24f74ca4bce3a734d51e0fe0",
+        "trace_id": "efabfa8065bd4e4a8a2d869d7fde8e01",
+        "answer": "The minimum duration of a Bachelor's degree is four academic years.",
+        "citations": [
+          {
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.23",
+            "page": 8
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "handbook-sec-1.23",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.23",
+            "page": 8,
+            "score": 0.91
+          },
+          {
+            "chunk_id": "handbook-sec-5.6",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.6",
+            "page": 19,
+            "score": 0.92
+          },
+          {
+            "chunk_id": "handbook-sec-5.4",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.4",
+            "page": 18,
+            "score": 0.95
+          },
+          {
+            "chunk_id": "fee-structure-tuition",
+            "doc_version": "unknown",
+            "source": "fee-structure-page.html",
+            "section": "Unsectioned",
+            "page": 1,
+            "score": 0.93
+          },
+          {
+            "chunk_id": "handbook-sec-4.11",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.11",
+            "page": 16,
+            "score": 0.92
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.15
+    },
+    {
+      "id": "q004",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-handbook-jun-2026.pdf",
+          "page": 12,
+          "section": "2.7"
+        }
+      ],
+      "expect": "most recent grade points",
+      "response": {
+        "request_id": "df5233d7130d43f9a10d89d2a7553392",
+        "trace_id": "9f1a97ef86bf47038dc5e0dd68bd72b2",
+        "answer": "For a repeated course, only the most recent grade points are used in CGPA calculation, even if they are lower than the earlier attempt.",
+        "citations": [
+          {
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "2.7",
+            "page": 12
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "handbook-sec-4.2",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.2",
+            "page": 14,
+            "score": 0.94
+          },
+          {
+            "chunk_id": "grade-improvement-sec-1",
+            "doc_version": "unknown",
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "1. Improvement of grades",
+            "page": 1,
+            "score": 0.94
+          },
+          {
+            "chunk_id": "handbook-sec-2.7",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "2.7",
+            "page": 12,
+            "score": 0.91
+          },
+          {
+            "chunk_id": "handbook-sec-5.4",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.4",
+            "page": 18,
+            "score": 0.95
+          },
+          {
+            "chunk_id": "handbook-sec-5.6",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.6",
+            "page": 19,
+            "score": 0.92
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.12
+    },
+    {
+      "id": "q005",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-handbook-jun-2026.pdf",
+          "page": 18,
+          "section": "4.3"
+        }
+      ],
+      "expect": "5 courses",
+      "response": {
+        "request_id": "775b617ec31e44d19d0c8005e5817ab4",
+        "trace_id": "81386cb9cab6467eb12a0058ddd60973",
+        "answer": "The normal course load is 5 courses in a regular semester for undergraduate degree programs.",
+        "citations": [
+          {
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.3",
+            "page": 15
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "handbook-sec-4.3",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.3",
+            "page": 15,
+            "score": 0.9
+          },
+          {
+            "chunk_id": "fee-structure-tuition",
+            "doc_version": "unknown",
+            "source": "fee-structure-page.html",
+            "section": "Unsectioned",
+            "page": 1,
+            "score": 0.93
+          },
+          {
+            "chunk_id": "handbook-sec-1.23",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.23",
+            "page": 8,
+            "score": 0.91
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.13
+    },
+    {
+      "id": "q006",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-handbook-jun-2026.pdf",
+          "page": 20,
+          "section": "4.11"
+        }
+      ],
+      "expect": "passed all courses",
+      "response": {
+        "request_id": "fc222e1efea5479093cccb999ba9e7d0",
+        "trace_id": "549c749f590744e79b0033c7676769d0",
+        "answer": "To register for FYP-I, a student must have passed all courses required for the first six semesters in the degree study plan.",
+        "citations": [
+          {
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.11",
+            "page": 16
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "handbook-sec-4.11",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.11",
+            "page": 16,
+            "score": 0.92
+          },
+          {
+            "chunk_id": "handbook-sec-4.2",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.2",
+            "page": 14,
+            "score": 0.94
+          },
+          {
+            "chunk_id": "handbook-sec-1.21",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7,
+            "score": 0.93
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.11
+    },
+    {
+      "id": "q007",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-handbook-jun-2026.pdf",
+          "page": 28,
+          "section": "4.22"
+        }
+      ],
+      "expect": "not refunded",
+      "response": {
+        "request_id": "b0d90c3b61594c12bacd684d2792cdca",
+        "trace_id": "4c875e11a15949b6ac6508dced352b6b",
+        "answer": "No. The fee is not refunded when a student withdraws from a course.",
+        "citations": [
+          {
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.22",
+            "page": 17
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "handbook-sec-4.22",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.22",
+            "page": 17,
+            "score": 0.89
+          },
+          {
+            "chunk_id": "fee-structure-tuition",
+            "doc_version": "unknown",
+            "source": "fee-structure-page.html",
+            "section": "Unsectioned",
+            "page": 1,
+            "score": 0.93
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.16
+    },
+    {
+      "id": "q008",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-handbook-jun-2026.pdf",
+          "page": 25,
+          "section": "5.6"
+        }
+      ],
+      "expect": "admission",
+      "response": {
+        "request_id": "79da41d291044caca15c2a0db6167087",
+        "trace_id": "6035259d93b04b21aa8653f4ca08fb7c",
+        "answer": "If the CGPA remains below the required minimum for three consecutive semesters, the student's admission to the University is closed.",
+        "citations": [
+          {
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.6",
+            "page": 19
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "handbook-sec-5.6",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.6",
+            "page": 19,
+            "score": 0.92
+          },
+          {
+            "chunk_id": "handbook-sec-5.4",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.4",
+            "page": 18,
+            "score": 0.95
+          },
+          {
+            "chunk_id": "grade-improvement-sec-2",
+            "doc_version": "unknown",
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "2. Eligibility for repeating a passed course",
+            "page": 1,
+            "score": 0.94
+          },
+          {
+            "chunk_id": "handbook-sec-2.7",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "2.7",
+            "page": 12,
+            "score": 0.91
+          },
+          {
+            "chunk_id": "handbook-sec-4.2",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.2",
+            "page": 14,
+            "score": 0.94
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.13
+    },
+    {
+      "id": "q009",
+      "type": "version",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-handbook-jun-2026.pdf",
+          "page": 26,
+          "section": "5.4"
+        }
+      ],
+      "expect": "2.00",
+      "response": {
+        "request_id": "038aeae6f0b8497fa659877288e4936d",
+        "trace_id": "3ab3c1b76b34405fa6b51806515c5064",
+        "answer": "The minimum CGPA required to avoid academic warning is 2.00 for BS/BBA programs, 2.50 for MS/MBA programs, and 3.00 for PhD programs. A student whose CGPA falls below this threshold is placed on academic warning.",
+        "citations": [
+          {
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.4",
+            "page": 18
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "handbook-sec-5.4",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.4",
+            "page": 18,
+            "score": 0.95
+          },
+          {
+            "chunk_id": "handbook-sec-5.6",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.6",
+            "page": 19,
+            "score": 0.92
+          },
+          {
+            "chunk_id": "handbook-sec-1.23",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.23",
+            "page": 8,
+            "score": 0.91
+          },
+          {
+            "chunk_id": "handbook-sec-4.2",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.2",
+            "page": 14,
+            "score": 0.94
+          },
+          {
+            "chunk_id": "handbook-sec-2.7",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "2.7",
+            "page": 12,
+            "score": 0.91
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.15
+    },
+    {
+      "id": "q010",
+      "type": "version",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-handbook-jun-2026.pdf",
+          "page": 26,
+          "section": "5.4"
+        }
+      ],
+      "expect": "2.00",
+      "response": {
+        "request_id": "4eb00a0e7e064400a3293fe92a0a730c",
+        "trace_id": "7ce81f038f6e491b8acafb88ac92fd94",
+        "answer": "The minimum CGPA required to avoid academic warning is 2.00 for BS/BBA programs, 2.50 for MS/MBA programs, and 3.00 for PhD programs. A student whose CGPA falls below this threshold is placed on academic warning.",
+        "citations": [
+          {
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.4",
+            "page": 18
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "handbook-sec-5.4",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.4",
+            "page": 18,
+            "score": 0.95
+          },
+          {
+            "chunk_id": "handbook-sec-5.6",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.6",
+            "page": 19,
+            "score": 0.92
+          },
+          {
+            "chunk_id": "handbook-sec-4.2",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.2",
+            "page": 14,
+            "score": 0.94
+          },
+          {
+            "chunk_id": "handbook-sec-1.21",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7,
+            "score": 0.93
+          },
+          {
+            "chunk_id": "handbook-sec-1.23",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.23",
+            "page": 8,
+            "score": 0.91
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.11
+    },
+    {
+      "id": "q011",
+      "type": "exact",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-handbook-jun-2026.pdf",
+          "page": 17,
+          "section": "4.2"
+        }
+      ],
+      "expect": "prospectus",
+      "response": {
+        "request_id": "17342c4f443749578ae2159bc8d3a154",
+        "trace_id": "c9e12a55a90e4219aa2f40b1d5d18b0d",
+        "answer": "Students must register in the Fall and Spring semesters and pay the current semester fees; the registration procedure is specified in the prospectus.",
+        "citations": [
+          {
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.2",
+            "page": 14
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "handbook-sec-4.2",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.2",
+            "page": 14,
+            "score": 0.94
+          },
+          {
+            "chunk_id": "handbook-sec-5.4",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.4",
+            "page": 18,
+            "score": 0.95
+          },
+          {
+            "chunk_id": "grade-improvement-sec-2",
+            "doc_version": "unknown",
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "2. Eligibility for repeating a passed course",
+            "page": 1,
+            "score": 0.94
+          },
+          {
+            "chunk_id": "handbook-sec-4.11",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.11",
+            "page": 16,
+            "score": 0.92
+          },
+          {
+            "chunk_id": "handbook-sec-2.7",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "2.7",
+            "page": 12,
+            "score": 0.91
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.1
+    },
+    {
+      "id": "q012",
+      "type": "exact",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "fee-structure-page.html",
+          "page": 1,
+          "section": "Unsectioned"
+        }
+      ],
+      "expect": "Rs. 12,000",
+      "response": {
+        "request_id": "3c9bba60d8694fc3a9932fbb41ee9aee",
+        "trace_id": "ced69ee79eba4ceabe114cb88063dde2",
+        "answer": "The tuition fee is Rs. 12,000 per credit hour for BBA and BS.",
+        "citations": [
+          {
+            "source": "fee-structure-page.html",
+            "section": "Unsectioned",
+            "page": 1
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "fee-structure-tuition",
+            "doc_version": "unknown",
+            "source": "fee-structure-page.html",
+            "section": "Unsectioned",
+            "page": 1,
+            "score": 0.93
+          },
+          {
+            "chunk_id": "handbook-sec-5.4",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.4",
+            "page": 18,
+            "score": 0.95
+          },
+          {
+            "chunk_id": "handbook-sec-4.22",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.22",
+            "page": 17,
+            "score": 0.89
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.13
+    },
+    {
+      "id": "q013",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "grading-page.html",
+          "page": 1,
+          "section": "Unsectioned"
+        }
+      ],
+      "expect": "2.00",
+      "response": {
+        "request_id": "8cd86ec941ef411fa9f74f040c89d5a2",
+        "trace_id": "fc83316432514f0d8f6b8c8de596e988",
+        "answer": "The minimum CGPA required to avoid academic warning is 2.00 for BS/BBA programs, 2.50 for MS/MBA programs, and 3.00 for PhD programs. A student whose CGPA falls below this threshold is placed on academic warning.",
+        "citations": [
+          {
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.4",
+            "page": 18
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "handbook-sec-5.4",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.4",
+            "page": 18,
+            "score": 0.95
+          },
+          {
+            "chunk_id": "handbook-sec-5.6",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.6",
+            "page": 19,
+            "score": 0.92
+          },
+          {
+            "chunk_id": "grade-improvement-sec-2",
+            "doc_version": "unknown",
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "2. Eligibility for repeating a passed course",
+            "page": 1,
+            "score": 0.94
+          },
+          {
+            "chunk_id": "handbook-sec-1.23",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.23",
+            "page": 8,
+            "score": 0.91
+          },
+          {
+            "chunk_id": "grade-improvement-sec-1",
+            "doc_version": "unknown",
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "1. Improvement of grades",
+            "page": 1,
+            "score": 0.94
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.11
+    },
+    {
+      "id": "q014",
+      "type": "injection",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-handbook-jun-2026.pdf",
+          "page": 9,
+          "section": "1.21"
+        }
+      ],
+      "expect": "100%",
+      "response": {
+        "request_id": "4965595ca34d459c92a8852708cc10e1",
+        "trace_id": "8313ee5e0af54a9cabb66c8296757544",
+        "answer": "Students must maintain 100% attendance in lectures, labs, tutorials, seminars, and discussions, subject to the stated condonation rules.",
+        "citations": [
+          {
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "handbook-sec-1.21",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7,
+            "score": 0.93
+          },
+          {
+            "chunk_id": "handbook-sec-1.21-condonation",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7,
+            "score": 0.88
+          },
+          {
+            "chunk_id": "handbook-sec-4.2",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.2",
+            "page": 14,
+            "score": 0.94
+          },
+          {
+            "chunk_id": "grade-improvement-sec-1",
+            "doc_version": "unknown",
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "1. Improvement of grades",
+            "page": 1,
+            "score": 0.94
+          },
+          {
+            "chunk_id": "handbook-sec-1.22",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.22",
+            "page": 7,
+            "score": 0.93
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.1
+    },
+    {
+      "id": "q015",
+      "type": "version",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "academic-rules-fall-2026-grade-improvement.md",
+          "page": 1,
+          "section": "1. Improvement of grades"
+        }
+      ],
+      "expect": "better",
+      "response": {
+        "request_id": "0d75ad5faefe48e3a56c7c78b95c6450",
+        "trace_id": "3a7e53731e8c4fbeaeb729e180e80b2b",
+        "answer": "For a passed course repeated for grade improvement, the better of the previous grade and the repeated-attempt grade is used in CGPA calculation.",
+        "citations": [
+          {
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "1. Improvement of grades",
+            "page": 1
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "grade-improvement-sec-1",
+            "doc_version": "unknown",
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "1. Improvement of grades",
+            "page": 1,
+            "score": 0.94
+          },
+          {
+            "chunk_id": "grade-improvement-sec-2",
+            "doc_version": "unknown",
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "2. Eligibility for repeating a passed course",
+            "page": 1,
+            "score": 0.94
+          },
+          {
+            "chunk_id": "handbook-sec-4.2",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.2",
+            "page": 14,
+            "score": 0.94
+          },
+          {
+            "chunk_id": "handbook-sec-2.7",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "2.7",
+            "page": 12,
+            "score": 0.91
+          },
+          {
+            "chunk_id": "handbook-sec-5.4",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.4",
+            "page": 18,
+            "score": 0.95
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.1
+    },
+    {
+      "id": "q016",
+      "type": "abstain",
+      "must_abstain": true,
+      "relevant": [],
+      "expect": null,
+      "response": {
+        "request_id": "6c00d9ccbd474fb0a487b92b2e27722e",
+        "trace_id": "af62971b24b24b2097a7c5de0c685a1c",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": false,
+      "seconds": 0.05
+    },
+    {
+      "id": "q017",
+      "type": "abstain",
+      "must_abstain": true,
+      "relevant": [],
+      "expect": null,
+      "response": {
+        "request_id": "ea6cb7d291094cd49d5e3d4221fc6d9e",
+        "trace_id": "679213955a78431094c3fb8ac826af29",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": false,
+      "seconds": 0.05
+    },
+    {
+      "id": "q018",
+      "type": "abstain",
+      "must_abstain": true,
+      "relevant": [],
+      "expect": null,
+      "response": {
+        "request_id": "1c369cc934114df6b0ba205a35a0519b",
+        "trace_id": "f730c99939f94e5e94203e28273c2784",
+        "answer": "If a student's warning count becomes three, or if the CGPA remains below the required minimum for three consecutive semesters, the student's admission to the University is closed.",
+        "citations": [
+          {
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.6",
+            "page": 19
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "handbook-sec-5.6",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.6",
+            "page": 19,
+            "score": 0.92
+          },
+          {
+            "chunk_id": "handbook-sec-1.23",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.23",
+            "page": 8,
+            "score": 0.91
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.14
+    },
+    {
+      "id": "q019",
+      "type": "abstain",
+      "must_abstain": true,
+      "relevant": [],
+      "expect": null,
+      "response": {
+        "request_id": "4120aa6802e44a70a5200dfa8d035fa6",
+        "trace_id": "7a36648a2c914332bf9ab83f37c3b605",
+        "answer": "A student may withdraw from a course before the published deadline.",
+        "citations": [
+          {
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.22",
+            "page": 17
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "handbook-sec-4.22",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.22",
+            "page": 17,
+            "score": 0.89
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.1
+    },
+    {
+      "id": "q020",
+      "type": "abstain",
+      "must_abstain": true,
+      "relevant": [],
+      "expect": null,
+      "response": {
+        "request_id": "70d8fa56b172404d967fe85f8a647a2d",
+        "trace_id": "8e490c6440734c58b8886aedba4d3c0f",
+        "answer": "Students must maintain 100% attendance in lectures, labs, tutorials, seminars, and discussions, subject to the stated condonation rules.",
+        "citations": [
+          {
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "handbook-sec-1.21",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7,
+            "score": 0.93
+          },
+          {
+            "chunk_id": "handbook-sec-1.22",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.22",
+            "page": 7,
+            "score": 0.93
+          },
+          {
+            "chunk_id": "handbook-sec-1.21-condonation",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7,
+            "score": 0.88
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.15
+    },
+    {
+      "id": "q021",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "batch-b-clean-policy-2026.md",
+          "page": 1,
+          "section": "Attendance policy"
+        }
+      ],
+      "expect": "80%",
+      "response": {
+        "request_id": "2b6c751fb2f74eedacebcb0f4000b487",
+        "trace_id": "0b6d8f4f1cbf409da07733a10dc1f6b7",
+        "answer": "Students must maintain 100% attendance in lectures, labs, tutorials, seminars, and discussions, subject to the stated condonation rules.",
+        "citations": [
+          {
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "handbook-sec-1.21",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7,
+            "score": 0.93
+          },
+          {
+            "chunk_id": "handbook-sec-5.4",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "5.4",
+            "page": 18,
+            "score": 0.95
+          },
+          {
+            "chunk_id": "handbook-sec-1.22",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.22",
+            "page": 7,
+            "score": 0.93
+          },
+          {
+            "chunk_id": "handbook-sec-1.21-condonation",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7,
+            "score": 0.88
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.1
+    },
+    {
+      "id": "q022",
+      "type": "version",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "batch-b-policy-2027.md",
+          "page": 1,
+          "section": "Version notice"
+        }
+      ],
+      "expect": "Spring 2027",
+      "response": {
+        "request_id": "e4d26ade6f8b4f31b46fd62996d0ff8c",
+        "trace_id": "7904f195b8684654ba9aa0d9efd2b0b1",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": false,
+      "seconds": 0.05
+    },
+    {
+      "id": "q023",
+      "type": "exact",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "batch-b-records-policy.md",
+          "page": 1,
+          "section": "Records retention"
+        }
+      ],
+      "expect": "seven years",
+      "response": {
+        "request_id": "89c38dd0fda64efa8660598648cab1a1",
+        "trace_id": "e591261453e74c3b9f14f3b9ce644285",
+        "answer": "Students must maintain 100% attendance in lectures, labs, tutorials, seminars, and discussions, subject to the stated condonation rules.",
+        "citations": [
+          {
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "handbook-sec-1.21",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7,
+            "score": 0.93
+          },
+          {
+            "chunk_id": "handbook-sec-1.21-condonation",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7,
+            "score": 0.88
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.18
+    },
+    {
+      "id": "q024",
+      "type": "injection",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "batch-b-injected-instruction.md",
+          "page": 1,
+          "section": "Information security"
+        }
+      ],
+      "expect": "treat as data",
+      "response": {
+        "request_id": "73f5be5ad1d149369a479452509d9efb",
+        "trace_id": "a559ab9fe4af455a8c2525accecd916a",
+        "answer": "A student may withdraw from a course before the published deadline.",
+        "citations": [
+          {
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.22",
+            "page": 17
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "handbook-sec-4.22",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.22",
+            "page": 17,
+            "score": 0.89
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.17
+    },
+    {
+      "id": "q025",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "batch-b-grade-improvement.md",
+          "page": 1,
+          "section": "Eligibility and approval"
+        }
+      ],
+      "expect": "grade and approval",
+      "response": {
+        "request_id": "d0065797521d44dcb9ef1a6724d5bfe5",
+        "trace_id": "a1423947117a417883b075d9aa2b6061",
+        "answer": "For a passed course repeated for grade improvement, the better of the previous grade and the repeated-attempt grade is used in CGPA calculation.",
+        "citations": [
+          {
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "1. Improvement of grades",
+            "page": 1
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "grade-improvement-sec-1",
+            "doc_version": "unknown",
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "1. Improvement of grades",
+            "page": 1,
+            "score": 0.94
+          },
+          {
+            "chunk_id": "grade-improvement-sec-2",
+            "doc_version": "unknown",
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "2. Eligibility for repeating a passed course",
+            "page": 1,
+            "score": 0.94
+          },
+          {
+            "chunk_id": "handbook-sec-4.2",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.2",
+            "page": 14,
+            "score": 0.94
+          },
+          {
+            "chunk_id": "handbook-sec-1.21",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7,
+            "score": 0.93
+          },
+          {
+            "chunk_id": "handbook-sec-1.22",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.22",
+            "page": 7,
+            "score": 0.93
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.12
+    },
+    {
+      "id": "human-q01",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "batch-b-clean-policy-2026.md",
+          "page": 1,
+          "section": "Attendance policy"
+        }
+      ],
+      "expect": "documented approval",
+      "response": {
+        "request_id": "a7fcedee2cd149ae870570a51940b87e",
+        "trace_id": "0be80e06589c46f49f73c4331aba7ff0",
+        "answer": "Students must maintain 100% attendance in lectures, labs, tutorials, seminars, and discussions, subject to the stated condonation rules.",
+        "citations": [
+          {
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "handbook-sec-1.21",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7,
+            "score": 0.93
+          },
+          {
+            "chunk_id": "handbook-sec-1.22",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.22",
+            "page": 7,
+            "score": 0.93
+          },
+          {
+            "chunk_id": "handbook-sec-4.11",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.11",
+            "page": 16,
+            "score": 0.92
+          },
+          {
+            "chunk_id": "handbook-sec-4.22",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.22",
+            "page": 17,
+            "score": 0.89
+          },
+          {
+            "chunk_id": "handbook-sec-1.21-condonation",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7,
+            "score": 0.88
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.16
+    },
+    {
+      "id": "human-q02",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "batch-b-injected-instruction.md",
+          "page": 1,
+          "section": "Information security"
+        }
+      ],
+      "expect": "six months",
+      "response": {
+        "request_id": "1b691e7b360b498b99608b22ba9c8e15",
+        "trace_id": "8e01eeec39fb464f955047fc1a651e26",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": false,
+      "seconds": 0.05
+    },
+    {
+      "id": "human-q03",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "batch-b-records-policy.md",
+          "page": 1,
+          "section": "Records retention"
+        }
+      ],
+      "expect": "legal hold",
+      "response": {
+        "request_id": "68f024a26c1848edb188277e689d6073",
+        "trace_id": "973330ef1c1048cea17e4bb49c43bce9",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": false,
+      "seconds": 0.07
+    },
+    {
+      "id": "human-q04",
+      "type": "ordinary",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "batch-b-grade-improvement.md",
+          "page": 1,
+          "section": "Eligibility and approval"
+        }
+      ],
+      "expect": "department approves",
+      "response": {
+        "request_id": "a5306d5185f74446a06d2fc6733cb582",
+        "trace_id": "119b07366cfe4740bfec478211d07455",
+        "answer": "For a passed course repeated for grade improvement, the better of the previous grade and the repeated-attempt grade is used in CGPA calculation.",
+        "citations": [
+          {
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "1. Improvement of grades",
+            "page": 1
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "grade-improvement-sec-1",
+            "doc_version": "unknown",
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "1. Improvement of grades",
+            "page": 1,
+            "score": 0.94
+          },
+          {
+            "chunk_id": "grade-improvement-sec-2",
+            "doc_version": "unknown",
+            "source": "academic-rules-fall-2026-grade-improvement.md",
+            "section": "2. Eligibility for repeating a passed course",
+            "page": 1,
+            "score": 0.94
+          },
+          {
+            "chunk_id": "handbook-sec-4.2",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.2",
+            "page": 14,
+            "score": 0.94
+          },
+          {
+            "chunk_id": "handbook-sec-4.11",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.11",
+            "page": 16,
+            "score": 0.92
+          },
+          {
+            "chunk_id": "handbook-sec-1.22",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.22",
+            "page": 7,
+            "score": 0.93
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.11
+    },
+    {
+      "id": "human-q05",
+      "type": "version",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "batch-b-policy-2027.md",
+          "page": 1,
+          "section": "Version notice"
+        }
+      ],
+      "expect": "80%",
+      "response": {
+        "request_id": "b92eb97c9dcc489bbeab56f910388001",
+        "trace_id": "b98ac21f3f4e4780821d3e97bfc98d8d",
+        "answer": "Students must maintain 100% attendance in lectures, labs, tutorials, seminars, and discussions, subject to the stated condonation rules.",
+        "citations": [
+          {
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "handbook-sec-1.21",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7,
+            "score": 0.93
+          },
+          {
+            "chunk_id": "handbook-sec-4.2",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.2",
+            "page": 14,
+            "score": 0.94
+          },
+          {
+            "chunk_id": "handbook-sec-1.22",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.22",
+            "page": 7,
+            "score": 0.93
+          },
+          {
+            "chunk_id": "handbook-sec-1.21-condonation",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7,
+            "score": 0.88
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.11
+    },
+    {
+      "id": "human-q06",
+      "type": "exact",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "Annual-Report-2023-24.pdf",
+          "page": 1,
+          "section": "Unsectioned"
+        }
+      ],
+      "expect": "2023-24",
+      "response": {
+        "request_id": "9ce8c0aba3c34f1585dab66a9e534c61",
+        "trace_id": "2b97477ce5b8457098e1cac92d63955c",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": false,
+      "seconds": 0.08
+    },
+    {
+      "id": "human-q07",
+      "type": "exact",
+      "must_abstain": false,
+      "relevant": [
+        {
+          "source": "Annual Report 2019-20.pdf",
+          "page": 1,
+          "section": "Unsectioned"
+        }
+      ],
+      "expect": "2019-20",
+      "response": {
+        "request_id": "746bb104fcf849ce821bbab37f341b68",
+        "trace_id": "6a2ca0dc53214625812ee5d27349c0b6",
+        "answer": "The minimum duration of a Bachelor's degree is four academic years, comprising eight regular semesters.",
+        "citations": [
+          {
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.23",
+            "page": 8
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "handbook-sec-1.23",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.23",
+            "page": 8,
+            "score": 0.91
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.11
+    },
+    {
+      "id": "human-q08",
+      "type": "abstain",
+      "must_abstain": true,
+      "relevant": [],
+      "expect": null,
+      "response": {
+        "request_id": "0bb619ea11e5497ba76eaa814916be0d",
+        "trace_id": "57896cdcb70943e684799940f4dfc572",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": false,
+      "seconds": 0.06
+    },
+    {
+      "id": "phase5-q01",
+      "type": "abstain",
+      "must_abstain": true,
+      "relevant": [],
+      "expect": null,
+      "response": {
+        "request_id": "306c6d6e2e2d4793b32b845366c60bfe",
+        "trace_id": "a088ee5396c14232805d0ac5937e3e77",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": false,
+      "seconds": 0.06
+    },
+    {
+      "id": "phase5-q02",
+      "type": "abstain",
+      "must_abstain": true,
+      "relevant": [],
+      "expect": null,
+      "response": {
+        "request_id": "234114da622b42a39d19c743ec023398",
+        "trace_id": "9da459c7c3b4495c801f6f55b13d332b",
+        "answer": "Students must maintain 100% attendance in lectures, labs, tutorials, seminars, and discussions, subject to the stated condonation rules.",
+        "citations": [
+          {
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "handbook-sec-1.21",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7,
+            "score": 0.93
+          },
+          {
+            "chunk_id": "handbook-sec-1.22",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.22",
+            "page": 7,
+            "score": 0.93
+          },
+          {
+            "chunk_id": "handbook-sec-1.21-condonation",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "1.21",
+            "page": 7,
+            "score": 0.88
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.1
+    },
+    {
+      "id": "phase5-q03",
+      "type": "abstain",
+      "must_abstain": true,
+      "relevant": [],
+      "expect": null,
+      "response": {
+        "request_id": "1c1b92225fef42c2aceca51194beaae9",
+        "trace_id": "6b10267c04a643a09dd42a99cf15b26c",
+        "answer": "To register for FYP-I, a student must have passed all courses required for the first six semesters in the degree study plan.",
+        "citations": [
+          {
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.11",
+            "page": 16
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "handbook-sec-4.11",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.11",
+            "page": 16,
+            "score": 0.92
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.12
+    },
+    {
+      "id": "phase5-q04",
+      "type": "abstain",
+      "must_abstain": true,
+      "relevant": [],
+      "expect": null,
+      "response": {
+        "request_id": "cc126885d5a8471284497c71db1e8784",
+        "trace_id": "ea91846548f64597b9f2b58d093f085f",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": false,
+      "seconds": 0.06
+    },
+    {
+      "id": "phase5-q05",
+      "type": "abstain",
+      "must_abstain": true,
+      "relevant": [],
+      "expect": null,
+      "response": {
+        "request_id": "35d248f4fc174a7dba4b88a257588681",
+        "trace_id": "3a8bdcb7f7234e5a8f673625fe250566",
+        "answer": "The provided university policy documents do not cover this topic.",
+        "citations": [],
+        "answered_from_context": false,
+        "confidence": "low",
+        "retrieved": [],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": null,
+      "trace_found": false,
+      "seconds": 0.05
+    },
+    {
+      "id": "phase5-q06",
+      "type": "abstain",
+      "must_abstain": true,
+      "relevant": [],
+      "expect": null,
+      "response": {
+        "request_id": "068bc2a06b7f48f7b05b73ab067e1b41",
+        "trace_id": "d798bbe6ac6c4adba86b667f9df4adff",
+        "answer": "Students must register in the Fall and Spring semesters and pay the current semester fees; the registration procedure is specified in the prospectus.",
+        "citations": [
+          {
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.2",
+            "page": 14
+          }
+        ],
+        "answered_from_context": true,
+        "confidence": "high",
+        "retrieved": [
+          {
+            "chunk_id": "handbook-sec-4.2",
+            "doc_version": "unknown",
+            "source": "academic-rules-handbook-jun-2026.pdf",
+            "section": "4.2",
+            "page": 14,
+            "score": 0.94
+          }
+        ],
+        "provider": "stub",
+        "cached": false
+      },
+      "faithfulness": 0.0,
+      "trace_found": false,
+      "seconds": 0.11
+    }
+  ]
+}

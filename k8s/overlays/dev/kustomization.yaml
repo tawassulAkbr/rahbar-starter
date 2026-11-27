@@ -13,3 +13,7 @@ images:
   - name: rahbar-ui
     newName: rahbar-ui
     newTag: dev
+patches:
+  - path: indexer-dummy-patch.yaml
+  - path: dev-scaling-patch.yaml
+  - path: dev-config-patch.yaml

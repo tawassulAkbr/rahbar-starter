@@ -12,6 +12,7 @@ RUN apt-get update \
 COPY indexer/requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 COPY indexer/pipeline ./pipeline
+COPY scripts/seed_corpus.py ./seed_corpus.py
 COPY corpus /corpus
 RUN mkdir -p /corpus && chown 10002:10002 /corpus
 USER 10002:10002

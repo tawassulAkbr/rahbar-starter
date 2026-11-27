@@ -1,0 +1,6 @@
+{
+  "status": "superseded",
+  "reason": "The initial policy fixture was already marked superseded. This trial does not prove transition from an active old policy.",
+  "replacement": "eval/results/batch-b-20261123T115821Z",
+  "replacement_correction": "The disposable baseline copy is explicitly active, and the script asserts that before adding Batch B."
+}

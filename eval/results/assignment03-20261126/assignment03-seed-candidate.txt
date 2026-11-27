@@ -1,0 +1,4 @@
+$ kubectl logs job/assignment03-seed-candidate -n rahbar --all-containers=true --pod-running-timeout=5s
+error: error from server (NotFound): jobs.batch "assignment03-seed-candidate" not found in namespace "rahbar"
+
+Exit code: 1

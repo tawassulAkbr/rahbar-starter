@@ -1,0 +1,148 @@
+$ kubectl get job/eval-job -n rahbar -o json
+{
+    "apiVersion": "batch/v1",
+    "kind": "Job",
+    "metadata": {
+        "annotations": {
+            "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"batch/v1\",\"kind\":\"Job\",\"metadata\":{\"annotations\":{},\"name\":\"eval-job\",\"namespace\":\"rahbar\"},\"spec\":{\"backoffLimit\":0,\"template\":{\"metadata\":{\"labels\":{\"app\":\"evaluator\"}},\"spec\":{\"automountServiceAccountToken\":false,\"containers\":[{\"args\":[\"exec python /workspace/eval/run_cluster_suite.py --api \\\"${EVAL_API}\\\" --golden /workspace/eval/golden.jsonl --baseline /results/part-b-baseline.json --trace-path /data/traces/traces.jsonl --out /results/eval-results.json --bootstrap-baseline\"],\"command\":[\"/bin/sh\",\"-c\"],\"env\":[{\"name\":\"EVAL_API\",\"value\":\"http://api:8000\"}],\"envFrom\":[{\"configMapRef\":{\"name\":\"rahbar-config\"}}],\"image\":\"rahbar-eval:dev\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"evaluator\",\"resources\":{\"limits\":{\"cpu\":\"500m\",\"memory\":\"512Mi\"},\"requests\":{\"cpu\":\"100m\",\"memory\":\"128Mi\"}},\"volumeMounts\":[{\"mountPath\":\"/results\",\"name\":\"results\"},{\"mountPath\":\"/data/traces\",\"name\":\"traces\",\"readOnly\":true}]}],\"restartPolicy\":\"Never\",\"volumes\":[{\"name\":\"results\",\"persistentVolumeClaim\":{\"claimName\":\"rahbar-evaluation\"}},{\"name\":\"traces\",\"persistentVolumeClaim\":{\"claimName\":\"rahbar-traces\"}}]}},\"ttlSecondsAfterFinished\":86400}}\n"
+        },
+        "creationTimestamp": "2026-11-26T18:52:31Z",
+        "generation": 1,
+        "labels": {
+            "app": "evaluator",
+            "batch.kubernetes.io/controller-uid": "a5379520-6c34-491d-8605-8d37557102ca",
+            "batch.kubernetes.io/job-name": "eval-job",
+            "controller-uid": "a5379520-6c34-491d-8605-8d37557102ca",
+            "job-name": "eval-job"
+        },
+        "name": "eval-job",
+        "namespace": "rahbar",
+        "resourceVersion": "22293",
+        "uid": "a5379520-6c34-491d-8605-8d37557102ca"
+    },
+    "spec": {
+        "backoffLimit": 0,
+        "completionMode": "NonIndexed",
+        "completions": 1,
+        "manualSelector": false,
+        "parallelism": 1,
+        "podReplacementPolicy": "TerminatingOrFailed",
+        "selector": {
+            "matchLabels": {
+                "batch.kubernetes.io/controller-uid": "a5379520-6c34-491d-8605-8d37557102ca"
+            }
+        },
+        "suspend": false,
+        "template": {
+            "metadata": {
+                "labels": {
+                    "app": "evaluator",
+                    "batch.kubernetes.io/controller-uid": "a5379520-6c34-491d-8605-8d37557102ca",
+                    "batch.kubernetes.io/job-name": "eval-job",
+                    "controller-uid": "a5379520-6c34-491d-8605-8d37557102ca",
+                    "job-name": "eval-job"
+                }
+            },
+            "spec": {
+                "automountServiceAccountToken": false,
+                "containers": [
+                    {
+                        "args": [
+                            "exec python /workspace/eval/run_cluster_suite.py --api \"${EVAL_API}\" --golden /workspace/eval/golden.jsonl --baseline /results/part-b-baseline.json --trace-path /data/traces/traces.jsonl --out /results/eval-results.json --bootstrap-baseline"
+                        ],
+                        "command": [
+                            "/bin/sh",
+                            "-c"
+                        ],
+                        "env": [
+                            {
+                                "name": "EVAL_API",
+                                "value": "http://api:8000"
+                            }
+                        ],
+                        "envFrom": [
+                            {
+                                "configMapRef": {
+                                    "name": "rahbar-config"
+                                }
+                            }
+                        ],
+                        "image": "rahbar-eval:dev",
+                        "imagePullPolicy": "IfNotPresent",
+                        "name": "evaluator",
+                        "resources": {
+                            "limits": {
+                                "cpu": "500m",
+                                "memory": "512Mi"
+                            },
+                            "requests": {
+                                "cpu": "100m",
+                                "memory": "128Mi"
+                            }
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/results",
+                                "name": "results"
+                            },
+                            {
+                                "mountPath": "/data/traces",
+                                "name": "traces",
+                                "readOnly": true
+                            }
+                        ]
+                    }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "restartPolicy": "Never",
+                "schedulerName": "default-scheduler",
+                "securityContext": {},
+                "terminationGracePeriodSeconds": 30,
+                "volumes": [
+                    {
+                        "name": "results",
+                        "persistentVolumeClaim": {
+                            "claimName": "rahbar-evaluation"
+                        }
+                    },
+                    {
+                        "name": "traces",
+                        "persistentVolumeClaim": {
+                            "claimName": "rahbar-traces"
+                        }
+                    }
+                ]
+            }
+        },
+        "ttlSecondsAfterFinished": 86400
+    },
+    "status": {
+        "conditions": [
+            {
+                "lastProbeTime": "2026-11-26T19:21:24Z",
+                "lastTransitionTime": "2026-11-26T19:21:24Z",
+                "message": "Job has reached the specified backoff limit",
+                "reason": "BackoffLimitExceeded",
+                "status": "True",
+                "type": "FailureTarget"
+            },
+            {
+                "lastProbeTime": "2026-11-26T19:21:24Z",
+                "lastTransitionTime": "2026-11-26T19:21:24Z",
+                "message": "Job has reached the specified backoff limit",
+                "reason": "BackoffLimitExceeded",
+                "status": "True",
+                "type": "Failed"
+            }
+        ],
+        "failed": 1,
+        "ready": 0,
+        "startTime": "2026-11-26T18:52:31Z",
+        "terminating": 0,
+        "uncountedTerminatedPods": {}
+    }
+}
+
+Exit code: 0

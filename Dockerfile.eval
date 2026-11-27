@@ -1,0 +1,13 @@
+FROM python:3.12.3-slim-bookworm
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+WORKDIR /workspace
+COPY eval/requirements.txt /tmp/eval-requirements.txt
+COPY api/requirements.txt /tmp/api-requirements.txt
+RUN pip install --no-cache-dir -r /tmp/eval-requirements.txt -r /tmp/api-requirements.txt \
+    && groupadd --system --gid 10003 evaluator \
+    && useradd --system --uid 10003 --gid 10003 --no-create-home evaluator
+COPY eval ./eval
+COPY api/app ./api/app
+ENV PYTHONPATH=/workspace/api:/workspace/eval
+USER 10003:10003
+ENTRYPOINT ["python"]

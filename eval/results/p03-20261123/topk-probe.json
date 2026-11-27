@@ -1,0 +1,62 @@
+[
+  {
+    "top_k": 4,
+    "extractive_path_ids": [
+      "q002",
+      "q007",
+      "q009",
+      "q011",
+      "q012",
+      "q013",
+      "q015"
+    ],
+    "retrieval": {
+      "recall_at_3": 0.5185185185185185,
+      "recall_at_5": 0.5185185185185185,
+      "mrr": 0.4444444444444444,
+      "ndcg_at_5": 0.4638414449735493
+    },
+    "purpose": "exploratory retrieval only; no end-to-end or release claim"
+  },
+  {
+    "top_k": 8,
+    "extractive_path_ids": [
+      "q001",
+      "q002",
+      "q007",
+      "q009",
+      "q011",
+      "q012",
+      "q013",
+      "q015"
+    ],
+    "retrieval": {
+      "recall_at_3": 0.5185185185185185,
+      "recall_at_5": 0.5185185185185185,
+      "mrr": 0.44907407407407407,
+      "ndcg_at_5": 0.4638414449735493
+    },
+    "purpose": "exploratory retrieval only; no end-to-end or release claim"
+  },
+  {
+    "top_k": 10,
+    "extractive_path_ids": [
+      "q001",
+      "q002",
+      "q007",
+      "q009",
+      "q011",
+      "q012",
+      "q013",
+      "q014",
+      "q015"
+    ],
+    "retrieval": {
+      "recall_at_3": 0.5185185185185185,
+      "recall_at_5": 0.5185185185185185,
+      "mrr": 0.4568930041152263,
+      "ndcg_at_5": 0.4638414449735493
+    },
+    "purpose": "exploratory retrieval only; no end-to-end or release claim"
+  }
+]

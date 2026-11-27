@@ -1,0 +1,6 @@
+kubectl get jobs gate-replay-ceff5c72-release gate-replay-ceff5c72-experiment -n rahbar
+NAME                              STATUS     COMPLETIONS   DURATION   AGE
+gate-replay-ceff5c72-release      Failed     0/1           5m3s       5m3s
+gate-replay-ceff5c72-experiment   Complete   1/1           8s         4m48s
+
+Exit 0

@@ -1,0 +1,26 @@
+{
+  "level": "component_retrieval",
+  "retriever": "chroma",
+  "top_k": 5,
+  "baseline": {
+    "recall_at_3": 0.5185185185185185,
+    "recall_at_5": 0.5185185185185185,
+    "mrr": 0.4444444444444444,
+    "ndcg_at_5": 0.4638414449735493
+  },
+  "noise_test": {
+    "method": "transpose first two letters of words longer than five characters",
+    "metrics": {
+      "recall_at_3": 0.25925925925925924,
+      "recall_at_5": 0.3333333333333333,
+      "mrr": 0.22839506172839505,
+      "ndcg_at_5": 0.254124189486918
+    },
+    "deltas": {
+      "recall_at_3": -0.25925925925925924,
+      "recall_at_5": -0.18518518518518517,
+      "mrr": -0.21604938271604937,
+      "ndcg_at_5": -0.20971725548663128
+    }
+  }
+}
