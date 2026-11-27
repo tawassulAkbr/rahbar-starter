@@ -198,10 +198,10 @@ def citation_validity(response: dict) -> float | None:
 
 
 def trace_for_id(path: Path, trace_id: str) -> dict | None:
-    """Find the trace emitted for a request; traces hold the exact retrieved context."""
+    """Resolve a request to the trace that generated its answer and context."""
     if not trace_id or not path.is_file():
         return None
-    for line in reversed(path.read_text(encoding="utf-8").splitlines()):
+    for line in reversed(path.read_text(encoding="utf-8-sig").splitlines()):
         if not line.strip():
             continue
         try:
@@ -209,6 +209,11 @@ def trace_for_id(path: Path, trace_id: str) -> dict | None:
         except json.JSONDecodeError:
             continue  # tolerate a partially written final line
         if record.get("trace_id") == trace_id:
+            if record.get("cache_hit"):
+                trace_id = record.get("origin_trace_id")
+                if not trace_id:
+                    return None
+                continue
             return record
     return None
 

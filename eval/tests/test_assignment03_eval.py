@@ -5,6 +5,19 @@ import os
 import pytest
 
 
+def test_cached_answer_is_scored_against_the_generating_trace(tmp_path):
+    from run_eval import trace_for_id
+
+    records = [
+        {"trace_id": "original", "context": ["Attendance must be 80 percent."]},
+        {"trace_id": "hit", "cache_hit": True, "origin_trace_id": "original", "context": []},
+    ]
+    log = tmp_path / "traces.jsonl"
+    log.write_text("\n".join(json.dumps(record) for record in records))
+    response = {"answered_from_context": True, "answer": "Attendance must be 80 percent."}
+    assert faithfulness(response, trace_for_id(log, "hit")) == 1.0
+
+
 def test_faithfulness_uses_context_captured_in_trace():
     response = {"answered_from_context": True, "answer": "Attendance is 80%."}
     trace = {"context": ["Students must maintain attendance of 80 percent."]}
@@ -64,6 +77,7 @@ def test_cluster_suite_evaluates_configured_candidate_top_k(monkeypatch, tmp_pat
 
     def answers(command, **kwargs):
         from types import SimpleNamespace
+        assert "--update-baseline" not in command
         output = command[command.index("--out") + 1]
         assert float(command[command.index('--request-timeout') + 1]) >= 600
         from pathlib import Path

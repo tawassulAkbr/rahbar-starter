@@ -23,7 +23,7 @@ from module_level import run_module_level
 
 
 def run_suite(api: str, golden: Path, baseline: Path, trace_path: Path,
-              out: Path, seed: int = 2026) -> dict[str, object]:
+              out: Path, seed: int = 2026, *, bootstrap_baseline: bool = False) -> dict[str, object]:
     out.parent.mkdir(parents=True, exist_ok=True)
     golden_rows = [json.loads(line) for line in golden.read_text(encoding="utf-8").splitlines() if line.strip()]
     runs: list[dict[str, object]] = []
@@ -46,7 +46,7 @@ def run_suite(api: str, golden: Path, baseline: Path, trace_path: Path,
                    "--request-timeout", os.environ.get(
                        "EVAL_REQUEST_TIMEOUT",
                        str(max(600, 2 * float(os.environ.get('EMBED_TIMEOUT', '300')) + 120)))]
-        if not baseline.exists():
+        if bootstrap_baseline and not baseline.exists():
             command.append("--update-baseline")
         completed = subprocess.run(command, check=False)
         if not answer_out.exists():
@@ -117,7 +117,8 @@ def main() -> int:
         return 2
     if args.bootstrap_baseline:
         args.baseline.unlink(missing_ok=True)
-    result = run_suite(args.api, args.golden, args.baseline, args.trace_path, args.out, args.seed)
+    result = run_suite(args.api, args.golden, args.baseline, args.trace_path, args.out, args.seed,
+                       bootstrap_baseline=args.bootstrap_baseline)
     print(json.dumps({"gate_status": result["gate_status"], "summary_table": result["summary_table"]}, indent=2))
     return 0 if result["gate_status"] == "PASS" else 1
 

@@ -22,7 +22,7 @@ spec:
             - >-
               exec python /workspace/eval/run_cluster_suite.py --api "${EVAL_API}"
               --golden /workspace/eval/golden.jsonl
-              --baseline /results/part-b-baseline.json
+              --baseline /results/eval-results-answers-run-1.json
               --trace-path /data/traces/traces.jsonl
               --out /results/eval-candidate-results.json
           env:
