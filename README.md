@@ -8,9 +8,11 @@ RAHBAR is a grounded question-answering service for university policy documents.
 
 Latest Assignment 03 verification: [report](docs/Assignment_03_Report.html),
 [PDF](docs/Assignment_03_Report.pdf), and
-[verification evidence](eval/results/assignment03-verification/). Use the final checklist in
+[verification evidence](eval/results/assignment03-final/). Use the final checklist in
 that evidence directory as the acceptance verdict; historical fixture results
 and generated terminal illustrations do not establish completion.
+The current checklist is marked **NOT FULLY COMPLETE** because the complete
+real-model evaluation and manual screenshots remain outstanding.
 
 For Assignment 03 Parts A–D, see the [Phase 0–4 re-audit and commands](docs/PHASE_0_TO_4_REAUDIT.md).
 Historical reference-harness results are superseded and cannot authorize release.
@@ -232,6 +234,7 @@ Regenerate the evidence-based report after exporting completed Jobs:
 ```powershell
 python scripts/assignment03_checklist.py
 python scripts/build_assignment03_report.py
+python scripts/generate_assignment03_pdf.py
 ```
 
 While the baseline and candidate Jobs run, `python scripts/finish_assignment03.py`
