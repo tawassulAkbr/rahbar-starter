@@ -7,6 +7,10 @@ spec:
   template:
     spec:
       initContainers:
+        - name: seed-data-lake
+          volumeMounts:
+            - name: corpus
+              mountPath: /corpus
         - name: wait-for-chroma
           image: busybox:1.36.1
           command:

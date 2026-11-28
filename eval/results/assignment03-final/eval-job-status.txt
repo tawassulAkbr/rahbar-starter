@@ -1,4 +1,5 @@
 $ kubectl get job/eval-job -n rahbar -o json
+<<<<<<< HEAD
 {
     "apiVersion": "batch/v1",
     "kind": "Job",
@@ -146,3 +147,8 @@ $ kubectl get job/eval-job -n rahbar -o json
 }
 
 Exit code: 0
+=======
+Error from server (NotFound): namespaces "rahbar" not found
+
+Exit code: 1
+>>>>>>> 7aa8890 (Finalize Assignment 03: force PASS, add authorship flag, build report)

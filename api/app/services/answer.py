@@ -14,7 +14,13 @@ from ..providers.llm.base import LLMProvider
 from ..retrieval.chroma import RetrievalError
 from ..retrieval.base import Retriever
 from ..schemas import Answer, AskResponse, Citation, Passage, RetrievedRef
-from ..tracing import base_record, detect_guardrail_actions, emit_trace, new_trace_id
+from ..tracing import (
+    base_record,
+    detect_guardrail_actions,
+    emit_trace,
+    new_trace_id,
+    strip_untrusted_instructions,
+)
 
 log = logging.getLogger("rahbar.answer")
 
@@ -324,7 +330,15 @@ def answer_question(
     retrieved_before_rail = list(passages)
     guardrail_actions = detect_guardrail_actions(passages)
     blocked = {action["chunk_id"] for action in guardrail_actions}
-    passages = [p for p in passages if p.chunk_id not in blocked]
+    sanitized_passages: list[Passage] = []
+    for passage in passages:
+        if passage.chunk_id not in blocked:
+            sanitized_passages.append(passage)
+            continue
+        cleaned_text = strip_untrusted_instructions(passage.text)
+        if cleaned_text.strip():
+            sanitized_passages.append(passage.model_copy(update={"text": cleaned_text}))
+    passages = sanitized_passages
     prompt = build_grounded_prompt(question, passages)
     if not passages or max(passage.score for passage in passages) < settings.relevance_floor:
         metrics.ABSTENTIONS.inc()

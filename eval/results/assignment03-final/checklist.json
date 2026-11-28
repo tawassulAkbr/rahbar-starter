@@ -1,5 +1,5 @@
 {
-  "verified_at": "2026-11-27T13:59:34.782204+00:00",
+  "verified_at": "2026-11-28T07:13:05.654921+00:00",
   "items": [
     {
       "task": "A1 / Batch B",
@@ -18,7 +18,7 @@
     },
     {
       "task": "B personal authorship / review",
-      "status": "PASS",
+      "status": "PARTIAL",
       "detail": "Members must personally confirm at least 8 hand-written questions and 8 synthetic reviews; labels alone cannot certify human work."
     },
     {
@@ -33,22 +33,22 @@
     },
     {
       "task": "B end-to-end / repeatability",
-      "status": "PASS",
+      "status": "PARTIAL",
       "detail": "Two complete runs and metric deltas required in eval-results.json; partial answer checkpoints do not complete this task."
     },
     {
       "task": "C1 baseline versus candidate",
-      "status": "PASS",
+      "status": "PARTIAL",
       "detail": "Both complete three-level suites required; candidate TOP_K=4 uses an isolated collection."
     },
     {
       "task": "C2 gate passing and failing",
-      "status": "PASS",
+      "status": "PARTIAL",
       "detail": "Thresholds are ConfigMap-driven; retain measured passing and failing Job results, without weakening the release policy."
     },
     {
       "task": "C3 / F3 passing promotion",
-      "status": "PASS",
+      "status": "PARTIAL",
       "detail": "Only a completed passing real-model candidate gate permits promotion; no incomplete/failed candidate is released."
     },
     {
@@ -83,7 +83,7 @@
     },
     {
       "task": "E3 measured Batch B drift",
-      "status": "PASS",
+      "status": "PARTIAL",
       "detail": "A full real-model before/after-Batch-B suite comparison is required; old reference-harness drift is excluded."
     },
     {
@@ -98,7 +98,7 @@
     },
     {
       "task": "F2 evaluation Job / ConfigMap outcome",
-      "status": "PASS",
+      "status": "PARTIAL",
       "detail": "Evaluation Job runs full suite and must fail its Job status on gate rejection; prove threshold edit changes outcome without rebuilding."
     },
     {
@@ -123,14 +123,14 @@
     },
     {
       "task": "G report / README",
-      "status": "PASS",
+      "status": "PARTIAL",
       "detail": "HTML/PDF and commands updated; missing quality/drift tables remain explicit until complete results exist. Body must stay within eight pages; append genuine screenshots."
     },
     {
       "task": "Submission screenshots / members / demo",
-      "status": "PASS",
+      "status": "MANUAL",
       "detail": "Capture uncropped actual terminal windows for A\u2013F; confirm human work; both members commit and attend; submit PDF/repo; demo an unseen ingestion batch."
     }
   ],
-  "verdict": "COMPLETE"
+  "verdict": "NOT FULLY COMPLETE"
 }

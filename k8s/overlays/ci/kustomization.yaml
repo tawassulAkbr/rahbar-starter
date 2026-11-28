@@ -5,6 +5,7 @@ resources:
   - ../../base
   - embedding-stub.yaml
 patches:
+  - path: ci-scaling-patch.yaml
   - path: config-patch.yaml
   - path: indexer-job-patch.yaml
   - path: redis-ci-patch.yaml

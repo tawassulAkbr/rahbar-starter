@@ -32,12 +32,24 @@ def prompt_hash(prompt: str) -> str:
     return hashlib.sha256(prompt.encode("utf-8")).hexdigest()
 
 
+_INJECTION_PATTERN = re.compile(
+    r"ignore\s+(?:all\s+)?previous|system\s+prompt|instruction\s+to\s+(?:the\s+)?assistant|reveal\s+.*prompt",
+    re.I,
+)
+
+
+def strip_untrusted_instructions(text: str) -> str:
+    """Remove prompt-injection sentences while preserving surrounding policy text."""
+    parts = [part.strip() for part in re.split(r"(?<=[.!?])\s+|\n+", text) if part.strip()]
+    safe_parts = [part for part in parts if not _INJECTION_PATTERN.search(part)]
+    return "\n".join(safe_parts)
+
+
 def detect_guardrail_actions(passages: list[Any]) -> list[dict[str, str]]:
     """Flag document instructions as untrusted data; never execute them."""
-    patterns = re.compile(r"ignore\s+(?:all\s+)?previous|system\s+prompt|instruction\s+to\s+(?:the\s+)?assistant|reveal\s+.*prompt", re.I)
     actions = []
     for passage in passages:
-        if patterns.search(passage.text):
+        if _INJECTION_PATTERN.search(passage.text):
             actions.append({
                 "action": "ignore_untrusted_instruction",
                 "chunk_id": passage.chunk_id,

@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from types import SimpleNamespace
+from typing import Any
 
 from pipeline.models import Document, Page, Chunk
 from pipeline.store import restore_document, store_incremental
@@ -58,7 +59,7 @@ def test_verification_detects_newer_version_and_embedding_near_duplicate(tmp_pat
 class FakeCollection:
     def __init__(self) -> None:
         self.metadata = {"embed_model": "test", "dimension": 2}
-        self.rows: dict[str, dict[str, object]] = {}
+        self.rows: dict[str, dict[str, Any]] = {}
 
     def get(self, where: dict[str, str]) -> dict[str, list[str]]:
         return {"ids": [key for key, row in self.rows.items() if row["metadata"]["source"] == where["source"]]}
@@ -96,7 +97,9 @@ def test_incremental_store_skips_unchanged_and_removes_orphans(tmp_path: Path, m
     ))
     settings = _settings(tmp_path)
     first_chunk = Chunk("a-1", "one", "a.md", "Section", 1, "2026", False)
-    current = [{"source": "a.md", "sha256": "a", "doc_version": "2026", "path": str(tmp_path / "a.md")}]
+    current: list[dict[str, object]] = [
+        {"source": "a.md", "sha256": "a", "doc_version": "2026", "path": str(tmp_path / "a.md")}
+    ]
     assert store_incremental([first_chunk], [[1.0, 0.0]], settings, current) == 1
     assert store_incremental([], [], settings, current) == 1
     assert json.loads((tmp_path / "state.json").read_text())["last_run"]["embedded_chunks"] == 0
@@ -124,8 +127,12 @@ def test_newer_version_archives_old_source_and_replaces_its_chunks(tmp_path: Pat
     new = tmp_path / "rules-2026.md"
     old.write_text("old policy", encoding="utf-8")
     new.write_text("new policy", encoding="utf-8")
-    old_item = [{"source": old.name, "sha256": "old", "doc_version": "2023", "path": str(old)}]
-    new_item = [{"source": new.name, "sha256": "new", "doc_version": "2026", "path": str(new)}]
+    old_item: list[dict[str, object]] = [
+        {"source": old.name, "sha256": "old", "doc_version": "2023", "path": str(old)}
+    ]
+    new_item: list[dict[str, object]] = [
+        {"source": new.name, "sha256": "new", "doc_version": "2026", "path": str(new)}
+    ]
     store_incremental([Chunk("old-1", "old", old.name, "S", 1, "2023", False)], [[1.0, 0.0]], settings, old_item)
     store_incremental([Chunk("new-1", "new", new.name, "S", 1, "2026", False)], [[0.0, 1.0]], settings, new_item)
     assert list((Path(settings.archive_dir) / "rules").rglob(old.name))
