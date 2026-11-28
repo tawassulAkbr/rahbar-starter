@@ -24,6 +24,17 @@ def vector(text: str) -> list[float]:
 
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self) -> None:  # noqa: N802 - stdlib handler API
+        if self.path == "/api/tags":
+            body = json.dumps({"models": [{
+                "name": "dummy-768:latest",
+                "digest": hashlib.sha256(b"dummy-768-ci-v1").hexdigest(),
+            }]}).encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
         if self.path != "/":
             self.send_error(404)
             return
